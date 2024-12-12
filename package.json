@@ -1,0 +1,79 @@
+{
+  "name": "@swaggerexpert/cookie",
+  "version": "1.0.0",
+  "description": "RFC6265 compliant cookie parser and serializer.",
+  "main": "./cjs/index.cjs",
+  "types": "./types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "import": "./es/index.mjs",
+      "require": "./cjs/index.cjs"
+    },
+    "./package.json": "./package.json",
+    "./cookie.bnf": "./src/cookie.bnf"
+  },
+  "watch": {
+    "test": "{src,test}/*.js"
+  },
+  "scripts": {
+    "prepublishOnly": "npm run build",
+    "grammar:compile": "node ./scripts/apg-js.js --lite --in=./src/cookie.bnf --out=./src/cookie.js && cd ./src",
+    "build": "npm run grammar:compile && npm run build:es && npm run build:cjs && npm run build:cjs:apg-lite",
+    "build:es": "cross-env BABEL_ENV=es babel src --out-dir es --extensions '.js' --out-file-extension '.mjs'",
+    "build:cjs": "cross-env BABEL_ENV=cjs babel src --out-dir cjs --extensions '.js' --out-file-extension '.cjs'",
+    "build:cjs:apg-lite": "cross-env BABEL_ENV=cjs babel node_modules/apg-lite/lib/parser.js --out-file ./cjs/apg-lite.cjs",
+    "test": "mocha",
+    "test:watch": "npm-watch test",
+    "watch": "npm-watch"
+  },
+  "engines": {
+    "node": ">=12.20.0"
+  },
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/swaggerexpert/cookie.git"
+  },
+  "keywords": [
+    "cookie",
+    "parser",
+    "serializer",
+    "cookies",
+    "rfc6265"
+  ],
+  "author": "Vladimír Gorej <vladimir.gorej@gmail.com>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/swaggerexpert/cookie/issues"
+  },
+  "homepage": "https://github.com/swaggerexpert/cookie#readme",
+  "files": [
+    "es/",
+    "cjs/",
+    "types/",
+    "LICENSE",
+    "NOTICE",
+    "package.json",
+    "README.md",
+    "SECURITY.md"
+  ],
+  "dependencies": {
+    "apg-lite": "^1.0.3"
+  },
+  "devDependencies": {
+    "@babel/cli": "=7.25.9",
+    "@babel/core": "=7.26.0",
+    "@babel/preset-env": "=7.26.0",
+    "@commitlint/cli": "=19.6.0",
+    "@commitlint/config-conventional": "=19.6.0",
+    "apg-js": "^4.4.0",
+    "babel-plugin-module-resolver": "^5.0.2",
+    "chai": "=5.1.2",
+    "cross-env": "^7.0.3",
+    "husky": "=9.1.7",
+    "mocha": "=10.8.2",
+    "npm-watch": "^0.13.0",
+    "prettier": "^3.1.1"
+  }
+}

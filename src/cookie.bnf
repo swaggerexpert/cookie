@@ -1,0 +1,22 @@
+; https://datatracker.ietf.org/doc/html/rfc6265#section-4.2.1
+cookie-string     = cookie-pair *( ";" SP cookie-pair )
+cookie-pair       = cookie-name "=" cookie-value
+cookie-name       = token
+cookie-value      = *cookie-octet / ( DQUOTE *cookie-octet DQUOTE )
+cookie-octet      = %x21 / %x23-2B / %x2D-3A / %x3C-5B / %x5D-7E
+                       ; US-ASCII characters excluding CTLs,
+                       ; whitespace DQUOTE, comma, semicolon,
+                       ; and backslash
+
+; https://datatracker.ietf.org/doc/html/rfc2616#section-2.2
+token          = 1*(tchar)
+tchar          = %x21 / %x23-27 / %x2A-2B / %x2D-2E / %x30-39 / %x41-5A / %x5E-7A / %x7C / %x7E
+                ; Any CHAR except CTLs and separators
+CHAR           = %x01-7F ; any US-ASCII character (octets 0 - 127)
+CTL            = %x00-1F / %x7F ; any US-ASCII control character
+separators     = "(" / ")" / "<" / ">" / "@" / "," / ";" / ":" / "\" / %x22 / "/" / "[" / "]" / "?" / "=" / "{" / "}" / SP / HT
+SP             = %x20 ; US-ASCII SP, space (32)
+HT             = %x09 ; US-ASCII HT, horizontal-tab (9)
+
+; https://datatracker.ietf.org/doc/html/rfc5234#appendix-B.1
+DQUOTE         =  %x22 ; " (Double Quote)
