@@ -34,4 +34,4 @@ export type Opcode =
 export type UDT = {}; // User-defined terminals (empty in this grammar)
 
 export function parseCookie(cookieString: string): ParseResult;
-export function grammar(): Grammar;
+export function Grammar(): Grammar;

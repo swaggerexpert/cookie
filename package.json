@@ -1,5 +1,8 @@
 {
   "name": "@swaggerexpert/cookie",
+  "publishConfig": {
+    "access": "public"
+  },
   "version": "1.0.0",
   "description": "RFC 6265 compliant cookie parser, validator and serializer.",
   "main": "./cjs/index.cjs",
@@ -33,7 +36,7 @@
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "https://github.com/swaggerexpert/cookie.git"
+    "url": "https://github.com/swaggerexpert/cookie"
   },
   "keywords": [
     "cookie",
