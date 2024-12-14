@@ -11,14 +11,14 @@
       "require": "./cjs/index.cjs"
     },
     "./package.json": "./package.json",
-    "./cookie.bnf": "./src/cookie.bnf"
+    "./grammar.bnf": "./src/grammar.bnf"
   },
   "watch": {
     "test": "{src,test}/*.js"
   },
   "scripts": {
     "prepublishOnly": "npm run build",
-    "grammar:compile": "node ./scripts/apg-js.js --lite --in=./src/cookie.bnf --out=./src/cookie.js && cd ./src",
+    "grammar:compile": "node ./scripts/apg-js.js --lite --in=./src/grammar.bnf --out=./src/grammar.js && cd ./src",
     "build": "npm run grammar:compile && npm run build:es && npm run build:cjs && npm run build:cjs:apg-lite",
     "build:es": "cross-env BABEL_ENV=es babel src --out-dir es --extensions '.js' --out-file-extension '.mjs'",
     "build:cjs": "cross-env BABEL_ENV=cjs babel src --out-dir cjs --extensions '.js' --out-file-extension '.cjs'",
