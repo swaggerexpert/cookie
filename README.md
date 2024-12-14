@@ -200,3 +200,9 @@ HT             = %x09 ; US-ASCII HT, horizontal-tab (9)
 ; https://datatracker.ietf.org/doc/html/rfc5234#appendix-B.1
 DQUOTE         =  %x22 ; " (Double Quote)
 ```
+
+## License
+
+`@swaggerexpert/cookie` is licensed under [Apache 2.0 license](https://github.com/swaggerexpert/cookie/blob/main/LICENSE).
+`@swaggerexpert/cookie` comes with an explicit [NOTICE](https://github.com/swaggerexpert/cookie/blob/main/NOTICE) file
+containing additional legal notices and information.
