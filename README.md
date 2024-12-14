@@ -1,6 +1,6 @@
 # cookie
 
-[![npmversion](https://badge.fury.io/js/@swaggerexpert%2Fcookie.svg)](https://www.npmjs.com/package/@swaggerexpert/json-api-merge)
+[![npmversion](https://badge.fury.io/js/@swaggerexpert%2Fcookie.svg)](https://www.npmjs.com/package/@swaggerexpert/cookie)
 [![npm](https://img.shields.io/npm/dm/@swaggerexpert/cookie)](https://www.npmjs.com/package/@swaggerexpert/cookie)
 [![Test workflow](https://github.com/swaggerexpert/cookie/actions/workflows/test.yml/badge.svg)](https://github.com/swaggerexpert/cookie/actions)
 [![Dependabot enabled](https://img.shields.io/badge/Dependabot-enabled-blue.svg)](https://dependabot.com/)
