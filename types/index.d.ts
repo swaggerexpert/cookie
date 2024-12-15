@@ -8,6 +8,11 @@ interface ParseResult {
   };
 }
 
+interface ParseOptions {
+  readonly strict?: boolean;
+}
+
+
 export interface Grammar {
   grammarObject: string; // Internal identifier
   rules: Rule[]; // List of grammar rules
@@ -33,5 +38,5 @@ export type Opcode =
 
 export type UDT = {}; // User-defined terminals (empty in this grammar)
 
-export function parseCookie(cookieString: string): ParseResult;
+export function parseCookie(cookieString: string, options?: ParseOptions): ParseResult;
 export function Grammar(): Grammar;
