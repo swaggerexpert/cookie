@@ -60,7 +60,32 @@ const parseResult = parseCookie('foo=bar');
 parseResult.result.success; // => true
 ```
 
-**parseResult** variable has the following shape:
+The **lenient** mode for cookie parsing is designed to handle and extract valid
+cookie-pairs from potentially malformed or non-standard cookie strings.
+It focuses on maintaining compatibility with real-world scenarios where cookie
+headers may deviate from strict compliance with RFC 6265.
+
+```js
+import { parseCookie } from '@swaggerexpert/cookie';
+
+/**
+ * All of the following parse successfully.
+ */
+
+parseCookie('foo1=bar;  foo2=baz', { strict: false });
+parseCookie('foo1=bar;foo2=baz', { strict: false });
+parseCookie('FOO    = bar;   baz  =   raz', { strict: false });
+parseCookie('foo="bar=123456789&name=Magic+Mouse"', { strict: false });
+parseCookie('foo  =  "bar"', { strict: false });
+parseCookie('foo  =  bar  ;  fizz  =  buzz', { strict: false });
+parseCookie('foo =', { strict: false });
+parseCookie('\tfoo\t=\tbar\t', { strict: false });
+parseCookie('foo1=bar;foo2=baz', { strict: false });
+parseCookie('foo1=bar;  foo2=baz', { strict: false });
+parseCookie('foo=bar; fizz; buzz', { strict: false });
+```
+
+**ParseResult** returned by the parser has the following shape:
 
 ```
 {
@@ -177,6 +202,15 @@ String(grammar);
 The cookie is defined by the following [ABNF](https://tools.ietf.org/html/rfc5234) syntax
 
 ```abnf
+; Lenient version of https://datatracker.ietf.org/doc/html/rfc6265#section-4.2.1
+lenient-cookie-string        = lenient-cookie-pair *( ";" OWS ( lenient-cookie-pair / lenient-cookie-pair-invalid ) )
+lenient-cookie-pair          = OWS cookie-name OWS "=" OWS lenient-cookie-value OWS
+lenient-cookie-pair-invalid  = OWS *tchar OWS ; Allow for standalone entries like "fizz" to be ignored
+lenient-cookie-value         = lenient-quoted-value / *lenient-cookie-octet
+lenient-quoted-value         = DQUOTE *( %x20-21 / %x23-7E ) DQUOTE ; Allow all printable US-ASCII except DQUOTE
+lenient-cookie-octet         = %x20-2B / %x2D-3A / %x3C-7E
+                             ; Allow all printable characters except control chars and DQUOTE, except for semicolon
+
 ; https://datatracker.ietf.org/doc/html/rfc6265#section-4.2.1
 cookie-string     = cookie-pair *( ";" SP cookie-pair )
 cookie-pair       = cookie-name "=" cookie-value
@@ -186,6 +220,9 @@ cookie-octet      = %x21 / %x23-2B / %x2D-3A / %x3C-5B / %x5D-7E
                        ; US-ASCII characters excluding CTLs,
                        ; whitespace DQUOTE, comma, semicolon,
                        ; and backslash
+
+; https://datatracker.ietf.org/doc/html/rfc6265#section-2.2
+OWS            = *( [ CRLF ] WSP ) ; "optional" whitespace
 
 ; https://datatracker.ietf.org/doc/html/rfc2616#section-2.2
 token          = 1*(tchar)
@@ -199,6 +236,11 @@ HT             = %x09 ; US-ASCII HT, horizontal-tab (9)
 
 ; https://datatracker.ietf.org/doc/html/rfc5234#appendix-B.1
 DQUOTE         =  %x22 ; " (Double Quote)
+WSP            =  SP / HTAB ; white space
+HTAB           =  %x09 ; horizontal tab
+CRLF           =  CR LF ; Internet standard newline
+CR             =  %x0D ; carriage return
+LF             =  %x0A ; linefeed
 ```
 
 ## License

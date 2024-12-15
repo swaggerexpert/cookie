@@ -8,16 +8,24 @@ import cookieValueCallback from './callbacks/cookie-value.js';
 
 const grammar = new Grammar();
 
-const parse = (cookieString) => {
+const parse = (cookieString, { strict = true } = {}) => {
   const parser = new Parser();
 
   parser.ast = new AST();
-  parser.ast.callbacks['cookie-string'] = cookieStringCallback;
-  parser.ast.callbacks['cookie-pair'] = cookiePairCallback;
-  parser.ast.callbacks['cookie-name'] = cookieNameCallback;
-  parser.ast.callbacks['cookie-value'] = cookieValueCallback;
+  if (strict) {
+    parser.ast.callbacks['cookie-string'] = cookieStringCallback;
+    parser.ast.callbacks['cookie-pair'] = cookiePairCallback;
+    parser.ast.callbacks['cookie-name'] = cookieNameCallback;
+    parser.ast.callbacks['cookie-value'] = cookieValueCallback;
+  } else {
+    parser.ast.callbacks['lenient-cookie-string'] = cookieStringCallback;
+    parser.ast.callbacks['lenient-cookie-pair'] = cookiePairCallback;
+    parser.ast.callbacks['cookie-name'] = cookieNameCallback;
+    parser.ast.callbacks['lenient-cookie-value'] = cookieValueCallback;
+  }
 
-  const result = parser.parse(grammar, 'cookie-string', cookieString);
+  const startRule = strict ? 'cookie-string' : 'lenient-cookie-string';
+  const result = parser.parse(grammar, startRule, cookieString);
 
   return { result, ast: parser.ast };
 };
