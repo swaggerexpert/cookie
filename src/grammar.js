@@ -304,7 +304,7 @@ export default function grammar(){
     str += "cookie-value      = *cookie-octet / ( DQUOTE *cookie-octet DQUOTE )\n";
     str += "cookie-octet      = %x21 / %x23-2B / %x2D-3A / %x3C-5B / %x5D-7E\n";
     str += "                       ; US-ASCII characters excluding CTLs,\n";
-    str += "                       ; whitespace DQUOTE, comma, semicolon,\n";
+    str += "                       ; whitespace, DQUOTE, comma, semicolon,\n";
     str += "                       ; and backslash\n";
     str += "\n";
     str += "; https://datatracker.ietf.org/doc/html/rfc6265#section-2.2\n";
