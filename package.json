@@ -63,8 +63,7 @@
     "SECURITY.md"
   ],
   "dependencies": {
-    "apg-lite": "^1.0.3",
-    "cookie": "^1.0.2"
+    "apg-lite": "^1.0.3"
   },
   "devDependencies": {
     "@babel/cli": "=7.26.4",
