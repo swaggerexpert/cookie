@@ -553,6 +553,40 @@ context('parseCookie in lenient mode', function () {
     });
   });
 
+  context('ambiguous equal sign', function () {
+    specify('should parse and translate', function () {
+      const parseResult = parseCookie('name=name=3', { strict: false });
+
+      const parts = [];
+      parseResult.ast.translate(parts);
+
+      assert.isTrue(parseResult.result.success);
+      assert.deepEqual(parts, [
+        ['cookie-string', 'name=name=3'],
+        ['cookie-pair', 'name=name=3'],
+        ['cookie-name', 'name'],
+        ['cookie-value', 'name=3'],
+      ]);
+    });
+  });
+
+  context('special characters #1', function () {
+    specify('should parse and translate', function () {
+      const parseResult = parseCookie('name:name=3', { strict: false });
+
+      const parts = [];
+      parseResult.ast.translate(parts);
+
+      assert.isTrue(parseResult.result.success);
+      assert.deepEqual(parts, [
+        ['cookie-string', 'name:name=3'],
+        ['cookie-pair', 'name:name=3'],
+        ['cookie-name', 'name:name'],
+        ['cookie-value', '3'],
+      ]);
+    });
+  });
+
   context('native properties', function () {
     specify('should parse and translate', function () {
       const parseResult = parseCookie('toString=foo; valueOf=bar', { strict: false });
@@ -621,7 +655,7 @@ context('parseCookie in lenient mode', function () {
     });
   });
 
-  context('cookies without value', function () {
+  context('cookies without value #1', function () {
     specify('should parse and translate', function () {
       const parseResult = parseCookie('foo=bar; fizz; buzz', { strict: false });
 
@@ -631,6 +665,23 @@ context('parseCookie in lenient mode', function () {
       assert.isTrue(parseResult.result.success);
       assert.deepEqual(parts, [
         ['cookie-string', 'foo=bar; fizz; buzz'],
+        ['cookie-pair', 'foo=bar'],
+        ['cookie-name', 'foo'],
+        ['cookie-value', 'bar'],
+      ]);
+    });
+  });
+
+  context('cookies without value #2', function () {
+    specify('should parse and translate', function () {
+      const parseResult = parseCookie('fizz; buzz; foo=bar', { strict: false });
+
+      const parts = [];
+      parseResult.ast.translate(parts);
+
+      assert.isTrue(parseResult.result.success);
+      assert.deepEqual(parts, [
+        ['cookie-string', 'fizz; buzz; foo=bar'],
         ['cookie-pair', 'foo=bar'],
         ['cookie-name', 'foo'],
         ['cookie-value', 'bar'],

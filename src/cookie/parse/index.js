@@ -20,7 +20,7 @@ const parse = (cookieString, { strict = true } = {}) => {
   } else {
     parser.ast.callbacks['lenient-cookie-string'] = cookieStringCallback;
     parser.ast.callbacks['lenient-cookie-pair'] = cookiePairCallback;
-    parser.ast.callbacks['cookie-name'] = cookieNameCallback;
+    parser.ast.callbacks['lenient-cookie-name'] = cookieNameCallback;
     parser.ast.callbacks['lenient-cookie-value'] = cookieValueCallback;
   }
 

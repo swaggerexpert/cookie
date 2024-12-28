@@ -83,6 +83,9 @@ parseCookie('\tfoo\t=\tbar\t', { strict: false });
 parseCookie('foo1=bar;foo2=baz', { strict: false });
 parseCookie('foo1=bar;  foo2=baz', { strict: false });
 parseCookie('foo=bar; fizz; buzz', { strict: false });
+parseCookie('fizz; buzz; foo=bar', { strict: false });
+parseCookie('name=name=3', { strict: false });
+parseCookie('name:name=3', { strict: false });
 ```
 
 **ParseResult** returned by the parser has the following shape:
@@ -203,31 +206,38 @@ The cookie is defined by the following [ABNF](https://tools.ietf.org/html/rfc523
 
 ```abnf
 ; Lenient version of https://datatracker.ietf.org/doc/html/rfc6265#section-4.2.1
-lenient-cookie-string        = lenient-cookie-pair *( ";" OWS ( lenient-cookie-pair / lenient-cookie-pair-invalid ) )
-lenient-cookie-pair          = OWS cookie-name OWS "=" OWS lenient-cookie-value OWS
-lenient-cookie-pair-invalid  = OWS *tchar OWS ; Allow for standalone entries like "fizz" to be ignored
+lenient-cookie-string        = lenient-cookie-entry *( ";" OWS lenient-cookie-entry )
+lenient-cookie-entry         = lenient-cookie-pair / lenient-cookie-pair-invalid
+lenient-cookie-pair          = OWS lenient-cookie-name OWS "=" OWS lenient-cookie-value OWS
+lenient-cookie-pair-invalid  = OWS 1*tchar OWS ; Allow for standalone entries like "fizz" to be ignored
+lenient-cookie-name          = 1*( %x21-3A / %x3C / %x3E-7E ) ; Allow all printable US-ASCII except "="
 lenient-cookie-value         = lenient-quoted-value / *lenient-cookie-octet
 lenient-quoted-value         = DQUOTE *( %x20-21 / %x23-7E ) DQUOTE ; Allow all printable US-ASCII except DQUOTE
 lenient-cookie-octet         = %x20-2B / %x2D-3A / %x3C-7E
                              ; Allow all printable characters except control chars and DQUOTE, except for semicolon
 
 ; https://datatracker.ietf.org/doc/html/rfc6265#section-4.2.1
+; https://www.rfc-editor.org/errata/eid5518
 cookie-string     = cookie-pair *( ";" SP cookie-pair )
 cookie-pair       = cookie-name "=" cookie-value
 cookie-name       = token
 cookie-value      = *cookie-octet / ( DQUOTE *cookie-octet DQUOTE )
 cookie-octet      = %x21 / %x23-2B / %x2D-3A / %x3C-5B / %x5D-7E
                        ; US-ASCII characters excluding CTLs,
-                       ; whitespace DQUOTE, comma, semicolon,
+                       ; whitespace, DQUOTE, comma, semicolon,
                        ; and backslash
 
 ; https://datatracker.ietf.org/doc/html/rfc6265#section-2.2
 OWS            = *( [ CRLF ] WSP ) ; "optional" whitespace
 
-; https://datatracker.ietf.org/doc/html/rfc2616#section-2.2
+; https://datatracker.ietf.org/doc/html/rfc9110#section-5.6.2
 token          = 1*(tchar)
-tchar          = %x21 / %x23-27 / %x2A-2B / %x2D-2E / %x30-39 / %x41-5A / %x5E-7A / %x7C / %x7E
-                ; Any CHAR except CTLs and separators
+tchar          = "!" / "#" / "$" / "%" / "&" / "'" / "*"
+                 / "+" / "-" / "." / "^" / "_" / "`" / "|" / "~"
+                 / DIGIT / ALPHA
+                 ; any VCHAR, except delimiters
+
+; https://datatracker.ietf.org/doc/html/rfc2616#section-2.2
 CHAR           = %x01-7F ; any US-ASCII character (octets 0 - 127)
 CTL            = %x00-1F / %x7F ; any US-ASCII control character
 separators     = "(" / ")" / "<" / ">" / "@" / "," / ";" / ":" / "\" / %x22 / "/" / "[" / "]" / "?" / "=" / "{" / "}" / SP / HT
@@ -235,6 +245,8 @@ SP             = %x20 ; US-ASCII SP, space (32)
 HT             = %x09 ; US-ASCII HT, horizontal-tab (9)
 
 ; https://datatracker.ietf.org/doc/html/rfc5234#appendix-B.1
+ALPHA          =  %x41-5A / %x61-7A ; A-Z / a-z
+DIGIT          =  %x30-39 ; 0-9
 DQUOTE         =  %x22 ; " (Double Quote)
 WSP            =  SP / HTAB ; white space
 HTAB           =  %x09 ; horizontal tab
