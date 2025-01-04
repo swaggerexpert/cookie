@@ -436,8 +436,6 @@ context('parseCookie in lenient mode', function () {
       const parts = [];
       parseResult.ast.translate(parts);
 
-      console.dir(parts);
-
       assert.isTrue(parseResult.result.success);
       assert.deepEqual(parts, [
         ['cookie-string', '  foo  =  "bar"  '],
