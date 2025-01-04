@@ -436,6 +436,8 @@ context('parseCookie in lenient mode', function () {
       const parts = [];
       parseResult.ast.translate(parts);
 
+      console.dir(parts);
+
       assert.isTrue(parseResult.result.success);
       assert.deepEqual(parts, [
         ['cookie-string', '  foo  =  "bar"  '],
@@ -458,10 +460,10 @@ context('parseCookie in lenient mode', function () {
         ['cookie-string', ' foo  =  bar  ;  fizz  =  buzz  '],
         ['cookie-pair', ' foo  =  bar  '],
         ['cookie-name', 'foo'],
-        ['cookie-value', 'bar  '],
+        ['cookie-value', 'bar'],
         ['cookie-pair', 'fizz  =  buzz  '],
         ['cookie-name', 'fizz'],
-        ['cookie-value', 'buzz  '],
+        ['cookie-value', 'buzz'],
       ]);
     });
   });
@@ -685,6 +687,40 @@ context('parseCookie in lenient mode', function () {
         ['cookie-pair', 'foo=bar'],
         ['cookie-name', 'foo'],
         ['cookie-value', 'bar'],
+      ]);
+    });
+  });
+
+  context('cookie with semicolon in quoted value', function () {
+    specify('should parse and translate', function () {
+      const parseResult = parseCookie('foo1="bar;baz"', { strict: false });
+
+      const parts = [];
+      parseResult.ast.translate(parts);
+
+      assert.isTrue(parseResult.result.success);
+      assert.deepEqual(parts, [
+        ['cookie-string', 'foo1="bar;baz"'],
+        ['cookie-pair', 'foo1="bar;baz"'],
+        ['cookie-name', 'foo1'],
+        ['cookie-value', '"bar;baz"'],
+      ]);
+    });
+  });
+
+  context('cookie with quote in quoted value', function () {
+    specify('should parse and translate', function () {
+      const parseResult = parseCookie('foo="bar"baz"', { strict: false });
+
+      const parts = [];
+      parseResult.ast.translate(parts);
+
+      assert.isTrue(parseResult.result.success);
+      assert.deepEqual(parts, [
+        ['cookie-string', 'foo="bar"baz"'],
+        ['cookie-pair', 'foo="bar"baz"'],
+        ['cookie-name', 'foo'],
+        ['cookie-value', '"bar"baz"'],
       ]);
     });
   });

@@ -211,14 +211,17 @@ lenient-cookie-entry         = lenient-cookie-pair / lenient-cookie-pair-invalid
 lenient-cookie-pair          = OWS lenient-cookie-name OWS "=" OWS lenient-cookie-value OWS
 lenient-cookie-pair-invalid  = OWS 1*tchar OWS ; Allow for standalone entries like "fizz" to be ignored
 lenient-cookie-name          = 1*( %x21-3A / %x3C / %x3E-7E ) ; Allow all printable US-ASCII except "="
-lenient-cookie-value         = lenient-quoted-value / *lenient-cookie-octet
-lenient-quoted-value         = DQUOTE *( %x20-21 / %x23-7E ) DQUOTE ; Allow all printable US-ASCII except DQUOTE
-lenient-cookie-octet         = %x20-2B / %x2D-3A / %x3C-7E
-                             ; Allow all printable characters except control chars and DQUOTE, except for semicolon
+lenient-cookie-value         = lenient-quoted-value [ *lenient-cookie-octet ] / *lenient-cookie-octet
+lenient-quoted-value         = DQUOTE *( lenient-quoted-char ) DQUOTE
+lenient-quoted-char          = %x20-21 / %x23-7E ; Allow all printable US-ASCII except DQUOTE
+lenient-cookie-octet         = %x21-2B / %x2D-3A / %x3C-7E
+                             ; Allow all printable characters except CTLs, DQUOTE, semicolon and SP
 
 ; https://datatracker.ietf.org/doc/html/rfc6265#section-4.2.1
-; https://www.rfc-editor.org/errata/eid5518
 cookie-string     = cookie-pair *( ";" SP cookie-pair )
+
+; https://datatracker.ietf.org/doc/html/rfc6265#section-4.1.1
+; https://www.rfc-editor.org/errata/eid5518
 cookie-pair       = cookie-name "=" cookie-value
 cookie-name       = token
 cookie-value      = *cookie-octet / ( DQUOTE *cookie-octet DQUOTE )
