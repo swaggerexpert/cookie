@@ -61,15 +61,15 @@ export function parseCookie(cookieString: CookieString, options?: ParseOptions):
 export function serializeCookie(cookiePairs: CookiePair[], options?: CookieSerializeOptions): CookieString;
 export function serializeCookie(cookies: Record<CookieName, CookieValue>, options?: CookieSerializeOptions): CookieString;
 // Encoders
-export type cookieNameStrictEncoder = Encoder;
-export type cookieNameLenientEncoder = Encoder;
-export type cookieValueStrictEncoder = Encoder;
-export type cookieValueLenientEncoder = Encoder;
+export declare const cookieNameStrictEncoder: Encoder;
+export declare const cookieNameLenientEncoder: Encoder;
+export declare const cookieValueStrictEncoder: Encoder;
+export declare const cookieValueLenientEncoder: Encoder;
 // Validators
-export type cookieNameValidator = Validator;
-export type cookieNameLenientValidator = Validator;
-export type cookieValueValidator = Validator;
-export type cookieValueLenientValidator = Validator;
+export declare const cookieNameValidator: Validator;
+export declare const cookieNameLenientValidator: Validator;
+export declare const cookieValueValidator: Validator;
+export declare const cookieValueLenientValidator: Validator;
 // Utils
 export function identity<T>(value: T): T;
 export function noop(...args: any[]): void;
