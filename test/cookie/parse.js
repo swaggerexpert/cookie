@@ -38,6 +38,23 @@ describe('parseCookie', function () {
       });
     });
 
+    context('single cookie pair with quotes', function () {
+      specify('should parse and translate', function () {
+        const parseResult = parseCookie('foo="123"');
+
+        const parts = [];
+        parseResult.ast.translate(parts);
+
+        assert.isTrue(parseResult.result.success);
+        assert.deepEqual(parts, [
+          ['cookie-string', 'foo="123"'],
+          ['cookie-pair', 'foo="123"'],
+          ['cookie-name', 'foo'],
+          ['cookie-value', '"123"'],
+        ]);
+      });
+    });
+
     context('cookie with whitespaces', function () {
       specify('should fail parsing', function () {
         const parseResult = parseCookie('FOO    = bar;   baz  =   raz');
@@ -67,6 +84,26 @@ describe('parseCookie', function () {
     });
 
     context('cookie with empty value', function () {
+      specify('should parse and translate', function () {
+        const parseResult = parseCookie('foo=; bar=');
+
+        const parts = [];
+        parseResult.ast.translate(parts);
+
+        assert.isTrue(parseResult.result.success);
+        assert.deepEqual(parts, [
+          ['cookie-string', 'foo=; bar='],
+          ['cookie-pair', 'foo='],
+          ['cookie-name', 'foo'],
+          ['cookie-value', ''],
+          ['cookie-pair', 'bar='],
+          ['cookie-name', 'bar'],
+          ['cookie-value', ''],
+        ]);
+      });
+    });
+
+    context('cookie with invalid characters in name', function () {
       specify('should parse and translate', function () {
         const parseResult = parseCookie('foo=; bar=');
 
@@ -127,7 +164,16 @@ describe('parseCookie', function () {
       specify('should fail parsing', function () {
         const parseResult = parseCookie('foo="bar=123456789&name=Magic+Mouse"');
 
-        assert.isFalse(parseResult.result.success);
+        const parts = [];
+        parseResult.ast.translate(parts);
+
+        assert.isTrue(parseResult.result.success);
+        assert.deepEqual(parts, [
+          ['cookie-string', 'foo="bar=123456789&name=Magic+Mouse"'],
+          ['cookie-pair', 'foo="bar=123456789&name=Magic+Mouse"'],
+          ['cookie-name', 'foo'],
+          ['cookie-value', '"bar=123456789&name=Magic+Mouse"'],
+        ]);
       });
     });
 
@@ -259,6 +305,17 @@ describe('parseCookie', function () {
       const parseResult = parseCookie('foo=bar; fizz; buzz');
 
       assert.isFalse(parseResult.result.success);
+    });
+  });
+
+  context('non-string values', function () {
+    specify('should throw or fail parsing', function () {
+      assert.throws(() => parseCookie(1));
+      assert.throws(() => parseCookie(null));
+      assert.throws(() => parseCookie(undefined));
+      assert.throws(() => parseCookie({}));
+
+      assert.isFalse(parseCookie([]).result.success); // Iterable
     });
   });
 });
@@ -720,6 +777,17 @@ context('parseCookie in lenient mode', function () {
         ['cookie-name', 'foo'],
         ['cookie-value', '"bar"baz"'],
       ]);
+    });
+  });
+
+  context('non-string values', function () {
+    specify('should throw or fail parsing', function () {
+      assert.throws(() => parseCookie(1));
+      assert.throws(() => parseCookie(null));
+      assert.throws(() => parseCookie(undefined));
+      assert.throws(() => parseCookie({}));
+
+      assert.isFalse(parseCookie([]).result.success); // Iterable
     });
   });
 });

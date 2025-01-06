@@ -17,7 +17,8 @@ cookie-string     = cookie-pair *( ";" SP cookie-pair )
 ; https://www.rfc-editor.org/errata/eid5518
 cookie-pair       = cookie-name "=" cookie-value
 cookie-name       = token
-cookie-value      = *cookie-octet / ( DQUOTE *cookie-octet DQUOTE )
+cookie-value      = ( DQUOTE *cookie-octet DQUOTE ) / *cookie-octet
+                  ; https://www.rfc-editor.org/errata/eid8242
 cookie-octet      = %x21 / %x23-2B / %x2D-3A / %x3C-5B / %x5D-7E
                        ; US-ASCII characters excluding CTLs,
                        ; whitespace, DQUOTE, comma, semicolon,

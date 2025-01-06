@@ -7,7 +7,7 @@
 [![try on RunKit](https://img.shields.io/badge/try%20on-RunKit-brightgreen.svg?style=flat)](https://npm.runkit.com/@swaggerexpert/cookie)
 [![Tidelift](https://tidelift.com/badges/package/npm/@swaggerexpert%2Fcookie)](https://tidelift.com/subscription/pkg/npm-.swaggerexpert-cookie?utm_source=npm-swaggerexpert-cookie&utm_medium=referral&utm_campaign=readme)
 
-`@swaggerexpert/cookie` is [RFC 6265](https://datatracker.ietf.org/doc/html/rfc6265) compliant cookie `parser`.
+`@swaggerexpert/cookie` is [RFC 6265](https://datatracker.ietf.org/doc/html/rfc6265) compliant cookie `parser` and `serializer`.
 
 <table>
   <tr>
@@ -27,7 +27,15 @@
 - [Getting started](#getting-started)
   - [Installation](#installation)
   - [Usage](#usage)
-    - [Parsing cookie](#parsing-cookie)
+    - [Cookie](#cookie)
+      - [Parsing cookie](#parsing-cookie)
+      - [Serializing cookie](#serializing-cookie)
+    - [Encoders](#encoders)
+      - [Cookie Name encoders](#cookie-name-encoders)
+      - [Cookie Value encoders](#cookie-value-encoders)
+    - [Validators](#validators)
+      - [Cookie Name validators](#cookie-name-validators)
+      - [Cookie Value validators](#cookie-value-validators)
     - [Grammar](#grammar)
 - [More about RFC 6265](#more-about-rfc-6265)
 - [License](#license)
@@ -44,14 +52,20 @@ You can install `@swaggerexpert/cookie` using `npm`:
 
 ### Usage
 
-`@swaggerexpert/cookie` currently supports **parsing**.
+`@swaggerexpert/cookie` currently supports **parsing** and **serialization**.
 Parser is based on a superset of [ABNF](https://www.rfc-editor.org/rfc/rfc5234) ([SABNF](https://cs.github.com/ldthomas/apg-js2/blob/master/SABNF.md))
 and uses [apg-lite](https://github.com/ldthomas/apg-lite) parser generator.
 
-#### Parsing cookie
+#### Cookie
 
-Parsing a cookie is as simple as importing the **parseCookie** function
-and calling it.
+The `Cookie` header is an HTTP header used to send cookies from the client (e.g., a browser) to the server.
+The `Cookie` header is sent in HTTP requests and contains one or more cookies that the server previously set
+via the `Set-Cookie` header. Cookies are formatted as key-value pairs, separated by semicolons (`;`),
+and do not include metadata like `Path`, `Domain`, or `HttpOnly`.
+
+##### Parsing Cookie
+
+Parsing a cookie is as simple as importing the **parseCookie** function and calling it.
 
 ```js
 import { parseCookie } from '@swaggerexpert/cookie';
@@ -177,6 +191,215 @@ After running the above code, **xml** variable has the following content:
 
 > NOTE: AST can also be traversed in classical way using [depth first traversal](https://www.tutorialspoint.com/data_structures_algorithms/depth_first_traversal.htm). For more information about this option please refer to [apg-js](https://github.com/ldthomas/apg-js) and [apg-js-examples](https://github.com/ldthomas/apg-js-examples).
 
+##### Serializing Cookie
+
+Serializing a cookie is as simple as importing the **serializeCookie** function and calling it.
+
+**Serializing object**:
+
+```js
+import { serializeCookie } from '@swaggerexpert/cookie';
+
+serializeCookie({ foo: 'bar' }); // => 'foo=bar'
+serializeCookie({ foo: 'bar', baz: 'raz' }); // => 'foo=bar; baz=raz'
+```
+
+**Serializing entries**:
+
+By using entries (list of key-value pairs), this function supports creating cookies
+with duplicate names—a common scenario when sending multiple values for the same cookie name.
+
+```js
+import { serializeCookie } from '@swaggerexpert/cookie';
+
+serializeCookie([['foo',  'bar']]); // => 'foo=bar'
+serializeCookie([[ 'foo', 'bar'], ['baz', 'raz' ]]); // => 'foo=bar; baz=raz'
+serializeCookie([[ 'foo', 'bar'], ['baz', 'raz' ], ['foo', 'boo']]); // => 'foo=bar; baz=raz; foo=boo'
+```
+
+**Options**
+
+The `serializeCookie` function provides a powerful and flexible API for serializing cookies,
+enabling the implementation of various scenarios. By default, it uses a set of sensible options
+to ensure compliance with cookie standards. However, its behavior can be customized by overriding these defaults.
+
+**Default Options**
+
+[Encoders](#encoders) transform cookie names and values during serialization to ensure they meet encoding requirements.
+[Validators](#validators) ensure that cookie names and values conform to the required standards. If validation fails, an error is thrown.
+Validators are executed **after** encoders, ensuring that values are first transformed before being validated.
+
+The default options for `serializeCookie` ensure strict compliance with cookie standards by applying
+no encoding for cookie names, RFC compliant encoding for values, and robust validation for
+both names and values according to [RFC 6265](https://datatracker.ietf.org/doc/html/rfc6265).
+
+```js
+{
+  encoders: {
+    name: identity,
+    value: cookieValueStrictEncoder
+  },
+  validators: {
+    name: cookieNameStrictValidator,
+    value: cookieValueStrictValidator,
+  }
+}
+```
+
+**Customizing serialization**
+
+You can customize `serializeCookie` behavior by providing your own [encoders](#encoders) or [validators](#validators):
+
+```js
+import { serializeCookie } from '@swaggerexpert/cookie';
+
+serializeCookie({ foo: 'bar' }, {
+  encoders: {
+    name: (name) => name.toUpperCase(), // custom name encoder
+    value: (value) => encodeURIComponent(value), // custom value encoder
+  },
+  validators: {
+    name: (name) => {
+      if (!/^[a-zA-Z]+$/.test(name)) {
+        throw new TypeError('Custom validation failed for cookie name');
+      }
+    },
+    value: (value) => {
+      if (value.includes(';')) {
+        throw new TypeError('Custom validation failed for cookie value');
+      }
+    },
+  },
+});
+```
+
+Completely **bypassing** encoding and validation is possible as well:
+
+```js
+import { serializeCookie, identity, noop } from '@swaggerexpert/cookie';
+
+serializeCookie({ foo: ';' }, {
+  encoders: {  name: identity, value: identity },
+  validators: { name: noop, value: noop },
+}); // => "foo=;"
+```
+
+#### Encoders
+
+The `@swaggerexpert/cookie` library provides a suite of encoders designed to handle cookie names and values during **serialization**.
+Each encoder adheres to specific rules for encoding characters, ensuring compatibility with cookie-related standards.
+Below is a detailed overview of the available encoders.
+
+##### Cookie Name Encoders
+
+**cookieNameStrictEncoder**
+
+Encodes characters that fall outside the allowable set defined by the `cookie-name` rule in [RFC 6265](https://datatracker.ietf.org/doc/html/rfc6265#section-4.1.1).
+
+- **Use Case**: Ensures that the cookie name strictly adheres to the `cookie-name` non-terminal rule.
+
+```js
+import { cookieNameStrictEncoder } from '@swaggerexpert/cookie';
+
+cookieNameStrictEncoder('foo<'); // => 'foo%3C'
+```
+
+**cookieNameLenientEncoder**
+
+Encodes characters that fall outside the allowable set defined by the `lenient-cookie-name` rule.
+This allows for a more lenient interpretation of cookie names.
+
+- **Use Case**: Useful in scenarios where broader compatibility is required, or when leniency in cookie names is acceptable.
+
+```js
+import { cookieNameLenientEncoder } from '@swaggerexpert/cookie';
+
+cookieNameLenientEncoder('foo<'); // => 'foo<'
+```
+
+##### Cookie Value Encoders
+
+**cookieValueStrictEncoder**
+
+Encodes characters that fall outside the allowable set defined by the cookie-value rule in [RFC 6265](https://datatracker.ietf.org/doc/html/rfc6265#section-4.1.1).
+
+- **Use Case**: Ensures strict compliance with the `cookie-value` non-terminal rule, encoding characters such as `;` and `=`.
+
+```js
+import { cookieValueStrictEncoder } from '@swaggerexpert/cookie';
+
+cookieValueStrictEncoder('"'); // => '%22'
+```
+
+**cookieValueLenientEncoder**
+
+Encodes characters that fall outside the allowable set defined by the `lenient-cookie-value` rule.
+This allows for a more permissive interpretation of cookie values.
+
+- **Use Case**: Useful when broader compatibility is needed, or when leniency in cookie values is acceptable.
+
+```js
+import { cookieValueLenientEncoder } from '@swaggerexpert/cookie';
+
+cookieValueLenientEncoder('"'); // => '"'
+```
+
+#### Validators
+
+The `@swaggerexpert/cookie` library provides a suite of validators designed to ensure that cookie names and values
+comply with the necessary standards during **serialization**. These validators are strict about adherence to the rules
+while offering flexibility with both strict and lenient validation modes. Validators focus on validating input and
+throwing descriptive errors for invalid values.
+
+##### Cookie Name Validators
+
+**cookieNameStrictValidator**
+
+Validates cookie names based on the `cookie-name` rule defined in [RFC 6265](https://datatracker.ietf.org/doc/html/rfc6265#section-4.1.1).
+
+```js
+import { cookieNameStrictValidator } from '@swaggerexpert/cookie';
+
+cookieNameStrictValidator('ValidName'); // passes
+cookieNameStrictValidator('InvalidName<'); // throws: Invalid cookie name
+```
+
+
+**cookieNameLenientValidator**
+
+Validates cookie names based on the `lenient-cookie-name` rules Allows a broader range of characters than the strict validator.
+
+```js
+import { cookieNameLenientValidator } from '@swaggerexpert/cookie';
+
+cookieNameLenientValidator('ValidLenientName'); // passes
+cookieNameLenientValidator('\tInvalidLenientName'); // throws: Invalid cookie name
+```
+
+##### Cookie Value Validators
+
+**cookieValueStrictValidator**
+
+Validates cookie values according to the `cookie-value` rules in [RFC 6265](https://datatracker.ietf.org/doc/html/rfc6265#section-4.1.1).
+
+```js
+import { cookieValueStrictValidator } from '@swaggerexpert/cookie';
+
+cookieValueStrictValidator('"validValue"'); // passes
+cookieValueStrictValidator('invalid\\value'); // throws: Invalid cookie value
+```
+
+**cookieValueLenientValidator**
+
+Validates cookie values according to `lenient-cookie-value` rules. Accepts a broader range of characters,
+including some that are disallowed in strict mode.
+
+```js
+import { cookieValueLenientValidator } from '@swaggerexpert/cookie';
+
+cookieValueLenientValidator('"lenient;value"'); // passes
+cookieValueLenientValidator('invalid value'); // throws: Invalid cookie value
+```
 
 #### Grammar
 
@@ -224,7 +447,8 @@ cookie-string     = cookie-pair *( ";" SP cookie-pair )
 ; https://www.rfc-editor.org/errata/eid5518
 cookie-pair       = cookie-name "=" cookie-value
 cookie-name       = token
-cookie-value      = *cookie-octet / ( DQUOTE *cookie-octet DQUOTE )
+cookie-value      = ( DQUOTE *cookie-octet DQUOTE ) / *cookie-octet
+                  ; https://www.rfc-editor.org/errata/eid8242
 cookie-octet      = %x21 / %x23-2B / %x2D-3A / %x3C-5B / %x5D-7E
                        ; US-ASCII characters excluding CTLs,
                        ; whitespace, DQUOTE, comma, semicolon,
