@@ -160,14 +160,14 @@ export default function grammar(){
 
   /* cookie-value */
   this.rules[12].opcodes = [];
-  this.rules[12].opcodes[0] = { type: 1, children: [1,3] };// ALT
-  this.rules[12].opcodes[1] = { type: 3, min: 0, max: Infinity };// REP
-  this.rules[12].opcodes[2] = { type: 4, index: 13 };// RNM(cookie-octet)
-  this.rules[12].opcodes[3] = { type: 2, children: [4,5,7] };// CAT
-  this.rules[12].opcodes[4] = { type: 4, index: 24 };// RNM(DQUOTE)
-  this.rules[12].opcodes[5] = { type: 3, min: 0, max: Infinity };// REP
-  this.rules[12].opcodes[6] = { type: 4, index: 13 };// RNM(cookie-octet)
-  this.rules[12].opcodes[7] = { type: 4, index: 24 };// RNM(DQUOTE)
+  this.rules[12].opcodes[0] = { type: 1, children: [1,6] };// ALT
+  this.rules[12].opcodes[1] = { type: 2, children: [2,3,5] };// CAT
+  this.rules[12].opcodes[2] = { type: 4, index: 24 };// RNM(DQUOTE)
+  this.rules[12].opcodes[3] = { type: 3, min: 0, max: Infinity };// REP
+  this.rules[12].opcodes[4] = { type: 4, index: 13 };// RNM(cookie-octet)
+  this.rules[12].opcodes[5] = { type: 4, index: 24 };// RNM(DQUOTE)
+  this.rules[12].opcodes[6] = { type: 3, min: 0, max: Infinity };// REP
+  this.rules[12].opcodes[7] = { type: 4, index: 13 };// RNM(cookie-octet)
 
   /* cookie-octet */
   this.rules[13].opcodes = [];
@@ -313,7 +313,8 @@ export default function grammar(){
     str += "; https://www.rfc-editor.org/errata/eid5518\n";
     str += "cookie-pair       = cookie-name \"=\" cookie-value\n";
     str += "cookie-name       = token\n";
-    str += "cookie-value      = *cookie-octet / ( DQUOTE *cookie-octet DQUOTE )\n";
+    str += "cookie-value      = ( DQUOTE *cookie-octet DQUOTE ) / *cookie-octet\n";
+    str += "                  ; https://www.rfc-editor.org/errata/eid8242\n";
     str += "cookie-octet      = %x21 / %x23-2B / %x2D-3A / %x3C-5B / %x5D-7E\n";
     str += "                       ; US-ASCII characters excluding CTLs,\n";
     str += "                       ; whitespace, DQUOTE, comma, semicolon,\n";
