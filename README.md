@@ -1,4 +1,4 @@
-# cookie
+# @swaggerexpert/cookie
 
 [![npmversion](https://badge.fury.io/js/@swaggerexpert%2Fcookie.svg)](https://www.npmjs.com/package/@swaggerexpert/cookie)
 [![npm](https://img.shields.io/npm/dm/@swaggerexpert/cookie)](https://www.npmjs.com/package/@swaggerexpert/cookie)
@@ -7,7 +7,7 @@
 [![try on RunKit](https://img.shields.io/badge/try%20on-RunKit-brightgreen.svg?style=flat)](https://npm.runkit.com/@swaggerexpert/cookie)
 [![Tidelift](https://tidelift.com/badges/package/npm/@swaggerexpert%2Fcookie)](https://tidelift.com/subscription/pkg/npm-.swaggerexpert-cookie?utm_source=npm-swaggerexpert-cookie&utm_medium=referral&utm_campaign=readme)
 
-`@swaggerexpert/cookie` is [RFC 6265](https://datatracker.ietf.org/doc/html/rfc6265) compliant cookie `parser` and `serializer`.
+`@swaggerexpert/cookie` is [RFC 6265](https://datatracker.ietf.org/doc/html/rfc6265) compliant cookie `parser`, `validator` and `serializer`.
 
 <table>
   <tr>
@@ -52,7 +52,7 @@ You can install `@swaggerexpert/cookie` using `npm`:
 
 ### Usage
 
-`@swaggerexpert/cookie` currently supports **parsing** and **serialization**.
+`@swaggerexpert/cookie` currently supports **parsing**, **validation** and **serialization**.
 Parser is based on a superset of [ABNF](https://www.rfc-editor.org/rfc/rfc5234) ([SABNF](https://cs.github.com/ldthomas/apg-js2/blob/master/SABNF.md))
 and uses [apg-lite](https://github.com/ldthomas/apg-lite) parser generator.
 
