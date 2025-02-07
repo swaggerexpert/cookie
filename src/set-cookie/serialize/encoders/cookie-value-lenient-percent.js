@@ -6,7 +6,7 @@ import { percentEncodeChar } from '../../../utils.js';
 const parser = new Parser();
 const grammar = new Grammar();
 
-const cookieValueLenientEncoder = (cookieValue) => {
+const cookieValueLenientPercentEncoder = (cookieValue) => {
   const value = String(cookieValue);
 
   // detect if the value is quoted
@@ -25,4 +25,4 @@ const cookieValueLenientEncoder = (cookieValue) => {
   return isQuoted ? `"${result}"` : result;
 };
 
-export default cookieValueLenientEncoder;
+export default cookieValueLenientPercentEncoder;

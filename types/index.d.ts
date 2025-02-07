@@ -61,10 +61,10 @@ export function parseCookie(cookieString: CookieString, options?: ParseOptions):
 export function serializeCookie(cookiePairs: CookiePair[], options?: CookieSerializeOptions): CookieString;
 export function serializeCookie(cookies: Record<CookieName, CookieValue>, options?: CookieSerializeOptions): CookieString;
 // Encoders
-export declare const cookieNameStrictEncoder: Encoder;
-export declare const cookieNameLenientEncoder: Encoder;
-export declare const cookieValueStrictEncoder: Encoder;
-export declare const cookieValueLenientEncoder: Encoder;
+export declare const cookieNameStrictPercentEncoder: Encoder;
+export declare const cookieNameLenientPercentEncoder: Encoder;
+export declare const cookieValueStrictPercentEncoder: Encoder;
+export declare const cookieValueLenientPercentEncoder: Encoder;
 // Validators
 export declare const cookieNameValidator: Validator;
 export declare const cookieNameLenientValidator: Validator;

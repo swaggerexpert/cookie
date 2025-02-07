@@ -1,31 +1,31 @@
 import { assert } from 'chai';
-import { cookieNameLenientEncoder } from '../../../../src/index.js';
+import { cookieNameLenientPercentEncoder } from '../../../../src/index.js';
 
-describe('cookieNameLenientEncoder', function () {
+describe('cookieNameLenientPercentEncoder', function () {
   context('Allowed characters', () => {
     specify('should preserve all valid characters', () => {
       const valid =
         '!"#$%&\'()*+,-./0123456789:<>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~';
-      assert.strictEqual(cookieNameLenientEncoder(valid), valid);
+      assert.strictEqual(cookieNameLenientPercentEncoder(valid), valid);
     });
   });
 
   context('Disallowed characters', () => {
     specify('should encode "=" character', () => {
-      assert.strictEqual(cookieNameLenientEncoder('='), '%3D');
+      assert.strictEqual(cookieNameLenientPercentEncoder('='), '%3D');
     });
 
     specify('should encode control characters and whitespace', () => {
       for (let i = 0; i < 32; i++) {
         const char = String.fromCharCode(i);
         assert.strictEqual(
-          cookieNameLenientEncoder(char),
+          cookieNameLenientPercentEncoder(char),
           `%${i.toString(16).toUpperCase().padStart(2, '0')}`,
           `Control character ${i} should be encoded`,
         );
       }
-      assert.strictEqual(cookieNameLenientEncoder(' '), '%20'); // Space
-      assert.strictEqual(cookieNameLenientEncoder('\t'), '%09'); // Tab
+      assert.strictEqual(cookieNameLenientPercentEncoder(' '), '%20'); // Space
+      assert.strictEqual(cookieNameLenientPercentEncoder('\t'), '%09'); // Tab
     });
 
     specify('should encode non-printable characters with UTF-8', () => {
@@ -34,7 +34,7 @@ describe('cookieNameLenientEncoder', function () {
         const utf8Encoded = encodeURIComponent(char);
 
         assert.strictEqual(
-          cookieNameLenientEncoder(char),
+          cookieNameLenientPercentEncoder(char),
           utf8Encoded,
           `Non-printable character ${i} should be encoded as UTF-8`,
         );
@@ -44,14 +44,14 @@ describe('cookieNameLenientEncoder', function () {
 
   context('Edge cases', () => {
     specify('should handle empty strings', () => {
-      assert.strictEqual(cookieNameLenientEncoder(''), '');
+      assert.strictEqual(cookieNameLenientPercentEncoder(''), '');
     });
 
     specify('should handle strings with mixed valid and invalid characters', () => {
-      assert.strictEqual(cookieNameLenientEncoder('foo=bar'), 'foo%3Dbar');
-      assert.strictEqual(cookieNameLenientEncoder('abc def'), 'abc%20def');
+      assert.strictEqual(cookieNameLenientPercentEncoder('foo=bar'), 'foo%3Dbar');
+      assert.strictEqual(cookieNameLenientPercentEncoder('abc def'), 'abc%20def');
       assert.strictEqual(
-        cookieNameLenientEncoder('key=value;other=value'),
+        cookieNameLenientPercentEncoder('key=value;other=value'),
         'key%3Dvalue%3Bother%3Dvalue',
       );
     });
@@ -59,13 +59,13 @@ describe('cookieNameLenientEncoder', function () {
 
   context('Unicode handling', () => {
     specify('should encode Unicode characters', () => {
-      assert.strictEqual(cookieNameLenientEncoder('π'), '%CF%80'); // Greek letter pi
-      assert.strictEqual(cookieNameLenientEncoder('★'), '%E2%98%85'); // Black star
-      assert.strictEqual(cookieNameLenientEncoder('🌟'), '%F0%9F%8C%9F'); // Glowing star emoji
+      assert.strictEqual(cookieNameLenientPercentEncoder('π'), '%CF%80'); // Greek letter pi
+      assert.strictEqual(cookieNameLenientPercentEncoder('★'), '%E2%98%85'); // Black star
+      assert.strictEqual(cookieNameLenientPercentEncoder('🌟'), '%F0%9F%8C%9F'); // Glowing star emoji
     });
 
     specify('should handle mixed ASCII and Unicode', () => {
-      assert.strictEqual(cookieNameLenientEncoder('abc★def'), 'abc%E2%98%85def');
+      assert.strictEqual(cookieNameLenientPercentEncoder('abc★def'), 'abc%E2%98%85def');
     });
   });
 });

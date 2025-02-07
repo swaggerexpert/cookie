@@ -2,7 +2,7 @@ import { assert } from 'chai';
 
 import {
   serializeCookie,
-  cookieValueLenientEncoder,
+  cookieValueLenientPercentEncoder,
   cookieNameLenientValidator,
   cookieValueLenientValidator,
   identity,
@@ -49,7 +49,7 @@ describe('serializeCookie', function () {
       const cookies = { foo: '"\\' }; // allowed by lenient grammar but not by strict
       const serialized = serializeCookie(cookies, {
         encoders: {
-          value: cookieValueLenientEncoder,
+          value: cookieValueLenientPercentEncoder,
         },
         validators: {
           name: cookieNameLenientValidator,

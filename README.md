@@ -237,7 +237,7 @@ both names and values according to [RFC 6265](https://datatracker.ietf.org/doc/h
 {
   encoders: {
     name: identity,
-    value: cookieValueStrictEncoder
+    value: cookieValueStrictPercentEncoder
   },
   validators: {
     name: cookieNameStrictValidator,
@@ -292,56 +292,56 @@ Below is a detailed overview of the available encoders.
 
 ##### Cookie Name Encoders
 
-**cookieNameStrictEncoder**
+**cookieNameStrictPercentEncoder**
 
-Encodes characters that fall outside the allowable set defined by the `cookie-name` rule in [RFC 6265](https://datatracker.ietf.org/doc/html/rfc6265#section-4.1.1).
+Percent-encodes characters that fall outside the allowable set defined by the `cookie-name` rule in [RFC 6265](https://datatracker.ietf.org/doc/html/rfc6265#section-4.1.1).
 
 - **Use Case**: Ensures that the cookie name strictly adheres to the `cookie-name` non-terminal rule.
 
 ```js
-import { cookieNameStrictEncoder } from '@swaggerexpert/cookie';
+import { cookieNameStrictPercentEncoder } from '@swaggerexpert/cookie';
 
-cookieNameStrictEncoder('foo<'); // => 'foo%3C'
+cookieNameStrictPercentEncoder('foo<'); // => 'foo%3C'
 ```
 
-**cookieNameLenientEncoder**
+**cookieNameLenientPercentEncoder**
 
-Encodes characters that fall outside the allowable set defined by the `lenient-cookie-name` rule.
+Percent-encodes characters that fall outside the allowable set defined by the `lenient-cookie-name` rule.
 This allows for a more lenient interpretation of cookie names.
 
 - **Use Case**: Useful in scenarios where broader compatibility is required, or when leniency in cookie names is acceptable.
 
 ```js
-import { cookieNameLenientEncoder } from '@swaggerexpert/cookie';
+import { cookieNameLenientPercentEncoder } from '@swaggerexpert/cookie';
 
-cookieNameLenientEncoder('foo<'); // => 'foo<'
+cookieNameLenientPercentEncoder('foo<'); // => 'foo<'
 ```
 
 ##### Cookie Value Encoders
 
-**cookieValueStrictEncoder**
+**cookieValueStrictPercentEncoder**
 
-Encodes characters that fall outside the allowable set defined by the cookie-value rule in [RFC 6265](https://datatracker.ietf.org/doc/html/rfc6265#section-4.1.1).
+Percent-encodes characters that fall outside the allowable set defined by the cookie-value rule in [RFC 6265](https://datatracker.ietf.org/doc/html/rfc6265#section-4.1.1).
 
 - **Use Case**: Ensures strict compliance with the `cookie-value` non-terminal rule, encoding characters such as `;` and `=`.
 
 ```js
-import { cookieValueStrictEncoder } from '@swaggerexpert/cookie';
+import { cookieValueStrictPercentEncoder } from '@swaggerexpert/cookie';
 
-cookieValueStrictEncoder('"'); // => '%22'
+cookieValueStrictPercentEncoder('"'); // => '%22'
 ```
 
-**cookieValueLenientEncoder**
+**cookieValueLenientPercentEncoder**
 
-Encodes characters that fall outside the allowable set defined by the `lenient-cookie-value` rule.
+Percent-encodes characters that fall outside the allowable set defined by the `lenient-cookie-value` rule.
 This allows for a more permissive interpretation of cookie values.
 
 - **Use Case**: Useful when broader compatibility is needed, or when leniency in cookie values is acceptable.
 
 ```js
-import { cookieValueLenientEncoder } from '@swaggerexpert/cookie';
+import { cookieValueLenientPercentEncoder } from '@swaggerexpert/cookie';
 
-cookieValueLenientEncoder('"'); // => '"'
+cookieValueLenientPercentEncoder('"'); // => '"'
 ```
 
 #### Validators

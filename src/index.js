@@ -3,10 +3,10 @@ export { default as Grammar } from './grammar.js';
 export { default as parseCookie } from './cookie/parse/index.js';
 export { default as serializeCookie } from './cookie/serialize/index.js';
 
-export { default as cookieNameStrictEncoder } from './set-cookie/serialize/encoders/cookie-name-strict.js';
-export { default as cookieNameLenientEncoder } from './set-cookie/serialize/encoders/cookie-name-lenient.js';
-export { default as cookieValueStrictEncoder } from './set-cookie/serialize/encoders/cookie-value-strict.js';
-export { default as cookieValueLenientEncoder } from './set-cookie/serialize/encoders/cookie-value-lenient.js';
+export { default as cookieNameStrictPercentEncoder } from './set-cookie/serialize/encoders/cookie-name-strict-percent.js';
+export { default as cookieNameLenientPercentEncoder } from './set-cookie/serialize/encoders/cookie-name-lenient-percent.js';
+export { default as cookieValueStrictPercentEncoder } from './set-cookie/serialize/encoders/cookie-value-strict-percent.js';
+export { default as cookieValueLenientPercentEncoder } from './set-cookie/serialize/encoders/cookie-value-lenient-percent.js';
 
 export { default as cookieNameStrictValidator } from './set-cookie/serialize/validators/cookie-name-strict.js';
 export { default as cookieNameLenientValidator } from './set-cookie/serialize/validators/cookie-name-lenient.js';
