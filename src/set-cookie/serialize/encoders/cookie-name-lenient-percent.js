@@ -1,7 +1,7 @@
 import testCookieName from '../../../cookie/test/cookie-name.js';
 import { percentEncodeChar } from '../../../utils.js';
 
-const cookieNameLenientEncoder = (cookieName) => {
+const cookieNameLenientPercentEncoder = (cookieName) => {
   const value = String(cookieName);
 
   let result = '';
@@ -12,4 +12,4 @@ const cookieNameLenientEncoder = (cookieName) => {
   return result;
 };
 
-export default cookieNameLenientEncoder;
+export default cookieNameLenientPercentEncoder;
