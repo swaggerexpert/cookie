@@ -1,7 +1,8 @@
+import { toBase64url } from '../../../utils.js';
 import base64Encoder from './base64.browser.js';
 
 const base64urlEncoder = (input) => {
-  return base64Encoder(input).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
+  return toBase64url(base64Encoder(input));
 };
 
 export default base64urlEncoder;

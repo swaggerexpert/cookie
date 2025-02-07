@@ -14,6 +14,16 @@ export const percentEncodeChar = (char) => {
   }
 };
 
+export const toBase64url = (base64) => {
+  return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
+};
+
+export const toBase64 = (base64url) => {
+  const base64 = base64url.replace(/-/g, '+').replace(/_/g, '/');
+  const padding = '='.repeat((4 - (base64.length % 4)) % 4);
+  return `${base64}${padding}`;
+};
+
 export const identity = (a) => a;
 
 export const noop = () => {};
