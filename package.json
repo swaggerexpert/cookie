@@ -9,7 +9,12 @@
     "./cjs/set-cookie/serialize/encoders/base64.node.cjs": "./cjs/set-cookie/serialize/encoders/base64.browser.cjs",
     "./es/set-cookie/serialize/encoders/base64.node.mjs": "./es/set-cookie/serialize/encoders/base64.browser.mjs",
     "./cjs/set-cookie/serialize/encoders/base64url.node.cjs": "./cjs/set-cookie/serialize/encoders/base64url.browser.cjs",
-    "./es/set-cookie/serialize/encoders/base64url.node.mjs": "./es/set-cookie/serialize/encoders/base64url.browser.mjs"
+    "./es/set-cookie/serialize/encoders/base64url.node.mjs": "./es/set-cookie/serialize/encoders/base64url.browser.mjs",
+
+    "./cjs/set-cookie/parse/decoders/base64.node.cjs": "./cjs/set-cookie/parse/decoders/base64.browser.cjs",
+    "./es/set-cookie/parse/decoders/base64.node.mjs": "./es/set-cookie/parse/decoders/base64.browser.mjs",
+    "./cjs/set-cookie/parse/decoders/base64url.node.cjs": "./cjs/set-cookie/parse/decoders/base64url.browser.cjs",
+    "./es/set-cookie/parse/decoders/base64url.node.mjs": "./es/set-cookie/parse/decoders/base64url.browser.mjs"
   },
   "main": "./cjs/index.cjs",
   "types": "./types/index.d.ts",
