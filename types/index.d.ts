@@ -56,21 +56,33 @@ export interface CookieSerializeOptions {
   }
 }
 
-// Cookie
+/**
+ * Cookie
+ */
 export function parseCookie(cookieString: CookieString, options?: ParseOptions): ParseResult;
 export function serializeCookie(cookiePairs: CookiePair[], options?: CookieSerializeOptions): CookieString;
 export function serializeCookie(cookies: Record<CookieName, CookieValue>, options?: CookieSerializeOptions): CookieString;
-// Encoders
+
+/**
+ * Encoders
+ */
 export declare const cookieNameStrictPercentEncoder: Encoder;
 export declare const cookieNameLenientPercentEncoder: Encoder;
 export declare const cookieValueStrictPercentEncoder: Encoder;
 export declare const cookieValueLenientPercentEncoder: Encoder;
-// Validators
+
+export declare const base64Encoder: Encoder;
+export declare const base64urlEncoder: Encoder;
+/**
+ * Validators
+ */
 export declare const cookieNameValidator: Validator;
 export declare const cookieNameLenientValidator: Validator;
 export declare const cookieValueValidator: Validator;
 export declare const cookieValueLenientValidator: Validator;
-// Utils
+/**
+ * Utils
+ */
 export function identity<T>(value: T): T;
 export function noop(...args: any[]): void;
 

@@ -290,6 +290,32 @@ The `@swaggerexpert/cookie` library provides a suite of encoders designed to han
 Each encoder adheres to specific rules for encoding characters, ensuring compatibility with cookie-related standards.
 Below is a detailed overview of the available encoders.
 
+##### Generic Encoders
+
+Generic encoders can be used both for cookie names and values.
+
+**base64**
+
+Encodes a string using the [Base64](https://datatracker.ietf.org/doc/html/rfc4648) algorithm. Base64 encoding
+is explicitly mentioned in [RFC 6265, section 4.1.1](https://datatracker.ietf.org/doc/html/rfc6265#section-4.1.1) as a recommended encoding for cookie values.
+
+```js
+import { base64Encoder } from '@swaggerexpert/cookie';
+
+base64Encoder('foo<'); // => 'Zm9vPA=='
+```
+
+**base64url**
+
+Encodes a string using the [base64url](https://datatracker.ietf.org/doc/html/rfc4648#section-5) algorithm.
+This encoding consists of Base 64 Encoding with URL and Filename Safe Alphabet.
+
+```js
+import { base64urlEncoder } from '@swaggerexpert/cookie';
+
+base64urlEncoder('foo<'); // => 'Zm9vPA'
+```
+
 ##### Cookie Name Encoders
 
 **cookieNameStrictPercentEncoder**
