@@ -5,5 +5,3 @@ const base64urlEncoder = (input) => {
 };
 
 export default base64urlEncoder;
-
-console.dir(base64urlEncoder('foo<'));

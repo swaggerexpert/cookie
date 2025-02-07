@@ -7,5 +7,3 @@ const base64urlDecoder = (input) => {
 };
 
 export default base64urlDecoder;
-
-console.dir(base64urlDecoder('IUAjJCVeJiooKV8rPS0='));
