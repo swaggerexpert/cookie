@@ -24,6 +24,7 @@ export interface ParseResult {
 export interface ParseOptions {
   readonly strict?: boolean;
 }
+
 /**
  * Cookie - serialize
  */
@@ -40,6 +41,7 @@ export interface CookieSerializeOptions {
     value?: Validator;
   }
 }
+
 /**
  * Encoders
  */
@@ -53,6 +55,7 @@ export declare const cookieValueStrictBase64urlEncoder: Encoder;
 export declare const cookieValueLenientPercentEncoder: Encoder;
 export declare const cookieValueLenientBase64Encoder: Encoder;
 export declare const cookieValueLenientBase64urlEncoder: Encoder;
+
 /**
  * Validators
  */
@@ -60,11 +63,13 @@ export declare const cookieNameValidator: Validator;
 export declare const cookieNameLenientValidator: Validator;
 export declare const cookieValueValidator: Validator;
 export declare const cookieValueLenientValidator: Validator;
+
 /**
  * Utils
  */
 export function identity<T>(value: T): T;
 export function noop(...args: any[]): void;
+
 /**
  * Grammar
  */
