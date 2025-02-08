@@ -462,7 +462,7 @@ lenient-cookie-pair-invalid  = OWS 1*tchar OWS ; Allow for standalone entries li
 lenient-cookie-name          = 1*( %x21-3A / %x3C / %x3E-7E ) ; Allow all printable US-ASCII except "="
 lenient-cookie-value         = lenient-quoted-value [ *lenient-cookie-octet ] / *lenient-cookie-octet
 lenient-quoted-value         = DQUOTE *( lenient-quoted-char ) DQUOTE
-lenient-quoted-char          = %x20-21 / %x23-7E ; Allow all printable US-ASCII except DQUOTE
+lenient-quoted-char          = %x20-21 / %x23-7E ; Allow all printable US-ASCII including DQUOTE
 lenient-cookie-octet         = %x21-2B / %x2D-3A / %x3C-7E
                              ; Allow all printable characters except CTLs, DQUOTE, semicolon and SP
 

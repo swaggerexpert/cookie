@@ -302,7 +302,7 @@ export default function grammar(){
     str += "lenient-cookie-name          = 1*( %x21-3A / %x3C / %x3E-7E ) ; Allow all printable US-ASCII except \"=\"\n";
     str += "lenient-cookie-value         = lenient-quoted-value [ *lenient-cookie-octet ] / *lenient-cookie-octet\n";
     str += "lenient-quoted-value         = DQUOTE *( lenient-quoted-char ) DQUOTE\n";
-    str += "lenient-quoted-char          = %x20-21 / %x23-7E ; Allow all printable US-ASCII except DQUOTE\n";
+    str += "lenient-quoted-char          = %x20-21 / %x23-7E ; Allow all printable US-ASCII including DQUOTE\n";
     str += "lenient-cookie-octet         = %x21-2B / %x2D-3A / %x3C-7E\n";
     str += "                             ; Allow all printable characters except CTLs, DQUOTE, semicolon and SP\n";
     str += "\n";
