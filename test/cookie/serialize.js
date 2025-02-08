@@ -13,6 +13,7 @@ describe('serializeCookie', function () {
   it('should serialize object', function () {
     assert.strictEqual(serializeCookie({ foo: 'bar' }), 'foo=bar');
     assert.strictEqual(serializeCookie({ foo: 'bar', baz: 'raz' }), 'foo=bar; baz=raz');
+    assert.strictEqual(serializeCookie({ foo: ';' }), 'foo=Ow'); // base64url encoding
     assert.strictEqual(serializeCookie({}), '');
   });
 
