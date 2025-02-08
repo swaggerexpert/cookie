@@ -7,12 +7,16 @@ import {
   unquote,
   quote,
 } from '../../../utils.js';
+import testCookieValue from '../../../cookie/test/cookie-value.js';
 
 const parser = new Parser();
 const grammar = new Grammar();
 
 const cookieValueStrictPercentEncoder = (cookieValue) => {
   const value = String(cookieValue);
+
+  // return early if the value is already valid
+  if (testCookieValue(value)) return value;
 
   // detect if the value is quoted
   const isQuoted = isQuotedPredicate(value);

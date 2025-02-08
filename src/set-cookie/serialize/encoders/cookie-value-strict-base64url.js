@@ -1,9 +1,8 @@
-import testCookieValue from '../../../cookie/test/cookie-value.js';
+import cookieValueStrictBase64Encoder from './cookie-value-strict-base64.js';
 import base64urlEncoder from './base64url.node.js';
 
 const cookieValueStrictBase64urlEncoder = (cookieValue) => {
-  const value = String(cookieValue);
-  return testCookieValue(value) ? value : base64urlEncoder(value);
+  return cookieValueStrictBase64Encoder(cookieValue, base64urlEncoder);
 };
 
 export default cookieValueStrictBase64urlEncoder;
