@@ -780,6 +780,23 @@ context('parseCookie in lenient mode', function () {
     });
   });
 
+  context('cookie with triple quotes in quoted value', function () {
+    specify('should parse and translate', function () {
+      const parseResult = parseCookie('foo="""', { strict: false });
+
+      const parts = [];
+      parseResult.ast.translate(parts);
+
+      assert.isTrue(parseResult.result.success);
+      assert.deepEqual(parts, [
+        ['cookie-string', 'foo="""'],
+        ['cookie-pair', 'foo="""'],
+        ['cookie-name', 'foo'],
+        ['cookie-value', '"""'],
+      ]);
+    });
+  });
+
   context('non-string values', function () {
     specify('should throw or fail parsing', function () {
       assert.throws(() => parseCookie(1));

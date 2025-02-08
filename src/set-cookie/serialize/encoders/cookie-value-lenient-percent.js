@@ -1,7 +1,13 @@
 import { Parser } from 'apg-lite';
 
 import Grammar from '../../../grammar.js';
-import { percentEncodeChar } from '../../../utils.js';
+import {
+  percentEncodeChar,
+  isQuoted as isQuotedPredicate,
+  unquote,
+  quote,
+} from '../../../utils.js';
+import testCookieValue from '../../../cookie/test/cookie-value.js';
 
 const parser = new Parser();
 const grammar = new Grammar();
@@ -9,11 +15,14 @@ const grammar = new Grammar();
 const cookieValueLenientPercentEncoder = (cookieValue) => {
   const value = String(cookieValue);
 
+  // return early if the value is already valid
+  if (testCookieValue(value, { strict: false })) return value;
+
   // detect if the value is quoted
-  const isQuoted = value.length >= 2 && value.startsWith('"') && value.endsWith('"');
+  const isQuoted = isQuotedPredicate(value);
 
   // remove quotes if present for processing
-  const valueToEncode = isQuoted ? value.slice(1, -1) : value;
+  const valueToEncode = isQuoted ? unquote(value) : value;
 
   const startRule = isQuoted ? 'lenient-quoted-char' : 'lenient-cookie-octet';
 
@@ -22,7 +31,8 @@ const cookieValueLenientPercentEncoder = (cookieValue) => {
     result += parser.parse(grammar, startRule, char).success ? char : percentEncodeChar(char);
   }
 
-  return isQuoted ? `"${result}"` : result;
+  // return quoted if input was quoted, unquoted otherwise
+  return isQuoted ? quote(result) : result;
 };
 
 export default cookieValueLenientPercentEncoder;

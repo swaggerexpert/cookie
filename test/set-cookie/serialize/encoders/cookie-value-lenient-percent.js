@@ -49,7 +49,7 @@ describe('cookieValueLenientPercentEncoder', function () {
       assert.strictEqual(cookieValueLenientPercentEncoder('"a,b"'), '"a,b"'); // comma allowed in quotes
       assert.strictEqual(cookieValueLenientPercentEncoder('"a;b"'), '"a;b"'); // semicolon always encoded
       assert.strictEqual(cookieValueLenientPercentEncoder('"a\\b"'), '"a\\b"'); // backslash allowed in quotes
-      assert.strictEqual(cookieValueLenientPercentEncoder('"""'), '"%22"');
+      assert.strictEqual(cookieValueLenientPercentEncoder('"""'), '"""');
     });
   });
 

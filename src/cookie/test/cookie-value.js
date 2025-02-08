@@ -1,15 +1,21 @@
 import { Parser } from 'apg-lite';
 
 import Grammar from '../../grammar.js';
+import { isQuoted } from '../../utils.js';
 
 const parser = new Parser();
 const grammar = new Grammar();
 
-const testCookieValue = (cookieValue, { strict = true } = {}) => {
+const testCookieValue = (cookieValue, { strict = true, quoted = null } = {}) => {
   try {
     const startRule = strict ? 'cookie-value' : 'lenient-cookie-value';
+    const result = parser.parse(grammar, startRule, cookieValue);
 
-    return parser.parse(grammar, startRule, cookieValue).success;
+    if (typeof quoted === 'boolean') {
+      return result.success && quoted === isQuoted(cookieValue);
+    }
+
+    return result.success;
   } catch {
     return false;
   }
