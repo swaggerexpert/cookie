@@ -24,6 +24,18 @@ export const toBase64 = (base64url) => {
   return `${base64}${padding}`;
 };
 
+export const isQuoted = (value) => {
+  return value.length >= 2 && value.startsWith('"') && value.endsWith('"');
+};
+
+export const unquote = (value) => {
+  return isQuoted(value) ? value.slice(1, -1) : value;
+};
+
+export const quote = (value) => {
+  return `"${value}"`;
+};
+
 export const identity = (a) => a;
 
 export const noop = () => {};

@@ -1,7 +1,12 @@
 import { Parser } from 'apg-lite';
 
 import Grammar from '../../../grammar.js';
-import { percentEncodeChar } from '../../../utils.js';
+import {
+  percentEncodeChar,
+  isQuoted as isQuotedPredicate,
+  unquote,
+  quote,
+} from '../../../utils.js';
 
 const parser = new Parser();
 const grammar = new Grammar();
@@ -10,10 +15,10 @@ const cookieValueStrictPercentEncoder = (cookieValue) => {
   const value = String(cookieValue);
 
   // detect if the value is quoted
-  const isQuoted = value.length >= 2 && value.startsWith('"') && value.endsWith('"');
+  const isQuoted = isQuotedPredicate(value);
 
   // remove quotes if present for processing
-  const valueToEncode = isQuoted ? value.slice(1, -1) : value;
+  const valueToEncode = isQuoted ? unquote(value) : value;
 
   let result = '';
   for (const char of valueToEncode) {
@@ -21,7 +26,7 @@ const cookieValueStrictPercentEncoder = (cookieValue) => {
   }
 
   // return quoted if input was quoted, unquoted otherwise
-  return isQuoted ? `"${result}"` : result;
+  return isQuoted ? quote(result) : result;
 };
 
 export default cookieValueStrictPercentEncoder;
