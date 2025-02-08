@@ -1,4 +1,4 @@
-import cookieValueStrictPercentEncoder from './encoders/cookie-value-strict-percent.js';
+import cookieValueStrictBase64urlEncoder from './encoders/cookie-value-strict-base64url.js';
 import cookieNameStrictValidator from './validators/cookie-name-strict.js';
 import cookieValueStrictValidator from './validators/cookie-value-strict.js';
 import { identity } from '../../utils.js';
@@ -6,7 +6,7 @@ import { identity } from '../../utils.js';
 const defaultOptions = {
   encoders: {
     name: identity,
-    value: cookieValueStrictPercentEncoder,
+    value: cookieValueStrictBase64urlEncoder,
   },
   validators: {
     name: cookieNameStrictValidator,
