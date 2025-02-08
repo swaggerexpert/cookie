@@ -237,7 +237,7 @@ both names and values according to [RFC 6265](https://datatracker.ietf.org/doc/h
 {
   encoders: {
     name: identity,
-    value: cookieValueStrictPercentEncoder
+    value: cookieValueStrictBase64urlEncoder
   },
   validators: {
     name: cookieNameStrictValidator,
@@ -297,7 +297,7 @@ Generic encoders can be used both for cookie names and values.
 **base64**
 
 Encodes a string using the [Base64](https://datatracker.ietf.org/doc/html/rfc4648) algorithm. Base64 encoding
-is explicitly mentioned in [RFC 6265, section 4.1.1](https://datatracker.ietf.org/doc/html/rfc6265#section-4.1.1) as a recommended encoding for cookie values.
+is explicitly mentioned in [RFC 6265, section 4.1.1](https://datatracker.ietf.org/doc/html/rfc6265#section-4.1.1) as an example of appropriate encoding for cookie values.
 
 ```js
 import { base64Encoder } from '@swaggerexpert/cookie';
@@ -308,7 +308,7 @@ base64Encoder('foo<'); // => 'Zm9vPA=='
 **base64url**
 
 Encodes a string using the [base64url](https://datatracker.ietf.org/doc/html/rfc4648#section-5) algorithm.
-This encoding consists of Base 64 Encoding with URL and Filename Safe Alphabet.
+This encoding consists of Base64 Encoding with URL and Filename Safe Alphabet.
 
 ```js
 import { base64urlEncoder } from '@swaggerexpert/cookie';
@@ -345,16 +345,69 @@ cookieNameLenientPercentEncoder('foo<'); // => 'foo<'
 
 ##### Cookie Value Encoders
 
+**cookieValueStrictBase64Encoder**
+
+Applies [Base64](https://datatracker.ietf.org/doc/html/rfc4648) encoding to a cookie value if any of its characters fall outside the allowable set defined by the `cookie-value` rule in  [RFC 6265](https://datatracker.ietf.org/doc/html/rfc6265#section-4.1.1).
+
+- **Use Case**: To achieve the best compatibility, Base64 encoding is mentioned by RFC 6265 as an example of appropriate encoding to use. Ensures strict compliance with the `cookie-value` non-terminal rule.
+
+```js
+import { cookieValueStrictBase64Encoder } from '@swaggerexpert/cookie';
+
+cookieValueStrictBase64Encoder(';'); // => Ow==
+cookieValueStrictBase64Encoder('";"'); // => "Ow=="
+```
+
+**cookieValueStrictBase64urlEncoder**
+
+Applies [base64url](https://datatracker.ietf.org/doc/html/rfc4648#section-5) encoding to a cookie value if any of its characters fall outside the allowable set defined by the `cookie-value` rule in  [RFC 6265](https://datatracker.ietf.org/doc/html/rfc6265#section-4.1.1).
+
+- **Use Case**: More appropriate for modern tooling, it ensures strict compliance with the `cookie-value` non-terminal rule by producing encoded value with URL and Filename Safe Alphabet.
+
+```js
+import { cookieValueStrictBase64Encoder } from '@swaggerexpert/cookie';
+
+cookieValueStrictBase64Encoder(';'); // => Ow
+cookieValueStrictBase64Encoder('";"'); // => "Ow"
+```
+
 **cookieValueStrictPercentEncoder**
 
-Percent-encodes characters that fall outside the allowable set defined by the cookie-value rule in [RFC 6265](https://datatracker.ietf.org/doc/html/rfc6265#section-4.1.1).
+Percent-encodes characters that fall outside the allowable set defined by the `cookie-value` rule in [RFC 6265](https://datatracker.ietf.org/doc/html/rfc6265#section-4.1.1).
 
-- **Use Case**: Ensures strict compliance with the `cookie-value` non-terminal rule, encoding characters such as `;` and `=`.
+- **Use Case**: Ensures strict compliance with the `cookie-value` non-terminal rule, encoding characters such as `;` and `,`.
 
 ```js
 import { cookieValueStrictPercentEncoder } from '@swaggerexpert/cookie';
 
-cookieValueStrictPercentEncoder('"'); // => '%22'
+cookieValueStrictPercentEncoder(';'); // => '%3B'
+```
+
+**cookieValueLenientBase64Encoder**
+
+Applies [Base64](https://datatracker.ietf.org/doc/html/rfc4648) encoding to a cookie value if any of its characters fall outside the allowable set defined by the `lenient-cookie-value`.
+
+- **Use Case**: To achieve the best compatibility, Base64 encoding is mentioned by RFC 6265 as an example of appropriate encoding to use. Useful when broader compatibility is needed, and when leniency in cookie values is acceptable.
+
+```js
+import { cookieValueLenientBase64Encoder } from '@swaggerexpert/cookie';
+
+cookieValueLenientBase64Encoder(';'); // => Ow==
+cookieValueLenientBase64Encoder('";"'); // => "Ow=="
+```
+
+**cookieValueLenientBase64urlEncoder**
+
+Applies [base64url](https://datatracker.ietf.org/doc/html/rfc4648#section-5) encoding to a cookie value if any of its characters fall outside the allowable set defined by the `lenient-cookie-value`.
+
+- **Use Case**: More appropriate for modern tooling. Useful when producing encoded value with URL and Filename Safe Alphabet, and leniency in cookie values is acceptable.
+-
+
+```js
+import { cookieValueLenientBase64urlEncoder } from '@swaggerexpert/cookie';
+
+cookieValueLenientBase64urlEncoder(';'); // => Ow
+cookieValueLenientBase64urlEncoder('";"'); // => "Ow"
 ```
 
 **cookieValueLenientPercentEncoder**
@@ -362,7 +415,7 @@ cookieValueStrictPercentEncoder('"'); // => '%22'
 Percent-encodes characters that fall outside the allowable set defined by the `lenient-cookie-value` rule.
 This allows for a more permissive interpretation of cookie values.
 
-- **Use Case**: Useful when broader compatibility is needed, or when leniency in cookie values is acceptable.
+- **Use Case**: Useful when broader compatibility is needed, and when leniency in cookie values is acceptable.
 
 ```js
 import { cookieValueLenientPercentEncoder } from '@swaggerexpert/cookie';
