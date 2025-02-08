@@ -59,9 +59,9 @@ export declare const cookieValueLenientBase64urlEncoder: Encoder;
 /**
  * Validators
  */
-export declare const cookieNameValidator: Validator;
+export declare const cookieNameStrictValidator: Validator;
 export declare const cookieNameLenientValidator: Validator;
-export declare const cookieValueValidator: Validator;
+export declare const cookieValueStrictValidator: Validator;
 export declare const cookieValueLenientValidator: Validator;
 
 /**
