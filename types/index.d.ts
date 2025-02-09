@@ -1,10 +1,7 @@
 export type CookieName = string;
 export type CookieValue = string;
 export type CookieString = string;
-export type Encoder = (value: string) => string;
-export type Validator = (value: string) => void;
 export type CookiePair = [CookieName, CookieValue];
-
 
 /**
  * Cookie - parse
@@ -28,17 +25,16 @@ export interface ParseOptions {
 /**
  * Cookie - serialize
  */
-export function serializeCookie(cookiePairs: CookiePair[], options?: CookieSerializeOptions): CookieString;
-export function serializeCookie(cookies: Record<CookieName, CookieValue>, options?: CookieSerializeOptions): CookieString;
+export function serializeCookie(name: CookieName, value: CookieValue, options?: CookieSerializeOptions): CookieString;
 
 export interface CookieSerializeOptions {
   encoders?: {
-    name?: Encoder;
-    value?: Encoder;
+    name?: CookieNameEncoder;
+    value?: CookieValueEncoder;
   },
   validators?: {
-    name?: Validator;
-    value?: Validator;
+    name?: CookieNameValidator;
+    value?: CookieValueValidator;
   }
 }
 
@@ -47,22 +43,40 @@ export interface CookieSerializeOptions {
  */
 export declare const base64Encoder: Encoder;
 export declare const base64urlEncoder: Encoder;
-export declare const cookieNameStrictPercentEncoder: Encoder;
-export declare const cookieNameLenientPercentEncoder: Encoder;
-export declare const cookieValueStrictPercentEncoder: Encoder;
-export declare const cookieValueStrictBase64Encoder: Encoder;
-export declare const cookieValueStrictBase64urlEncoder: Encoder;
-export declare const cookieValueLenientPercentEncoder: Encoder;
-export declare const cookieValueLenientBase64Encoder: Encoder;
-export declare const cookieValueLenientBase64urlEncoder: Encoder;
+export declare const cookieNameStrictPercentEncoder: CookieNameEncoder;
+export declare const cookieNameLenientPercentEncoder: CookieNameEncoder;
+export declare const cookieValueStrictPercentEncoder: CookieValueEncoder;
+export declare const cookieValueStrictBase64Encoder: CookieValueEncoder;
+export declare const cookieValueStrictBase64urlEncoder: CookieValueEncoder;
+export declare const cookieValueLenientPercentEncoder: CookieValueEncoder;
+export declare const cookieValueLenientBase64Encoder: CookieValueEncoder;
+export declare const cookieValueLenientBase64urlEncoder: CookieValueEncoder;
+export interface Encoder {
+  (value: string): string
+}
+export interface CookieNameEncoder extends Encoder {
+  (value: CookieName): string
+}
+export interface CookieValueEncoder extends Encoder {
+  (value: CookieValue): string
+}
 
 /**
  * Validators
  */
-export declare const cookieNameStrictValidator: Validator;
-export declare const cookieNameLenientValidator: Validator;
-export declare const cookieValueStrictValidator: Validator;
-export declare const cookieValueLenientValidator: Validator;
+export declare const cookieNameStrictValidator: CookieNameValidator;
+export declare const cookieNameLenientValidator: CookieNameValidator;
+export declare const cookieValueStrictValidator: CookieValueValidator;
+export declare const cookieValueLenientValidator: CookieValueValidator;
+export interface Validator {
+  (value: string): void;
+}
+export interface CookieNameValidator extends Validator {
+  (value: CookieName): void;
+}
+export interface CookieValueValidator extends Validator {
+  (value: CookieValue): void;
+}
 
 /**
  * Utils
