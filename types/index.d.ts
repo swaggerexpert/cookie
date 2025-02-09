@@ -25,7 +25,8 @@ export interface ParseOptions {
 /**
  * Cookie - serialize
  */
-export function serializeCookie(name: CookieName, value: CookieValue, options?: CookieSerializeOptions): CookieString;
+export function serializeCookie(cookiePairs: CookiePair[], options?: CookieSerializeOptions): CookieString;
+export function serializeCookie(cookies: Record<CookieName, CookieValue>, options?: CookieSerializeOptions): CookieString;
 
 export interface CookieSerializeOptions {
   encoders?: {
