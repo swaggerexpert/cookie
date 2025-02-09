@@ -3,7 +3,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "RFC 6265 compliant cookie parser, validator and serializer.",
   "browser": {
     "./cjs/set-cookie/serialize/encoders/base64.node.cjs": "./cjs/set-cookie/serialize/encoders/base64.browser.cjs",
