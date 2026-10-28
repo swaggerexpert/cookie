@@ -25,7 +25,8 @@ const parse = (
     if (trace) parser.trace = new Trace();
 
     const result = parser.parse(grammar, startRule, cookieString);
-    let ast;
+    // avoid parsing twice when the deprecated `ast` can be served by the provided translator
+    let ast = translator && translator.constructor === ListTranslator ? parser.ast : undefined;
 
     return {
       result,
@@ -43,6 +44,9 @@ const parse = (
           ast = listParser.ast;
         }
         return ast;
+      },
+      set ast(value) {
+        ast = value;
       },
     };
   } catch (error) {
