@@ -71,6 +71,7 @@ Include following script tag into your HTML file:
 Global variable `SwaggerExpertCookie` will be available in the browser matching interface of `@swaggerexpert/cookie` npm package.
 `cookie.browser.min.js` is [UMD](https://github.com/umdjs/umd?tab=readme-ov-file#umd-universal-module-definition) minified build artifact.
 There is also unminified `cookie.browser.js` artifact, suitable for debugging.
+The browser artifacts target the latest browsers; they can also be loaded via `require` in Node.js >= 16.
 
 ---
 

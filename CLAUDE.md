@@ -11,7 +11,9 @@ npm run grammar:compile  # Compile ABNF grammar to JavaScript parser
 npm run build:es         # Build ES modules only (to es/ directory)
 npm run build:cjs        # Build CommonJS modules only (to cjs/ directory)
 npm run build:umd:browser # Build UMD browser bundles only (to dist/ directory)
-npm test                 # Run all tests with Mocha
+npm test                 # Run all tests with Mocha (against src/)
+npm run test:artifacts   # Smoke test built artifacts (es/, cjs/, dist/), run after npm run build
+npm run test:types       # Type check typings as CommonJS and ES module consumers, run after npm run build
 npm run test:watch       # Run tests in watch mode
 ```
 
@@ -49,9 +51,18 @@ The public API must stay backward compatible. Notably `parseResult.ast.translate
 
 The library produces multiple module formats:
 - `es/` - ES modules (`.mjs` files)
-- `cjs/` - CommonJS modules (`.cjs` files)
-- `dist/` - UMD browser bundles exposing the `SwaggerExpertCookie` global
-- `types/` - TypeScript declarations
+- `cjs/` - CommonJS modules (`.cjs` files), kept for backward compatibility; bundles its own copy of apg-lite (ES module only)
+  at `cjs/apg-lite.cjs`, imports are rewritten by `module-resolver` in `babel.config.cjs`
+- `dist/` - UMD browser bundles exposing the `SwaggerExpertCookie` global; `dist/package.json`
+  (copied from `config/webpack/dist-package.json`) marks them CommonJS, so that Node.js >= 16 can `require` them
+- `types/` - TypeScript declarations in `types/index.d.ts` (ESM). The build copies it to `types/index.d.cts` (generated, gitignored),
+  which the `require` export condition points to, so that CommonJS consumers with `node16`/`nodenext` resolution get types.
+
+Error classes define their `name` explicitly, as minifiers mangle class names.
+
+`test/artifacts/` tests built artifacts as consumers use them: `smoke.cjs` loads the package by name (CommonJS,
+ES module, UMD) and `types/` contains CommonJS and ES module consumers for `tsc`. CI runs the smoke test against
+the packed tarball installed into a new project on every Node.js version from `engines` up.
 
 Babel handles the transformation with custom plugins for import extension rewriting.
 
