@@ -1,6 +1,11 @@
 export { default as Grammar } from './grammar.js';
 
 export { default as parseCookie } from './cookie/parse/index.js';
+export { default as ListTranslator } from './cookie/parse/translators/ListTranslator.js';
+export { default as CSTTranslator } from './cookie/parse/translators/CSTTranslator.js';
+export { default as ASTTranslator } from './cookie/parse/translators/ASTTranslator.js';
+export { default as XMLTranslator } from './cookie/parse/translators/XMLTranslator.js';
+export { default as Trace } from './cookie/parse/trace/Trace.js';
 export { default as serializeCookie } from './cookie/serialize/index.js';
 
 /**
@@ -28,3 +33,9 @@ export { default as cookieValueLenientValidator } from './set-cookie/serialize/v
  * Utils
  */
 export { identity, noop } from './utils.js';
+
+/**
+ * Errors
+ */
+export { default as CookieError } from './errors/CookieError.js';
+export { default as CookieParseError } from './errors/CookieParseError.js';

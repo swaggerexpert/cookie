@@ -29,6 +29,9 @@
   - [Usage](#usage)
     - [Cookie](#cookie)
       - [Parsing cookie](#parsing-cookie)
+        - [Translators](#translators)
+        - [Statistics](#statistics)
+        - [Tracing](#tracing)
       - [Serializing cookie](#serializing-cookie)
     - [Encoders](#encoders)
       - [Cookie Name encoders](#cookie-name-encoders)
@@ -36,6 +39,7 @@
     - [Validators](#validators)
       - [Cookie Name validators](#cookie-name-validators)
       - [Cookie Value validators](#cookie-value-validators)
+    - [Errors](#errors)
     - [Grammar](#grammar)
 - [More about RFC 6265](#more-about-rfc-6265)
 - [License](#license)
@@ -102,52 +106,85 @@ parseCookie('name=name=3', { strict: false });
 parseCookie('name:name=3', { strict: false });
 ```
 
-**ParseResult** returned by the parser has the following shape:
+**parseResult** variable has the following shape:
 
 ```
 {
-  result: {
-    success: true,
-    state: 101,
-    stateName: 'MATCH',
-    length: 7,
-    matched: 7,
-    maxMatched: 7,
-    maxTreeDepth: 9,
-    nodeHits: 71
-  },
-  ast: fnast {
-    callbacks: [
-      'cookie-string': [Function: cookieString],
-      'cookie-pair': [Function: cookiePair],
-      'cookie-name': [Function: cookieName],
-      'cookie-value': [Function: cookieValue]
-    ],
-    init: [Function (anonymous)],
-    ruleDefined: [Function (anonymous)],
-    udtDefined: [Function (anonymous)],
-    down: [Function (anonymous)],
-    up: [Function (anonymous)],
-    translate: [Function (anonymous)],
-    setLength: [Function (anonymous)],
-    getLength: [Function (anonymous)],
-    toXml: [Function (anonymous)]
-  }
+  result: <ParseResult['result']>,
+  tree: <ParseResult['tree']>,
+  stats: <ParseResult['stats']>,
+  trace: <ParseResult['trace']>,
 }
 ```
 
-###### Interpreting AST as list of entries
+[TypeScript typings](https://github.com/swaggerexpert/cookie/blob/main/types/index.d.ts) are available for all fields attached to parse result object returned by the `parseCookie` function.
+
+###### Translators
+
+`@swaggerexpert/cookie` provides several translators to convert the parse result into different tree representations.
+Translators produce the same node types in both strict and lenient mode.
+
+**CST translator**
+
+[Concrete Syntax Tree](https://en.wikipedia.org/wiki/Parse_tree) (Parse tree) representation is available on parse result
+when instance of `CSTTranslator` is provided via a `translator` option to the `parseCookie` function.
+CST is suitable to be consumed by other tools like IDEs, editors, etc...
+
+```js
+import { parseCookie, CSTTranslator } from '@swaggerexpert/cookie';
+
+const { tree: cst } = parseCookie('foo=bar', { translator: new CSTTranslator() });
+```
+
+CST tree has a shape documented by [TypeScript typings (CSTNode)](https://github.com/swaggerexpert/cookie/blob/main/types/index.d.ts).
+
+**AST translator**
+
+**Default translator**. [Abstract Syntax Tree](https://en.wikipedia.org/wiki/Abstract_syntax_tree) representation is available on parse result
+by default or when instance of `ASTTranslator` is provided via a `translator` option to the `parseCookie` function.
 
 ```js
 import { parseCookie } from '@swaggerexpert/cookie';
 
-const parseResult = parse('foo=bar');
-const parts = [];
-
-parseResult.ast.translate(parts);
+const { tree: ast } = parseCookie('foo=bar; baz="raz"');
 ```
 
-After running the above code, **parts** variable has the following shape:
+or
+
+```js
+import { parseCookie, ASTTranslator } from '@swaggerexpert/cookie';
+
+const { tree: ast } = parseCookie('foo=bar; baz="raz"', { translator: new ASTTranslator() });
+```
+
+After running the above code, **ast** variable has the following shape:
+
+```js
+{
+  type: 'CookieString',
+  pairs: [
+    { type: 'CookiePair', name: 'foo', value: 'bar' },
+    { type: 'CookiePair', name: 'baz', value: '"raz"' },
+  ],
+}
+```
+
+Cookie values are raw, exactly as they appear in the cookie string (including the surrounding DQUOTEs, if present).
+AST tree has a shape documented by [TypeScript typings (ASTNode)](https://github.com/swaggerexpert/cookie/blob/main/types/index.d.ts).
+
+**List translator**
+
+List of entries representation is available on parse result
+when instance of `ListTranslator` is provided via a `translator` option to the `parseCookie` function.
+Every entry is a `[type, text]` tuple, ordered as matched by the parser.
+
+```js
+import { parseCookie, ListTranslator } from '@swaggerexpert/cookie';
+
+const { tree: list } = parseCookie('foo=bar', { translator: new ListTranslator() });
+```
+
+After running the above code, **list** variable has the following shape:
 
 ```js
 [
@@ -158,38 +195,69 @@ After running the above code, **parts** variable has the following shape:
 ]
 ```
 
-###### Interpreting AST as XML
+> NOTE: for backward compatibility, parse result also exposes the deprecated `ast` field,
+> regardless of the translator used. `parseResult.ast.translate(parts)` populates `parts` with the same list of entries
+> as `ListTranslator` produces, and `parseResult.ast.toXml()` returns XML representation. Prefer translators in new code.
+
+**XML translator**
+
+```js
+import { parseCookie, XMLTranslator } from '@swaggerexpert/cookie';
+
+const { tree: xml } = parseCookie('foo=bar', { translator: new XMLTranslator() });
+```
+
+**No translator**
+
+When only validity of the cookie string matters, translation can be skipped by setting `translator` option to `null`.
 
 ```js
 import { parseCookie } from '@swaggerexpert/cookie';
 
-const parseResult = parseCookie('foo=bar');
-const xml = parseResult.ast.toXml();
+const { result, tree } = parseCookie('foo=bar', { translator: null });
+result.success; // => true
+tree; // => undefined
 ```
 
-After running the above code, **xml** variable has the following content:
+###### Statistics
 
-```xml
-<?xml version="1.0" encoding="utf-8"?>
-<root nodes="4" characters="7">
-  <!-- input string -->
-  foo=bar
-  <node name="cookie-string" index="0" length="7">
-    foo=bar
-    <node name="cookie-pair" index="0" length="7">
-      foo=bar
-      <node name="cookie-name" index="0" length="3">
-        foo
-      </node><!-- name="cookie-name" -->
-      <node name="cookie-value" index="4" length="3">
-        bar
-      </node><!-- name="cookie-value" -->
-    </node><!-- name="cookie-pair" -->
-  </node><!-- name="cookie-string" -->
-</root>
+`parseCookie` function returns additional statistical information about the parsing process.
+Collection of the statistics can be enabled by setting `stats` option to `true`.
+
+```js
+import { parseCookie } from '@swaggerexpert/cookie';
+
+const { stats } = parseCookie('foo=bar', { stats: true });
+
+stats.displayStats(); // returns operator statistics as string
+stats.displayHits(); // returns rules grouped by hit count as string
 ```
 
-> NOTE: AST can also be traversed in classical way using [depth first traversal](https://www.tutorialspoint.com/data_structures_algorithms/depth_first_traversal.htm). For more information about this option please refer to [apg-js](https://github.com/ldthomas/apg-js) and [apg-js-examples](https://github.com/ldthomas/apg-js-examples).
+###### Tracing
+
+`parseCookie` function returns additional tracing information about the parsing process.
+Tracing can be enabled by setting `trace` option to `true`. Tracing is essential
+for debugging failed parses or analyzing rule execution flow.
+
+```js
+import { parseCookie } from '@swaggerexpert/cookie';
+
+const { result, trace } = parseCookie('foo', { trace: true });
+
+result.success; // false
+trace.displayTrace(); // returns trace information as string
+```
+
+Tracing also allows you to infer expected tokens at a failure point. This is useful for generating meaningful syntax error messages.
+
+```js
+import { parseCookie } from '@swaggerexpert/cookie';
+
+const { trace } = parseCookie('foo', { trace: true });
+
+const expectations = trace.inferExpectations();
+expectations.includes('='); // => true
+```
 
 ##### Serializing Cookie
 
@@ -478,6 +546,31 @@ import { cookieValueLenientValidator } from '@swaggerexpert/cookie';
 
 cookieValueLenientValidator('"lenient;value"'); // passes
 cookieValueLenientValidator('invalid value'); // throws: Invalid cookie value
+```
+
+#### Errors
+
+`@swaggerexpert/cookie` provides a structured error class hierarchy,
+enabling precise error handling.
+
+```js
+import { CookieError, CookieParseError } from '@swaggerexpert/cookie';
+```
+
+**CookieError** is the base class for all errors. **CookieParseError** is thrown when parsing fails unexpectedly
+and includes additional context about the cookie string that failed to parse.
+Passing a non-string value to the `parseCookie` function throws a `TypeError`.
+
+```js
+import { parseCookie, CookieParseError } from '@swaggerexpert/cookie';
+
+try {
+  parseCookie('foo=bar');
+} catch (error) {
+  if (error instanceof CookieParseError) {
+    console.log(error.cookieString); // the cookie string that failed to parse
+  }
+}
 ```
 
 #### Grammar
