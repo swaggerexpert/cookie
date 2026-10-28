@@ -1,10 +1,14 @@
-import { toBase64 } from '../../../utils.js';
+import { isBase64url, toBase64 } from '../../../utils.js';
+import base64Decoder from './base64.browser.js';
 
 const base64urlDecoder = (input) => {
-  const base64 = toBase64(input);
-  const binaryString = atob(base64);
-  const bytes = new Uint8Array([...binaryString].map((char) => char.charCodeAt(0)));
-  return new TextDecoder().decode(bytes);
+  const value = String(input);
+
+  if (!isBase64url(value)) {
+    throw new TypeError('Input must be a base64url encoded string.');
+  }
+
+  return base64Decoder(toBase64(value));
 };
 
 export default base64urlDecoder;

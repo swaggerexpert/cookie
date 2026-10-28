@@ -48,6 +48,13 @@ const check = (label, Cookie) => {
 
   assert.strictEqual(Cookie.serializeCookie({ foo: 'bar', baz: 'raz' }), 'foo=bar; baz=raz');
   assert.strictEqual(Cookie.serializeSetCookie('foo', ';'), 'foo=Ow');
+  // exercises environment specific (node/browser) base64 decoder
+  assertJSONEqual(
+    Cookie.parseCookie('foo=aMOpbGxv; bar=en', {
+      decoders: { value: Cookie.cookieValueRotatingDecoder },
+    }).tree.pairs.map((pair) => pair.value),
+    ['héllo', 'en'],
+  );
   // exercises environment specific (node/browser) base64 encoder
   assert.strictEqual(
     Cookie.serializeCookie(

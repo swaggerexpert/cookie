@@ -43,6 +43,10 @@ The development of this library contributed to the identification and formal sub
       - [Generic encoders](#generic-encoders)
       - [Cookie Name encoders](#cookie-name-encoders)
       - [Cookie Value encoders](#cookie-value-encoders)
+    - [Decoders](#decoders)
+      - [Generic decoders](#generic-decoders)
+      - [Cookie Name decoders](#cookie-name-decoders)
+      - [Cookie Value decoders](#cookie-value-decoders)
     - [Validators](#validators)
       - [Cookie Name validators](#cookie-name-validators)
       - [Cookie Value validators](#cookie-value-validators)
@@ -592,6 +596,84 @@ This allows for a more permissive interpretation of cookie values.
 import { cookieValueLenientPercentEncoder } from '@swaggerexpert/cookie';
 
 cookieValueLenientPercentEncoder('"'); // => '"'
+```
+
+#### Decoders
+
+Decoders are the counterpart of [encoders](#encoders), designed to recover original cookie names and values during **parsing**.
+They can be provided to the `parseCookie` function via `decoders` option and are applied to the cookie names and values
+of the [AST](#translators). By default, no decoding is performed and cookie names and values are returned as they appear in the cookie string.
+
+```js
+import { parseCookie, cookieNamePercentDecoder, cookieValueBase64urlDecoder } from '@swaggerexpert/cookie';
+
+const { tree } = parseCookie('foo%20bar=Ow', {
+  decoders: {
+    name: cookieNamePercentDecoder,
+    value: cookieValueBase64urlDecoder,
+  },
+});
+// tree.pairs => [{ type: 'CookiePair', name: 'foo bar', value: ';' }]
+```
+
+When a custom translator is used, decoders are provided to the `ASTTranslator` directly:
+
+```js
+import { parseCookie, ASTTranslator, cookieValueBase64urlDecoder } from '@swaggerexpert/cookie';
+
+const translator = new ASTTranslator({ decoders: { value: cookieValueBase64urlDecoder } });
+const { tree } = parseCookie('foo=Ow', { translator });
+```
+
+Decoders throw `TypeError` if the input is not properly encoded (invalid alphabet, non-canonical encoding or invalid UTF-8),
+which results in `CookieParseError` being thrown from the `parseCookie` function.
+
+##### Generic Decoders
+
+- **base64Decoder** - decodes base64 encoded string into UTF-8 string
+- **base64urlDecoder** - decodes base64url encoded string into UTF-8 string
+
+##### Cookie Name Decoders
+
+- **cookieNamePercentDecoder** - decodes percent-encoded cookie name, reverses `cookieNameStrictPercentEncoder` and `cookieNameLenientPercentEncoder`
+
+##### Cookie Value Decoders
+
+Cookie value decoders preserve the enclosing DQUOTEs, the same way cookie value encoders do.
+
+- **cookieValuePercentDecoder** - reverses `cookieValueStrictPercentEncoder` and `cookieValueLenientPercentEncoder`
+- **cookieValueBase64Decoder** - reverses `cookieValueStrictBase64Encoder` and `cookieValueLenientBase64Encoder`
+- **cookieValueBase64urlDecoder** - reverses `cookieValueStrictBase64urlEncoder` and `cookieValueLenientBase64urlEncoder`
+- **cookieValueRotatingDecoder** - tries base64url, base64 and percent decoders in this order and returns result of the first one that succeeds; never throws
+
+Encoding of a cookie value is not part of the cookie string, and the encoders leave values that are already valid untouched.
+When the encoding is unknown, **cookieValueRotatingDecoder** can be used to detect it on a best-effort basis.
+Results of the decoders that are not canonically encoded, not valid UTF-8 or contain control characters are rejected,
+so plain values like `bar`, `en` or `admin` are kept as they are.
+
+```js
+import { cookieValueRotatingDecoder } from '@swaggerexpert/cookie';
+
+cookieValueRotatingDecoder('aMOpbGxv'); // => 'héllo' (base64url)
+cookieValueRotatingDecoder('hello%20world'); // => 'hello world' (percent-encoding)
+cookieValueRotatingDecoder('en'); // => 'en' (plain value)
+```
+
+> NOTE: detection is inherently ambiguous: `Ow` is both a valid plain value and base64url encoded `;`,
+> and `cookieValueRotatingDecoder('Ow')` returns `;`. Prefer explicit decoders when the encoding is known.
+
+Custom order of decoders can be provided using **createCookieValueRotatingDecoder** function:
+
+```js
+import {
+  createCookieValueRotatingDecoder,
+  cookieValuePercentDecoder,
+  cookieValueBase64urlDecoder,
+} from '@swaggerexpert/cookie';
+
+const decoder = createCookieValueRotatingDecoder([cookieValuePercentDecoder, cookieValueBase64urlDecoder]);
+
+decoder('Ow'); // => 'Ow'
 ```
 
 #### Validators

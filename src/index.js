@@ -27,6 +27,20 @@ export { default as cookieValueLenientBase64Encoder } from './set-cookie/seriali
 export { default as cookieValueLenientBase64urlEncoder } from './set-cookie/serialize/encoders/cookie-value-lenient-base64url.js';
 
 /**
+ * Decoders
+ */
+export { default as base64Decoder } from './set-cookie/parse/decoders/base64.node.js';
+export { default as base64urlDecoder } from './set-cookie/parse/decoders/base64url.node.js';
+export { default as cookieNamePercentDecoder } from './set-cookie/parse/decoders/cookie-name-percent.js';
+export { default as cookieValuePercentDecoder } from './set-cookie/parse/decoders/cookie-value-percent.js';
+export { default as cookieValueBase64Decoder } from './set-cookie/parse/decoders/cookie-value-base64.js';
+export { default as cookieValueBase64urlDecoder } from './set-cookie/parse/decoders/cookie-value-base64url.js';
+export {
+  default as cookieValueRotatingDecoder,
+  createCookieValueRotatingDecoder,
+} from './set-cookie/parse/decoders/cookie-value-rotating.js';
+
+/**
  * Validators
  */
 export { default as cookieNameStrictValidator } from './set-cookie/serialize/validators/cookie-name-strict.js';

@@ -12,6 +12,10 @@ import {
   ListTranslator,
   CookieParseError,
   cookieValueStrictBase64Encoder,
+  cookieValueRotatingDecoder,
+  createCookieValueRotatingDecoder,
+  cookieValueBase64urlDecoder,
+  ASTTranslator,
   type ASTNode,
   type CSTNode,
   type ListTree,
@@ -43,3 +47,9 @@ const error: string | undefined = new CookieParseError('message').cookieString;
 
 // @ts-expect-error cookie string must be a string
 parseCookie(1);
+
+const decoded: ASTNode | undefined = parseCookie('foo=Ow', {
+  decoders: { value: cookieValueRotatingDecoder },
+}).tree;
+const decoder = createCookieValueRotatingDecoder([cookieValueBase64urlDecoder]);
+const translator = new ASTTranslator({ decoders: { value: decoder } });
