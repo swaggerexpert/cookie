@@ -18,6 +18,10 @@ export function parseCookie(
   cookieString: CookieString,
   options: ParseOptions & { readonly translator: null },
 ): ParseResult<undefined>;
+export function parseCookie(
+  cookieString: CookieString,
+  options: ParseOptions & { readonly translator: Translator | null },
+): ParseResult<unknown>;
 
 export interface ParseOptions {
   readonly strict?: boolean;
@@ -74,9 +78,8 @@ export declare class CSTTranslator extends AST<CSTNode> {
 /**
  * Produces CookieStringNode (ASTNode) when used with parseCookie
  * and SetCookieASTNode when used with parseSetCookie, e.g. `new ASTTranslator<SetCookieASTNode>()`.
- * TTree is not constrained, as EntriesTranslator and ObjectTranslator extend ASTTranslator.
  */
-export declare class ASTTranslator<TTree = ASTNode> extends AST<TTree> {
+export declare class ASTTranslator<TTree extends ASTNode | SetCookieASTNode = ASTNode> extends AST<TTree> {
   constructor(options?: ASTTranslatorOptions);
   getTree(): TTree;
 }
@@ -95,10 +98,10 @@ export declare class XMLTranslator extends AST<XMLTree> {
 /**
  * Translates cookie pairs into an object (with null prototype) mapping cookie names to cookie values.
  * When cookie name appears multiple times, the first cookie value wins.
- * At runtime, ObjectTranslator extends EntriesTranslator; it can't be typed as such,
- * as getTree() returns ObjectTree instead of EntriesTree.
+ * At runtime, ObjectTranslator extends EntriesTranslator, which extends ASTTranslator. The typings don't express
+ * the hierarchy, as getTree() return types are incompatible and ASTTranslator type parameter is constrained to AST nodes.
  */
-export declare class ObjectTranslator extends ASTTranslator<ObjectTree> {
+export declare class ObjectTranslator extends AST<ObjectTree> {
   constructor(options?: ASTTranslatorOptions);
   getTree(): ObjectTree;
 }
@@ -111,8 +114,9 @@ export type ObjectTree = Record<CookieName, CookieValue>;
 /**
  * Translates cookie pairs into a list of [name, value] entries, in order of appearance.
  * All cookie pairs are retained, including duplicate cookie names.
+ * At runtime, EntriesTranslator extends ASTTranslator (see ObjectTranslator).
  */
-export declare class EntriesTranslator extends ASTTranslator<EntriesTree> {
+export declare class EntriesTranslator extends AST<EntriesTree> {
   constructor(options?: ASTTranslatorOptions);
   getTree(): EntriesTree;
 }
@@ -267,6 +271,10 @@ export function parseSetCookie(
   setCookieString: SetCookieString,
   options: ParseOptions & { readonly translator: null },
 ): SetCookieParseResult<undefined>;
+export function parseSetCookie(
+  setCookieString: SetCookieString,
+  options: ParseOptions & { readonly translator: Translator | null },
+): SetCookieParseResult<unknown>;
 
 export interface SetCookieParseResult<TTree = SetCookieASTNode> extends BaseParseResult<TTree> {}
 

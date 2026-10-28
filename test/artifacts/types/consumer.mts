@@ -103,14 +103,18 @@ const cookieEntries: EntriesTree | undefined = parseCookie('a=1; a=2', {
 if (cookieEntries) serializeCookie(cookieEntries);
 if (cookieObject) serializeCookie(cookieObject);
 
-// class hierarchy matches runtime
-const entriesTranslator: ASTTranslator<EntriesTree> = new EntriesTranslator();
-const objectTranslator: ASTTranslator<ObjectTree> = new ObjectTranslator();
-declare const anyTranslator: unknown;
-if (anyTranslator instanceof EntriesTranslator) {
-  const narrowed: ASTTranslator<EntriesTree> = anyTranslator;
-}
-// overload resolution is unaffected by the hierarchy
+// translators with incompatible trees are not assignable to each other
+const entriesTranslator = new EntriesTranslator();
+const objectTranslator = new ObjectTranslator();
+// @ts-expect-error ASTTranslator produces AST nodes only
+new ASTTranslator<string>();
+// @ts-expect-error ASTTranslator produces AST nodes only
+new ASTTranslator<EntriesTree>();
+// union-typed translators resolve to catch-all overload
+declare const unionTranslator: EntriesTranslator | ObjectTranslator;
+const unionTree: unknown = parseCookie('a=1', { translator: unionTranslator }).tree;
+const unionSetCookieTree: unknown = parseSetCookie('a=1', { translator: unionTranslator }).tree;
+// overload resolution
 const entriesTree: EntriesTree | undefined = parseCookie('a=1', {
   translator: entriesTranslator,
 }).tree;
