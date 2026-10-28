@@ -158,6 +158,15 @@ export declare class CookieParseError extends CookieError {
 }
 
 /**
+ * Cookie - test
+ */
+export function testCookie(cookieString: CookieString, options?: TestOptions): boolean;
+
+export interface TestOptions {
+  readonly strict?: boolean;
+}
+
+/**
  * Cookie - serialize
  */
 export function serializeCookie(cookiePairs: CookiePair[], options?: CookieSerializeOptions): CookieString;
