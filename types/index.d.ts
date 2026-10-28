@@ -91,6 +91,15 @@ export interface ParseDecoders {
 export declare class XMLTranslator extends AST<XMLTree> {
   getTree(): XMLTree;
 }
+/**
+ * Translates cookie pairs into a plain object mapping cookie names to cookie values.
+ * When cookie name appears multiple times, the first cookie value wins.
+ */
+export declare class ObjectTranslator extends AST<ObjectTree> {
+  constructor(options?: ASTTranslatorOptions);
+  getTree(): ObjectTree;
+}
+export type ObjectTree = Record<CookieName, CookieValue>;
 
 export type ListEntryType = 'cookie-string' | 'cookie-pair' | 'cookie-name' | 'cookie-value';
 export type ListEntry = [ListEntryType, string];

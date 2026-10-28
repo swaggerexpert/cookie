@@ -250,6 +250,32 @@ After running the above code, **list** variable has the following shape:
 > regardless of the translator used. `parseResult.ast.translate(parts)` populates `parts` with the same list of entries
 > as `ListTranslator` produces, and `parseResult.ast.toXml()` returns XML representation. Prefer translators in new code.
 
+**Object translator**
+
+Plain object representation, mapping cookie names to cookie values, is available on parse result
+when instance of `ObjectTranslator` is provided via a `translator` option to the `parseCookie` function.
+
+```js
+import { parseCookie, ObjectTranslator } from '@swaggerexpert/cookie';
+
+const { tree: cookies } = parseCookie('foo=bar; baz=raz; foo=boo', { translator: new ObjectTranslator() });
+// => { foo: 'bar', baz: 'raz' }
+```
+
+When a cookie name appears multiple times, the first cookie value wins, as user agents send cookies with more specific paths first
+([RFC 6265, Section 5.4](https://datatracker.ietf.org/doc/html/rfc6265#section-5.4)). All cookie values are available in the [AST](#translators).
+Cookie names are defined as own properties, so names like `__proto__` don't modify the object prototype; use `Object.prototype.hasOwnProperty.call()`
+rather than `cookies.hasOwnProperty()` when checking for a cookie name, as cookie names can shadow `Object.prototype` methods.
+
+`ObjectTranslator` accepts the same `decoders` option as `ASTTranslator`:
+
+```js
+import { parseCookie, ObjectTranslator, cookieValueRotatingDecoder } from '@swaggerexpert/cookie';
+
+const translator = new ObjectTranslator({ decoders: { value: cookieValueRotatingDecoder } });
+parseCookie('foo=Ow; bar=aGVsbG8', { translator }).tree; // => { foo: ';', bar: 'hello' }
+```
+
 **XML translator**
 
 ```js

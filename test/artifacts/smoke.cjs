@@ -70,6 +70,10 @@ const check = (label, Cookie) => {
   );
   assert.strictEqual(Cookie.testSetCookie('id=a;Secure'), false);
   assert.strictEqual(Cookie.testSetCookie('id=a;Secure', { strict: false }), true);
+  assertJSONEqual(
+    Cookie.parseCookie('a=1; b=2; a=3', { translator: new Cookie.ObjectTranslator() }).tree,
+    { a: '1', b: '2' },
+  );
   // exercises environment specific (node/browser) base64 decoder
   assertJSONEqual(
     Cookie.parseCookie('foo=aMOpbGxv; bar=en', {

@@ -13,6 +13,8 @@ import {
   Grammar,
   CSTTranslator,
   ListTranslator,
+  ObjectTranslator,
+  type ObjectTree,
   CookieParseError,
   cookieValueStrictBase64Encoder,
   cookieValueRotatingDecoder,
@@ -85,3 +87,10 @@ const setCookieTree: SetCookieASTNode | undefined = parseSetCookie('id=a', {
   translator: setCookieTranslator,
 }).tree;
 const cookieTree: ASTNode = new ASTTranslator().getTree();
+
+const cookieObject: ObjectTree | undefined = parseCookie('a=1', {
+  translator: new ObjectTranslator({ decoders: { value: cookieValueRotatingDecoder } }),
+}).tree;
+const setCookieObject: ObjectTree | undefined = parseSetCookie('id=a', {
+  translator: new ObjectTranslator(),
+}).tree;

@@ -5,6 +5,7 @@ export { default as ListTranslator } from './cookie/parse/translators/ListTransl
 export { default as CSTTranslator } from './cookie/parse/translators/CSTTranslator.js';
 export { default as ASTTranslator } from './cookie/parse/translators/ASTTranslator.js';
 export { default as XMLTranslator } from './cookie/parse/translators/XMLTranslator.js';
+export { default as ObjectTranslator } from './cookie/parse/translators/ObjectTranslator.js';
 export { default as Trace } from './cookie/parse/trace/Trace.js';
 export { default as testCookie } from './cookie/test/index.js';
 export { default as testCookieName } from './cookie/test/cookie-name.js';
