@@ -27,6 +27,7 @@ import {
   type CSTNode,
   type ListTree,
   type CookiePair,
+  type ParseOptions,
 } from '@swaggerexpert/cookie';
 
 const ast: ASTNode | undefined = parseCookie('foo=bar').tree;
@@ -137,3 +138,15 @@ const inlineEntries: EntriesTree | undefined = parseCookie('a=1', {
 const inlineObject: ObjectTree | undefined = parseSetCookie('a=1', {
   translator: new ObjectTranslator(),
 }).tree;
+
+// options typed as ParseOptions resolve to catch-all overload (compatible with v2.0.2 typings)
+function wrapParseCookie(cookieString: string, options?: ParseOptions) {
+  const parseResult = parseCookie(cookieString, options);
+  const parts: CookiePair[] = parseResult.ast.translate([]);
+  return parseResult.result.success;
+}
+function wrapParseSetCookie(setCookieString: string, options?: ParseOptions) {
+  return parseSetCookie(setCookieString, options).result.success;
+}
+const strictOptions: ParseOptions = { strict: true };
+const optionsResult: boolean = parseCookie('a=b', strictOptions).result.success;
