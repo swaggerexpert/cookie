@@ -68,6 +68,21 @@ describe('parseSetCookie', function () {
       assert.strictEqual(parseSetCookie('id=a; Max-Age=0').tree.attributes.maxAge, 0);
     });
 
+    specify('should parse attributes with prefix matching a known attribute', function () {
+      [
+        'id=a; Secure ',
+        'id=a; Secure=1',
+        'id=a; SecureX',
+        'id=a; HttpOnly=',
+        'id=a; Max-Age=60 ',
+        'id=a; Max-Age=5x',
+        'id=a; Domain=example.com:80',
+        'id=a; Expires=Thu, 01 Jan 1970 00:00:00 GMT ',
+      ].forEach((setCookieString) => {
+        assert.isTrue(parseSetCookie(setCookieString).result.success, setCookieString);
+      });
+    });
+
     specify('should fail on invalid Set-Cookie strings', function () {
       ['', 'id', '=a', 'id=a;Secure', 'id=a ; Secure', 'id=a b', 'i d=a', 'id=a; Path=/;'].forEach(
         (setCookieString) => {
@@ -123,6 +138,39 @@ describe('parseSetCookie', function () {
       });
 
       assert.deepEqual(tree.attributes, { maxAge: 2, path: '/b' });
+    });
+
+    specify('should reset path to default-path when not starting with "/"', function () {
+      assert.deepEqual(
+        parseSetCookie('id=a; Path=/a; Path=docs', { strict: false }).tree.attributes,
+        {},
+      );
+      assert.deepEqual(
+        parseSetCookie('id=a; Path=/a; Path=', { strict: false }).tree.attributes,
+        {},
+      );
+    });
+
+    specify('should reset domain to host-only when empty', function () {
+      assert.deepEqual(
+        parseSetCookie('id=a; Domain=example.com; Domain=.', { strict: false }).tree.attributes,
+        {},
+      );
+    });
+
+    specify('should clamp Max-Age to safe integer range', function () {
+      assert.strictEqual(
+        parseSetCookie('id=a; Max-Age=99999999999999999999999').tree.attributes.maxAge,
+        Number.MAX_SAFE_INTEGER,
+      );
+      assert.strictEqual(
+        parseSetCookie('id=a; Max-Age=-99999999999999999999999').tree.attributes.maxAge,
+        Number.MIN_SAFE_INTEGER,
+      );
+    });
+
+    specify('should normalize negative zero Max-Age', function () {
+      assert.isTrue(Object.is(parseSetCookie('id=a; Max-Age=-0').tree.attributes.maxAge, 0));
     });
 
     specify('should normalize domain', function () {
@@ -183,6 +231,18 @@ describe('parseSetCookie', function () {
       assert.strictEqual(
         serializeSetCookie(tree.name, tree.value, tree.attributes),
         setCookieString,
+      );
+    });
+
+    specify('should serialize attributes of edge cases', function () {
+      const { tree } = parseSetCookie(
+        'id=a; Max-Age=99999999999999999999999; Domain=..example.com; Domain=.; Path=docs',
+        { strict: false },
+      );
+
+      assert.strictEqual(
+        serializeSetCookie(tree.name, tree.value, tree.attributes),
+        `id=a; Max-Age=${Number.MAX_SAFE_INTEGER}`,
       );
     });
   });

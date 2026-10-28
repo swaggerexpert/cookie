@@ -31,12 +31,13 @@ const serializeExpires = (expires) => {
 };
 
 /**
+ * Max-Age must be a safe integer, so that it is serialized as a sequence of digits (not e.g. "1e+21").
  * RFC 6265 grammar requires non-zero positive integer, but the user agent processing
  * (https://datatracker.ietf.org/doc/html/rfc6265#section-5.2.2) defines zero and negative values
  * as immediate expiration, which is the common way of deleting a cookie.
  */
 const serializeMaxAge = (maxAge) => {
-  if (typeof maxAge !== 'number' || !Number.isInteger(maxAge)) {
+  if (typeof maxAge !== 'number' || !Number.isSafeInteger(maxAge)) {
     throw new TypeError(`Invalid Set-Cookie Max-Age attribute: ${String(maxAge)}`);
   }
 
