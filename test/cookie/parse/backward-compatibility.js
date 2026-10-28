@@ -46,6 +46,15 @@ describe('parseCookie', function () {
 
         assert.strictEqual(parseResult.ast, parseResult.ast);
       });
+
+      specify('should allow reassigning ast', function () {
+        const parseResult = parseCookie('foo=bar');
+        const ast = new ListTranslator();
+
+        parseResult.ast = ast;
+
+        assert.strictEqual(parseResult.ast, ast);
+      });
     });
 
     context('given lenient mode', function () {
@@ -69,6 +78,13 @@ describe('parseCookie', function () {
         const parseResult = parseCookie('foo=bar', { translator: new CSTTranslator() });
 
         assert.instanceOf(parseResult.ast, ListTranslator);
+      });
+
+      specify('should reuse ListTranslator as deprecated ast', function () {
+        const translator = new ListTranslator();
+        const parseResult = parseCookie('foo=bar', { translator });
+
+        assert.strictEqual(parseResult.ast, translator);
       });
     });
 
