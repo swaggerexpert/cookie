@@ -37,7 +37,10 @@ The development of this library contributed to the identification and formal sub
         - [Tracing](#tracing)
       - [Validating cookie](#validating-cookie)
       - [Serializing cookie](#serializing-cookie)
+    - [Set-Cookie](#set-cookie)
+      - [Serializing Set-Cookie](#serializing-set-cookie)
     - [Encoders](#encoders)
+      - [Generic encoders](#generic-encoders)
       - [Cookie Name encoders](#cookie-name-encoders)
       - [Cookie Value encoders](#cookie-value-encoders)
     - [Validators](#validators)
@@ -405,6 +408,32 @@ serializeCookie({ foo: ';' }, {
   encoders: {  name: identity, value: identity },
   validators: { name: noop, value: noop },
 }); // => "foo=;"
+```
+
+#### Set-Cookie
+
+The `Set-Cookie` header is an HTTP header used to send cookies from the server to the client (e.g., a browser).
+Each `Set-Cookie` header contains a single cookie formatted as key-value pair.
+
+##### Serializing Set-Cookie
+
+Serializing a single cookie pair for the `Set-Cookie` header is as simple as importing the **serializeSetCookie** function and calling it.
+
+```js
+import { serializeSetCookie } from '@swaggerexpert/cookie';
+
+serializeSetCookie('foo', 'bar'); // => 'foo=bar'
+serializeSetCookie('foo', ';'); // => 'foo=Ow' (base64url encoding)
+```
+
+`serializeSetCookie` accepts the same [options](#serializing-cookie) as `serializeCookie`, with the same defaults:
+
+```js
+import { serializeSetCookie, cookieValueStrictPercentEncoder } from '@swaggerexpert/cookie';
+
+serializeSetCookie('foo', 'b r', {
+  encoders: { value: cookieValueStrictPercentEncoder },
+}); // => 'foo=b%20r'
 ```
 
 #### Encoders

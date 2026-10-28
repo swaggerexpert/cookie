@@ -184,6 +184,15 @@ export interface CookieSerializeOptions {
 }
 
 /**
+ * Set-Cookie - serialize
+ */
+export type SetCookieString = string;
+
+export function serializeSetCookie(name: CookieName, value: CookieValue, options?: SetCookieSerializeOptions): SetCookieString;
+
+export interface SetCookieSerializeOptions extends CookieSerializeOptions {}
+
+/**
  * Encoders
  */
 export declare const base64Encoder: Encoder;
