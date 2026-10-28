@@ -39,4 +39,9 @@ class CookieError extends Error {
   }
 }
 
+/**
+ * Class names are not reliable at runtime, as minifiers mangle them.
+ */
+Object.defineProperty(CookieError, 'name', { value: 'CookieError' });
+
 export default CookieError;
