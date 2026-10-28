@@ -12,8 +12,7 @@ const parse = (
   cookieString,
   { strict = true, translator = new ASTTranslator(), stats = false, trace = false } = {},
 ) => {
-  // arrays are tolerated for backward compatibility, as apg-lite accepts any iterable input
-  if (typeof cookieString !== 'string' && !Array.isArray(cookieString)) {
+  if (typeof cookieString !== 'string') {
     throw new TypeError('Cookie string must be a string');
   }
 
