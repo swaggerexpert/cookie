@@ -6,3 +6,4 @@ node_modules/
 /es
 /swaggerexpert-cookie-*.tgz
 /dist
+/.mcp.json
