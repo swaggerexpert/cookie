@@ -33,6 +33,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # tarball is packed by semantic-release (npm pack), which doesn't run prepublishOnly
       - name: Build code
         run: npm run build
 
@@ -44,12 +45,24 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         run: npx semantic-release
 
+      # semantic-release packs the tarball only when there is a new release
+      - name: Detect npm tarball
+        id: tarball
+        run: |
+          if compgen -G "dist/*.tgz" > /dev/null; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Attest npm tarball (GitHub)
+        if: steps.tarball.outputs.exists == 'true'
         uses: actions/attest-build-provenance@v4
         with:
           subject-path: "dist/*.tgz"
 
       - name: Publish tarball to npm (OIDC)
+        if: steps.tarball.outputs.exists == 'true'
         run: |
           set -euo pipefail
           TARBALL="$(ls -1 dist/*.tgz | head -n 1)"
