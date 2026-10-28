@@ -10,6 +10,9 @@
 
 `@swaggerexpert/cookie` is [RFC 6265](https://datatracker.ietf.org/doc/html/rfc6265) compliant cookie `parser`, `validator` and `serializer`.
 
+The development of this library contributed to the identification and formal submission of following **errata** against the RFC 6265:
+- [Errata ID: 8242](https://www.rfc-editor.org/errata/eid8242)
+
 <table>
   <tr>
     <td align="right" valign="middle">
