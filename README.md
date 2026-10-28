@@ -38,6 +38,8 @@ The development of this library contributed to the identification and formal sub
       - [Validating cookie](#validating-cookie)
       - [Serializing cookie](#serializing-cookie)
     - [Set-Cookie](#set-cookie)
+      - [Parsing Set-Cookie](#parsing-set-cookie)
+      - [Validating Set-Cookie](#validating-set-cookie)
       - [Serializing Set-Cookie](#serializing-set-cookie)
     - [Encoders](#encoders)
       - [Generic encoders](#generic-encoders)
@@ -437,6 +439,88 @@ serializeCookie({ foo: ';' }, {
 
 The `Set-Cookie` header is an HTTP header used to send cookies from the server to the client (e.g., a browser).
 Each `Set-Cookie` header contains a single cookie formatted as key-value pair.
+
+##### Parsing Set-Cookie
+
+Parsing a `Set-Cookie` header is as simple as importing the **parseSetCookie** function and calling it.
+
+```js
+import { parseSetCookie } from '@swaggerexpert/cookie';
+
+const { result, tree } = parseSetCookie(
+  'id=a3fWa; Expires=Thu, 21 Oct 2027 07:28:00 GMT; Max-Age=3600; Domain=example.com; Path=/docs; Secure; HttpOnly; SameSite=Lax; Foo=bar',
+);
+result.success; // => true
+```
+
+After running the above code, **tree** variable has the following shape:
+
+```js
+{
+  type: 'SetCookie',
+  name: 'id',
+  value: 'a3fWa',
+  attributes: {
+    expires: new Date('2027-10-21T07:28:00.000Z'),
+    maxAge: 3600,
+    domain: 'example.com',
+    path: '/docs',
+    secure: true,
+    httpOnly: true,
+    sameSite: 'lax',
+  },
+  extensions: [{ type: 'CookieAttribute', name: 'Foo', value: 'bar' }],
+}
+```
+
+Recognized `attributes` are interpreted following [RFC 6265, Section 5.2](https://datatracker.ietf.org/doc/html/rfc6265#section-5.2):
+
+- attribute names are matched case-insensitively
+- `Expires` is parsed using the [cookie-date](https://datatracker.ietf.org/doc/html/rfc6265#section-5.1.1) algorithm, which recognizes various date formats (e.g. `Wednesday, 21-Oct-15 07:28:00 GMT`)
+- `Max-Age` is an integer, zero and negative values included
+- `Domain` is lower-cased and leading `.` is removed
+- `Path` not starting with `/` is ignored, as it is replaced by default-path, which depends on the request URI
+- attributes with values that cannot be processed (e.g. `Max-Age=1.5`, `Expires=invalid`) are ignored
+- when an attribute appears multiple times, the last one wins
+- `SameSite`, `Partitioned` and `Priority` are recognized as well, although not part of RFC 6265
+
+Unrecognized attributes are collected in `extensions`, in order of appearance.
+The shape of `attributes` matches the [attribute options](#serializing-set-cookie) of `serializeSetCookie`, so parsed `Set-Cookie` header can be serialized back:
+
+```js
+import { parseSetCookie, serializeSetCookie } from '@swaggerexpert/cookie';
+
+const { tree } = parseSetCookie('id=a3fWa; Max-Age=3600; Path=/; HttpOnly');
+serializeSetCookie(tree.name, tree.value, tree.attributes); // => 'id=a3fWa; Max-Age=3600; Path=/; HttpOnly'
+```
+
+The **lenient** mode follows parsing algorithm of [RFC 6265, Section 5.2](https://datatracker.ietf.org/doc/html/rfc6265#section-5.2),
+which is how user agents parse `Set-Cookie` headers. Whitespace around names and values is ignored, attributes don't have to be separated by `"; "`,
+and cookie name and value can contain any characters except CTLs and `;`.
+
+```js
+import { parseSetCookie } from '@swaggerexpert/cookie';
+
+parseSetCookie('id=a3fWa;Secure').result.success; // => false
+parseSetCookie('id=a3fWa;Secure', { strict: false }).result.success; // => true
+
+parseSetCookie('  id = a b ; max-age=60 ;HTTPONLY', { strict: false }).tree;
+// => { type: 'SetCookie', name: 'id', value: 'a b', attributes: { maxAge: 60, httpOnly: true }, extensions: [] }
+```
+
+`parseSetCookie` supports the same `decoders`, `translator`, `stats` and `trace` options as [parseCookie](#parsing-cookie).
+Translators produce `set-cookie-string`, `cookie-pair`, `cookie-name`, `cookie-value` and `cookie-av` nodes in both strict and lenient mode.
+
+##### Validating Set-Cookie
+
+```js
+import { testSetCookie } from '@swaggerexpert/cookie';
+
+testSetCookie('id=a3fWa; Path=/; Secure'); // => true
+testSetCookie('id=a3fWa;Secure'); // => false
+testSetCookie('id=a3fWa;Secure', { strict: false }); // => true
+testSetCookie('id'); // => false
+```
 
 ##### Serializing Set-Cookie
 
@@ -838,6 +922,18 @@ lenient-quoted-value         = DQUOTE *( lenient-quoted-char ) DQUOTE
 lenient-quoted-char          = %x20-21 / %x23-7E ; Allow all printable US-ASCII except DQUOTE
 lenient-cookie-octet         = %x21-2B / %x2D-3A / %x3C-7E
                              ; Allow all printable characters except CTLs, semicolon and SP
+
+; Lenient version of https://datatracker.ietf.org/doc/html/rfc6265#section-4.1.1
+; following parsing algorithm of https://datatracker.ietf.org/doc/html/rfc6265#section-5.2
+lenient-set-cookie-string    = lenient-set-cookie-pair *( ";" lenient-cookie-av )
+lenient-set-cookie-pair      = *WSP lenient-set-cookie-name *WSP "=" *WSP lenient-set-cookie-value *WSP
+lenient-set-cookie-name      = lenient-name-char *( *WSP lenient-name-char ) ; leading and trailing WSP is not part of the name
+lenient-set-cookie-value     = [ lenient-value-char *( *WSP lenient-value-char ) ] ; leading and trailing WSP is not part of the value
+lenient-cookie-av            = *WSP lenient-cookie-av-name *WSP [ "=" *WSP lenient-cookie-av-value *WSP ]
+lenient-cookie-av-name       = [ lenient-name-char *( *WSP lenient-name-char ) ]
+lenient-cookie-av-value      = [ lenient-value-char *( *WSP lenient-value-char ) ]
+lenient-name-char            = %x21-3A / %x3C / %x3E-7E / %x80-10FFFF ; any CHAR except CTLs, WSP, ";" and "="
+lenient-value-char           = %x21-3A / %x3C-7E / %x80-10FFFF ; any CHAR except CTLs, WSP and ";"
 
 ; https://datatracker.ietf.org/doc/html/rfc6265#section-4.2.1
 cookie-string     = cookie-pair *( ";" SP cookie-pair )

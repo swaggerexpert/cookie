@@ -17,6 +17,17 @@ class CSTTranslator extends AST {
     this.callbacks['lenient-cookie-pair'] = cstCallback('cookie-pair');
     this.callbacks['lenient-cookie-name'] = cstCallback('cookie-name');
     this.callbacks['lenient-cookie-value'] = cstCallback('cookie-value');
+
+    // Set-Cookie strict rules (cookie-pair, cookie-name and cookie-value are shared with Cookie)
+    this.callbacks['set-cookie-string'] = cstCallback('set-cookie-string');
+    this.callbacks['cookie-av'] = cstCallback('cookie-av');
+
+    // Set-Cookie lenient rules
+    this.callbacks['lenient-set-cookie-string'] = cstCallback('set-cookie-string');
+    this.callbacks['lenient-set-cookie-pair'] = cstCallback('cookie-pair');
+    this.callbacks['lenient-set-cookie-name'] = cstCallback('cookie-name');
+    this.callbacks['lenient-set-cookie-value'] = cstCallback('cookie-value');
+    this.callbacks['lenient-cookie-av'] = cstCallback('cookie-av');
   }
 
   getTree() {
