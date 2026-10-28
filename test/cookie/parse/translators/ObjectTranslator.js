@@ -16,14 +16,14 @@ describe('parseCookie', function () {
           translator: new ObjectTranslator(),
         });
 
-        assert.deepEqual(tree, { foo: 'bar', baz: '"raz"', empty: '' });
-        assert.strictEqual(Object.getPrototypeOf(tree), Object.prototype);
+        assert.deepEqual({ ...tree }, { foo: 'bar', baz: '"raz"', empty: '' });
+        assert.isNull(Object.getPrototypeOf(tree));
       });
 
       specify('should use the first value of duplicate cookie names', function () {
         const { tree } = parseCookie('foo=1; bar=2; foo=3', { translator: new ObjectTranslator() });
 
-        assert.deepEqual(tree, { foo: '1', bar: '2' });
+        assert.deepEqual({ ...tree }, { foo: '1', bar: '2' });
       });
 
       specify('should not modify object prototype', function () {
@@ -32,10 +32,18 @@ describe('parseCookie', function () {
         });
 
         assert.deepEqual(Object.keys(tree), ['__proto__', 'constructor', 'hasOwnProperty']);
-        assert.strictEqual(Object.getPrototypeOf(tree), Object.prototype);
-        assert.isTrue(Object.prototype.hasOwnProperty.call(tree, '__proto__'));
+        assert.isNull(Object.getPrototypeOf(tree));
+        assert.strictEqual(tree.__proto__, 'a');
         assert.strictEqual(tree.constructor, 'b');
         assert.isUndefined({}.a);
+      });
+
+      specify('should not expose Object.prototype members for absent cookie names', function () {
+        const { tree } = parseCookie('a=1', { translator: new ObjectTranslator() });
+
+        assert.isUndefined(tree.constructor);
+        assert.isUndefined(tree.toString);
+        assert.isFalse('valueOf' in tree);
       });
 
       specify('should translate a lenient cookie string to an object', function () {
@@ -44,7 +52,7 @@ describe('parseCookie', function () {
           translator: new ObjectTranslator(),
         });
 
-        assert.deepEqual(tree, { foo: 'bar', baz: 'raz' });
+        assert.deepEqual({ ...tree }, { foo: 'bar', baz: 'raz' });
       });
 
       specify('should apply decoders', function () {
@@ -53,7 +61,7 @@ describe('parseCookie', function () {
         });
         const { tree } = parseCookie('a%25=Ow; b=aGVsbG8', { translator });
 
-        assert.deepEqual(tree, { 'a%': ';', b: 'hello' });
+        assert.deepEqual({ ...tree }, { 'a%': ';', b: 'hello' });
       });
 
       specify('should not produce tree for invalid cookie string', function () {
@@ -68,7 +76,7 @@ describe('parseCookie', function () {
           translator: new ObjectTranslator(),
         });
 
-        assert.deepEqual(tree, { id: 'a3fWa' });
+        assert.deepEqual({ ...tree }, { id: 'a3fWa' });
       });
     });
   });

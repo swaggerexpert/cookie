@@ -1,28 +1,24 @@
-import ASTTranslator from './ASTTranslator.js';
+import EntriesTranslator from './EntriesTranslator.js';
 
 /**
- * Translates cookie pairs into a plain object mapping cookie names to cookie values.
+ * Translates cookie pairs into an object mapping cookie names to cookie values.
  *
- * When cookie name appears multiple times, the first cookie value wins. User agents send cookies
- * with more specific paths first (https://datatracker.ietf.org/doc/html/rfc6265#section-5.4).
+ * When cookie name appears multiple times, the first cookie value wins. This is a convention:
+ * user agents SHOULD send cookies with longer paths first (https://datatracker.ietf.org/doc/html/rfc6265#section-5.4),
+ * but servers SHOULD NOT rely on the order (https://datatracker.ietf.org/doc/html/rfc6265#section-4.2.2).
  *
- * Properties are defined (not assigned), so cookie names like "__proto__" can't modify the object prototype.
+ * The object has null prototype, so cookie names like "__proto__" or "constructor" are plain own properties
+ * and lookups of absent cookie names never return inherited Object.prototype members.
  */
-class ObjectTranslator extends ASTTranslator {
+class ObjectTranslator extends EntriesTranslator {
   getTree() {
-    const ast = super.getTree();
-    const pairs = ast.type === 'SetCookie' ? [ast] : ast.pairs;
-    const cookies = {};
+    const entries = super.getTree();
+    const cookies = Object.create(null);
 
-    for (const { name, value } of pairs) {
-      if (Object.prototype.hasOwnProperty.call(cookies, name)) continue;
-
-      Object.defineProperty(cookies, name, {
-        value,
-        enumerable: true,
-        writable: true,
-        configurable: true,
-      });
+    for (const [name, value] of entries) {
+      if (!Object.prototype.hasOwnProperty.call(cookies, name)) {
+        cookies[name] = value;
+      }
     }
 
     return cookies;
