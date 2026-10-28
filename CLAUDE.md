@@ -34,7 +34,8 @@ This library parses, validates and serializes [RFC 6265](https://datatracker.iet
   - `ASTTranslator` - Default. Produces `{ type: 'CookieString', pairs: [{ type: 'CookiePair', name, value }] }` (extends CSTTranslator)
   - `ListTranslator` - Produces list of `[type, text]` tuples
   - `XMLTranslator` - Produces XML string representation (extends CSTTranslator)
-  - `ObjectTranslator` - Produces plain `{ name: value }` object, first value wins on duplicate names, prototype-safe (extends ASTTranslator)
+  - `ObjectTranslator` - Produces `{ name: value }` object with null prototype, first value wins on duplicate names (extends EntriesTranslator)
+  - `EntriesTranslator` - Produces `[name, value]` entries in order of appearance, duplicates retained; accepted by `serializeCookie` (extends ASTTranslator)
 
 - **`src/cookie/test/`** and **`src/set-cookie/test/`** - Validation functions (`testCookie`, `testCookieName`, `testCookieValue`, `testSetCookie`), also used by serialization encoders and validators.
 

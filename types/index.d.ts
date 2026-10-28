@@ -92,14 +92,26 @@ export declare class XMLTranslator extends AST<XMLTree> {
   getTree(): XMLTree;
 }
 /**
- * Translates cookie pairs into a plain object mapping cookie names to cookie values.
+ * Translates cookie pairs into an object (with null prototype) mapping cookie names to cookie values.
  * When cookie name appears multiple times, the first cookie value wins.
  */
 export declare class ObjectTranslator extends AST<ObjectTree> {
   constructor(options?: ASTTranslatorOptions);
   getTree(): ObjectTree;
 }
-export type ObjectTree = Record<CookieName, CookieValue>;
+/**
+ * Object with null prototype; absent cookie names are undefined.
+ */
+export type ObjectTree = Partial<Record<CookieName, CookieValue>>;
+/**
+ * Translates cookie pairs into a list of [name, value] entries, in order of appearance.
+ * All cookie pairs are retained, including duplicate cookie names.
+ */
+export declare class EntriesTranslator extends AST<EntriesTree> {
+  constructor(options?: ASTTranslatorOptions);
+  getTree(): EntriesTree;
+}
+export type EntriesTree = CookiePair[];
 
 export type ListEntryType = 'cookie-string' | 'cookie-pair' | 'cookie-name' | 'cookie-value';
 export type ListEntry = [ListEntryType, string];

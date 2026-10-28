@@ -252,7 +252,7 @@ After running the above code, **list** variable has the following shape:
 
 **Object translator**
 
-Plain object representation, mapping cookie names to cookie values, is available on parse result
+Object representation, mapping cookie names to cookie values, is available on parse result
 when instance of `ObjectTranslator` is provided via a `translator` option to the `parseCookie` function.
 
 ```js
@@ -262,10 +262,14 @@ const { tree: cookies } = parseCookie('foo=bar; baz=raz; foo=boo', { translator:
 // => { foo: 'bar', baz: 'raz' }
 ```
 
-When a cookie name appears multiple times, the first cookie value wins, as user agents send cookies with more specific paths first
-([RFC 6265, Section 5.4](https://datatracker.ietf.org/doc/html/rfc6265#section-5.4)). All cookie values are available in the [AST](#translators).
-Cookie names are defined as own properties, so names like `__proto__` don't modify the object prototype; use `Object.prototype.hasOwnProperty.call()`
-rather than `cookies.hasOwnProperty()` when checking for a cookie name, as cookie names can shadow `Object.prototype` methods.
+When a cookie name appears multiple times, the first cookie value wins. This is a convention: user agents SHOULD send cookies
+with longer paths first ([RFC 6265, Section 5.4](https://datatracker.ietf.org/doc/html/rfc6265#section-5.4)), but servers
+SHOULD NOT rely on the order ([RFC 6265, Section 4.2.2](https://datatracker.ietf.org/doc/html/rfc6265#section-4.2.2)).
+Use [entries translator](#translators) or the AST to access all cookie pairs.
+
+The object has `null` prototype, so cookie names like `__proto__` or `constructor` are plain own properties,
+and lookups of absent cookie names (e.g. `cookies.toString`) are `undefined`. Order of the object keys follows
+JavaScript property order, i.e. integer-like cookie names come first; use entries translator when the order matters.
 
 `ObjectTranslator` accepts the same `decoders` option as `ASTTranslator`:
 
@@ -275,6 +279,23 @@ import { parseCookie, ObjectTranslator, cookieValueRotatingDecoder } from '@swag
 const translator = new ObjectTranslator({ decoders: { value: cookieValueRotatingDecoder } });
 parseCookie('foo=Ow; bar=aGVsbG8', { translator }).tree; // => { foo: ';', bar: 'hello' }
 ```
+
+**Entries translator**
+
+List of `[name, value]` entries, in order of appearance, is available on parse result
+when instance of `EntriesTranslator` is provided via a `translator` option to the `parseCookie` function.
+Unlike the [object translator](#translators), all cookie pairs are retained, including duplicate cookie names.
+
+```js
+import { parseCookie, serializeCookie, EntriesTranslator } from '@swaggerexpert/cookie';
+
+const { tree: entries } = parseCookie('foo=bar; baz=raz; foo=boo', { translator: new EntriesTranslator() });
+// => [['foo', 'bar'], ['baz', 'raz'], ['foo', 'boo']]
+
+serializeCookie(entries); // => 'foo=bar; baz=raz; foo=boo'
+```
+
+`EntriesTranslator` accepts the same `decoders` option as `ASTTranslator`.
 
 **XML translator**
 

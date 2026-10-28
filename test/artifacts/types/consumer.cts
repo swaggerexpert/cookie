@@ -14,6 +14,8 @@ import {
   CSTTranslator,
   ListTranslator,
   ObjectTranslator,
+  EntriesTranslator,
+  type EntriesTree,
   type ObjectTree,
   CookieParseError,
   cookieValueStrictBase64Encoder,
@@ -94,3 +96,8 @@ const cookieObject: ObjectTree | undefined = parseCookie('a=1', {
 const setCookieObject: ObjectTree | undefined = parseSetCookie('id=a', {
   translator: new ObjectTranslator(),
 }).tree;
+
+const cookieEntries: EntriesTree | undefined = parseCookie('a=1; a=2', {
+  translator: new EntriesTranslator(),
+}).tree;
+if (cookieEntries) serializeCookie(cookieEntries);
