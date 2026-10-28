@@ -35,7 +35,7 @@ This library parses, validates and serializes [RFC 6265](https://datatracker.iet
   - `ListTranslator` - Produces list of `[type, text]` tuples
   - `XMLTranslator` - Produces XML string representation (extends CSTTranslator)
 
-- **`src/cookie/test/`** - Validation functions (`testCookie`, and internal cookie name/value tests).
+- **`src/cookie/test/`** - Validation functions (`testCookie`, `testCookieName`, `testCookieValue`), also used by serialization encoders and validators.
 
 - **`src/cookie/serialize/`** and **`src/set-cookie/serialize/`** - Serialization with pluggable encoders and validators.
 
