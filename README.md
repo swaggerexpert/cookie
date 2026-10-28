@@ -32,6 +32,7 @@
         - [Translators](#translators)
         - [Statistics](#statistics)
         - [Tracing](#tracing)
+      - [Validating cookie](#validating-cookie)
       - [Serializing cookie](#serializing-cookie)
     - [Encoders](#encoders)
       - [Cookie Name encoders](#cookie-name-encoders)
@@ -257,6 +258,19 @@ const { trace } = parseCookie('foo', { trace: true });
 
 const expectations = trace.inferExpectations();
 expectations.includes('='); // => true
+```
+
+##### Validating Cookie
+
+Validating a cookie string is as simple as importing the **testCookie** function and calling it.
+
+```js
+import { testCookie } from '@swaggerexpert/cookie';
+
+testCookie('foo=bar'); // => true
+testCookie('foo=bar; baz=raz'); // => true
+testCookie('foo=bar;baz=raz'); // => false (missing SP after semicolon)
+testCookie('foo=bar;baz=raz', { strict: false }); // => true
 ```
 
 ##### Serializing Cookie

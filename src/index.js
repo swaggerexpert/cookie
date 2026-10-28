@@ -6,6 +6,7 @@ export { default as CSTTranslator } from './cookie/parse/translators/CSTTranslat
 export { default as ASTTranslator } from './cookie/parse/translators/ASTTranslator.js';
 export { default as XMLTranslator } from './cookie/parse/translators/XMLTranslator.js';
 export { default as Trace } from './cookie/parse/trace/Trace.js';
+export { default as testCookie } from './cookie/test/index.js';
 export { default as serializeCookie } from './cookie/serialize/index.js';
 
 /**
