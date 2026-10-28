@@ -22,6 +22,8 @@ const browser = {
     filename: 'cookie.browser.js',
     libraryTarget: 'umd',
     library: 'SwaggerExpertCookie',
+    // works in browsers, web workers and CommonJS (where self is not defined)
+    globalObject: "typeof self !== 'undefined' ? self : this",
   },
   resolve: {
     extensions: ['.js'],
@@ -53,6 +55,8 @@ const browserMin = {
     filename: 'cookie.browser.min.js',
     libraryTarget: 'umd',
     library: 'SwaggerExpertCookie',
+    // works in browsers, web workers and CommonJS (where self is not defined)
+    globalObject: "typeof self !== 'undefined' ? self : this",
   },
   resolve: {
     extensions: ['.js'],
