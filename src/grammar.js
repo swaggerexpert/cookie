@@ -5,22 +5,22 @@
 export default function grammar(){
   // ```
   // SUMMARY
-  //      rules = 53
+  //      rules = 62
   //       udts = 0
-  //    opcodes = 245
+  //    opcodes = 317
   //        ---   ABNF original opcodes
-  //        ALT = 17
-  //        CAT = 26
-  //        REP = 25
-  //        RNM = 81
-  //        TLS = 47
-  //        TBS = 30
-  //        TRG = 19
+  //        ALT = 19
+  //        CAT = 39
+  //        REP = 46
+  //        RNM = 107
+  //        TLS = 50
+  //        TBS = 31
+  //        TRG = 25
   //        ---   SABNF superset opcodes
   //        UDT = 0
   //        AND = 0
   //        NOT = 0
-  // characters = [0 - 127]
+  // characters = [0 - 1114111]
   // ```
   /* OBJECT IDENTIFIER (for internal parser use) */
   this.grammarObject = 'grammarObject';
@@ -36,50 +36,59 @@ export default function grammar(){
   this.rules[6] = { name: 'lenient-quoted-value', lower: 'lenient-quoted-value', index: 6, isBkr: false };
   this.rules[7] = { name: 'lenient-quoted-char', lower: 'lenient-quoted-char', index: 7, isBkr: false };
   this.rules[8] = { name: 'lenient-cookie-octet', lower: 'lenient-cookie-octet', index: 8, isBkr: false };
-  this.rules[9] = { name: 'cookie-string', lower: 'cookie-string', index: 9, isBkr: false };
-  this.rules[10] = { name: 'cookie-pair', lower: 'cookie-pair', index: 10, isBkr: false };
-  this.rules[11] = { name: 'cookie-name', lower: 'cookie-name', index: 11, isBkr: false };
-  this.rules[12] = { name: 'cookie-value', lower: 'cookie-value', index: 12, isBkr: false };
-  this.rules[13] = { name: 'cookie-octet', lower: 'cookie-octet', index: 13, isBkr: false };
-  this.rules[14] = { name: 'set-cookie-string', lower: 'set-cookie-string', index: 14, isBkr: false };
-  this.rules[15] = { name: 'cookie-av', lower: 'cookie-av', index: 15, isBkr: false };
-  this.rules[16] = { name: 'expires-av', lower: 'expires-av', index: 16, isBkr: false };
-  this.rules[17] = { name: 'sane-cookie-date', lower: 'sane-cookie-date', index: 17, isBkr: false };
-  this.rules[18] = { name: 'max-age-av', lower: 'max-age-av', index: 18, isBkr: false };
-  this.rules[19] = { name: 'max-age-value', lower: 'max-age-value', index: 19, isBkr: false };
-  this.rules[20] = { name: 'non-zero-digit', lower: 'non-zero-digit', index: 20, isBkr: false };
-  this.rules[21] = { name: 'domain-av', lower: 'domain-av', index: 21, isBkr: false };
-  this.rules[22] = { name: 'domain-value', lower: 'domain-value', index: 22, isBkr: false };
-  this.rules[23] = { name: 'path-av', lower: 'path-av', index: 23, isBkr: false };
-  this.rules[24] = { name: 'path-value', lower: 'path-value', index: 24, isBkr: false };
-  this.rules[25] = { name: 'secure-av', lower: 'secure-av', index: 25, isBkr: false };
-  this.rules[26] = { name: 'httponly-av', lower: 'httponly-av', index: 26, isBkr: false };
-  this.rules[27] = { name: 'extension-av', lower: 'extension-av', index: 27, isBkr: false };
-  this.rules[28] = { name: 'av-octet', lower: 'av-octet', index: 28, isBkr: false };
-  this.rules[29] = { name: 'subdomain', lower: 'subdomain', index: 29, isBkr: false };
-  this.rules[30] = { name: 'label', lower: 'label', index: 30, isBkr: false };
-  this.rules[31] = { name: 'let-dig', lower: 'let-dig', index: 31, isBkr: false };
-  this.rules[32] = { name: 'rfc1123-date', lower: 'rfc1123-date', index: 32, isBkr: false };
-  this.rules[33] = { name: 'date1', lower: 'date1', index: 33, isBkr: false };
-  this.rules[34] = { name: 'time', lower: 'time', index: 34, isBkr: false };
-  this.rules[35] = { name: 'wkday', lower: 'wkday', index: 35, isBkr: false };
-  this.rules[36] = { name: 'month', lower: 'month', index: 36, isBkr: false };
-  this.rules[37] = { name: 'OWS', lower: 'ows', index: 37, isBkr: false };
-  this.rules[38] = { name: 'token', lower: 'token', index: 38, isBkr: false };
-  this.rules[39] = { name: 'tchar', lower: 'tchar', index: 39, isBkr: false };
-  this.rules[40] = { name: 'CHAR', lower: 'char', index: 40, isBkr: false };
-  this.rules[41] = { name: 'CTL', lower: 'ctl', index: 41, isBkr: false };
-  this.rules[42] = { name: 'separators', lower: 'separators', index: 42, isBkr: false };
-  this.rules[43] = { name: 'SP', lower: 'sp', index: 43, isBkr: false };
-  this.rules[44] = { name: 'HT', lower: 'ht', index: 44, isBkr: false };
-  this.rules[45] = { name: 'ALPHA', lower: 'alpha', index: 45, isBkr: false };
-  this.rules[46] = { name: 'DIGIT', lower: 'digit', index: 46, isBkr: false };
-  this.rules[47] = { name: 'DQUOTE', lower: 'dquote', index: 47, isBkr: false };
-  this.rules[48] = { name: 'WSP', lower: 'wsp', index: 48, isBkr: false };
-  this.rules[49] = { name: 'HTAB', lower: 'htab', index: 49, isBkr: false };
-  this.rules[50] = { name: 'CRLF', lower: 'crlf', index: 50, isBkr: false };
-  this.rules[51] = { name: 'CR', lower: 'cr', index: 51, isBkr: false };
-  this.rules[52] = { name: 'LF', lower: 'lf', index: 52, isBkr: false };
+  this.rules[9] = { name: 'lenient-set-cookie-string', lower: 'lenient-set-cookie-string', index: 9, isBkr: false };
+  this.rules[10] = { name: 'lenient-set-cookie-pair', lower: 'lenient-set-cookie-pair', index: 10, isBkr: false };
+  this.rules[11] = { name: 'lenient-set-cookie-name', lower: 'lenient-set-cookie-name', index: 11, isBkr: false };
+  this.rules[12] = { name: 'lenient-set-cookie-value', lower: 'lenient-set-cookie-value', index: 12, isBkr: false };
+  this.rules[13] = { name: 'lenient-cookie-av', lower: 'lenient-cookie-av', index: 13, isBkr: false };
+  this.rules[14] = { name: 'lenient-cookie-av-name', lower: 'lenient-cookie-av-name', index: 14, isBkr: false };
+  this.rules[15] = { name: 'lenient-cookie-av-value', lower: 'lenient-cookie-av-value', index: 15, isBkr: false };
+  this.rules[16] = { name: 'lenient-name-char', lower: 'lenient-name-char', index: 16, isBkr: false };
+  this.rules[17] = { name: 'lenient-value-char', lower: 'lenient-value-char', index: 17, isBkr: false };
+  this.rules[18] = { name: 'cookie-string', lower: 'cookie-string', index: 18, isBkr: false };
+  this.rules[19] = { name: 'cookie-pair', lower: 'cookie-pair', index: 19, isBkr: false };
+  this.rules[20] = { name: 'cookie-name', lower: 'cookie-name', index: 20, isBkr: false };
+  this.rules[21] = { name: 'cookie-value', lower: 'cookie-value', index: 21, isBkr: false };
+  this.rules[22] = { name: 'cookie-octet', lower: 'cookie-octet', index: 22, isBkr: false };
+  this.rules[23] = { name: 'set-cookie-string', lower: 'set-cookie-string', index: 23, isBkr: false };
+  this.rules[24] = { name: 'cookie-av', lower: 'cookie-av', index: 24, isBkr: false };
+  this.rules[25] = { name: 'expires-av', lower: 'expires-av', index: 25, isBkr: false };
+  this.rules[26] = { name: 'sane-cookie-date', lower: 'sane-cookie-date', index: 26, isBkr: false };
+  this.rules[27] = { name: 'max-age-av', lower: 'max-age-av', index: 27, isBkr: false };
+  this.rules[28] = { name: 'max-age-value', lower: 'max-age-value', index: 28, isBkr: false };
+  this.rules[29] = { name: 'non-zero-digit', lower: 'non-zero-digit', index: 29, isBkr: false };
+  this.rules[30] = { name: 'domain-av', lower: 'domain-av', index: 30, isBkr: false };
+  this.rules[31] = { name: 'domain-value', lower: 'domain-value', index: 31, isBkr: false };
+  this.rules[32] = { name: 'path-av', lower: 'path-av', index: 32, isBkr: false };
+  this.rules[33] = { name: 'path-value', lower: 'path-value', index: 33, isBkr: false };
+  this.rules[34] = { name: 'secure-av', lower: 'secure-av', index: 34, isBkr: false };
+  this.rules[35] = { name: 'httponly-av', lower: 'httponly-av', index: 35, isBkr: false };
+  this.rules[36] = { name: 'extension-av', lower: 'extension-av', index: 36, isBkr: false };
+  this.rules[37] = { name: 'av-octet', lower: 'av-octet', index: 37, isBkr: false };
+  this.rules[38] = { name: 'subdomain', lower: 'subdomain', index: 38, isBkr: false };
+  this.rules[39] = { name: 'label', lower: 'label', index: 39, isBkr: false };
+  this.rules[40] = { name: 'let-dig', lower: 'let-dig', index: 40, isBkr: false };
+  this.rules[41] = { name: 'rfc1123-date', lower: 'rfc1123-date', index: 41, isBkr: false };
+  this.rules[42] = { name: 'date1', lower: 'date1', index: 42, isBkr: false };
+  this.rules[43] = { name: 'time', lower: 'time', index: 43, isBkr: false };
+  this.rules[44] = { name: 'wkday', lower: 'wkday', index: 44, isBkr: false };
+  this.rules[45] = { name: 'month', lower: 'month', index: 45, isBkr: false };
+  this.rules[46] = { name: 'OWS', lower: 'ows', index: 46, isBkr: false };
+  this.rules[47] = { name: 'token', lower: 'token', index: 47, isBkr: false };
+  this.rules[48] = { name: 'tchar', lower: 'tchar', index: 48, isBkr: false };
+  this.rules[49] = { name: 'CHAR', lower: 'char', index: 49, isBkr: false };
+  this.rules[50] = { name: 'CTL', lower: 'ctl', index: 50, isBkr: false };
+  this.rules[51] = { name: 'separators', lower: 'separators', index: 51, isBkr: false };
+  this.rules[52] = { name: 'SP', lower: 'sp', index: 52, isBkr: false };
+  this.rules[53] = { name: 'HT', lower: 'ht', index: 53, isBkr: false };
+  this.rules[54] = { name: 'ALPHA', lower: 'alpha', index: 54, isBkr: false };
+  this.rules[55] = { name: 'DIGIT', lower: 'digit', index: 55, isBkr: false };
+  this.rules[56] = { name: 'DQUOTE', lower: 'dquote', index: 56, isBkr: false };
+  this.rules[57] = { name: 'WSP', lower: 'wsp', index: 57, isBkr: false };
+  this.rules[58] = { name: 'HTAB', lower: 'htab', index: 58, isBkr: false };
+  this.rules[59] = { name: 'CRLF', lower: 'crlf', index: 59, isBkr: false };
+  this.rules[60] = { name: 'CR', lower: 'cr', index: 60, isBkr: false };
+  this.rules[61] = { name: 'LF', lower: 'lf', index: 61, isBkr: false };
 
   /* UDTS */
   this.udts = [];
@@ -92,7 +101,7 @@ export default function grammar(){
   this.rules[0].opcodes[2] = { type: 3, min: 0, max: Infinity };// REP
   this.rules[0].opcodes[3] = { type: 2, children: [4,5,6] };// CAT
   this.rules[0].opcodes[4] = { type: 7, string: [59] };// TLS
-  this.rules[0].opcodes[5] = { type: 4, index: 37 };// RNM(OWS)
+  this.rules[0].opcodes[5] = { type: 4, index: 46 };// RNM(OWS)
   this.rules[0].opcodes[6] = { type: 4, index: 1 };// RNM(lenient-cookie-entry)
 
   /* lenient-cookie-entry */
@@ -104,21 +113,21 @@ export default function grammar(){
   /* lenient-cookie-pair */
   this.rules[2].opcodes = [];
   this.rules[2].opcodes[0] = { type: 2, children: [1,2,3,4,5,6,7] };// CAT
-  this.rules[2].opcodes[1] = { type: 4, index: 37 };// RNM(OWS)
+  this.rules[2].opcodes[1] = { type: 4, index: 46 };// RNM(OWS)
   this.rules[2].opcodes[2] = { type: 4, index: 4 };// RNM(lenient-cookie-name)
-  this.rules[2].opcodes[3] = { type: 4, index: 37 };// RNM(OWS)
+  this.rules[2].opcodes[3] = { type: 4, index: 46 };// RNM(OWS)
   this.rules[2].opcodes[4] = { type: 7, string: [61] };// TLS
-  this.rules[2].opcodes[5] = { type: 4, index: 37 };// RNM(OWS)
+  this.rules[2].opcodes[5] = { type: 4, index: 46 };// RNM(OWS)
   this.rules[2].opcodes[6] = { type: 4, index: 5 };// RNM(lenient-cookie-value)
-  this.rules[2].opcodes[7] = { type: 4, index: 37 };// RNM(OWS)
+  this.rules[2].opcodes[7] = { type: 4, index: 46 };// RNM(OWS)
 
   /* lenient-cookie-pair-invalid */
   this.rules[3].opcodes = [];
   this.rules[3].opcodes[0] = { type: 2, children: [1,2,4] };// CAT
-  this.rules[3].opcodes[1] = { type: 4, index: 37 };// RNM(OWS)
+  this.rules[3].opcodes[1] = { type: 4, index: 46 };// RNM(OWS)
   this.rules[3].opcodes[2] = { type: 3, min: 1, max: Infinity };// REP
-  this.rules[3].opcodes[3] = { type: 4, index: 39 };// RNM(tchar)
-  this.rules[3].opcodes[4] = { type: 4, index: 37 };// RNM(OWS)
+  this.rules[3].opcodes[3] = { type: 4, index: 48 };// RNM(tchar)
+  this.rules[3].opcodes[4] = { type: 4, index: 46 };// RNM(OWS)
 
   /* lenient-cookie-name */
   this.rules[4].opcodes = [];
@@ -142,10 +151,10 @@ export default function grammar(){
   /* lenient-quoted-value */
   this.rules[6].opcodes = [];
   this.rules[6].opcodes[0] = { type: 2, children: [1,2,4] };// CAT
-  this.rules[6].opcodes[1] = { type: 4, index: 47 };// RNM(DQUOTE)
+  this.rules[6].opcodes[1] = { type: 4, index: 56 };// RNM(DQUOTE)
   this.rules[6].opcodes[2] = { type: 3, min: 0, max: Infinity };// REP
   this.rules[6].opcodes[3] = { type: 4, index: 7 };// RNM(lenient-quoted-char)
-  this.rules[6].opcodes[4] = { type: 4, index: 47 };// RNM(DQUOTE)
+  this.rules[6].opcodes[4] = { type: 4, index: 56 };// RNM(DQUOTE)
 
   /* lenient-quoted-char */
   this.rules[7].opcodes = [];
@@ -160,334 +169,433 @@ export default function grammar(){
   this.rules[8].opcodes[2] = { type: 5, min: 45, max: 58 };// TRG
   this.rules[8].opcodes[3] = { type: 5, min: 60, max: 126 };// TRG
 
-  /* cookie-string */
+  /* lenient-set-cookie-string */
   this.rules[9].opcodes = [];
   this.rules[9].opcodes[0] = { type: 2, children: [1,2] };// CAT
-  this.rules[9].opcodes[1] = { type: 4, index: 10 };// RNM(cookie-pair)
+  this.rules[9].opcodes[1] = { type: 4, index: 10 };// RNM(lenient-set-cookie-pair)
   this.rules[9].opcodes[2] = { type: 3, min: 0, max: Infinity };// REP
-  this.rules[9].opcodes[3] = { type: 2, children: [4,5,6] };// CAT
+  this.rules[9].opcodes[3] = { type: 2, children: [4,5] };// CAT
   this.rules[9].opcodes[4] = { type: 7, string: [59] };// TLS
-  this.rules[9].opcodes[5] = { type: 4, index: 43 };// RNM(SP)
-  this.rules[9].opcodes[6] = { type: 4, index: 10 };// RNM(cookie-pair)
+  this.rules[9].opcodes[5] = { type: 4, index: 13 };// RNM(lenient-cookie-av)
 
-  /* cookie-pair */
+  /* lenient-set-cookie-pair */
   this.rules[10].opcodes = [];
-  this.rules[10].opcodes[0] = { type: 2, children: [1,2,3] };// CAT
-  this.rules[10].opcodes[1] = { type: 4, index: 11 };// RNM(cookie-name)
-  this.rules[10].opcodes[2] = { type: 7, string: [61] };// TLS
-  this.rules[10].opcodes[3] = { type: 4, index: 12 };// RNM(cookie-value)
+  this.rules[10].opcodes[0] = { type: 2, children: [1,3,4,6,7,9,10] };// CAT
+  this.rules[10].opcodes[1] = { type: 3, min: 0, max: Infinity };// REP
+  this.rules[10].opcodes[2] = { type: 4, index: 57 };// RNM(WSP)
+  this.rules[10].opcodes[3] = { type: 4, index: 11 };// RNM(lenient-set-cookie-name)
+  this.rules[10].opcodes[4] = { type: 3, min: 0, max: Infinity };// REP
+  this.rules[10].opcodes[5] = { type: 4, index: 57 };// RNM(WSP)
+  this.rules[10].opcodes[6] = { type: 7, string: [61] };// TLS
+  this.rules[10].opcodes[7] = { type: 3, min: 0, max: Infinity };// REP
+  this.rules[10].opcodes[8] = { type: 4, index: 57 };// RNM(WSP)
+  this.rules[10].opcodes[9] = { type: 4, index: 12 };// RNM(lenient-set-cookie-value)
+  this.rules[10].opcodes[10] = { type: 3, min: 0, max: Infinity };// REP
+  this.rules[10].opcodes[11] = { type: 4, index: 57 };// RNM(WSP)
 
-  /* cookie-name */
+  /* lenient-set-cookie-name */
   this.rules[11].opcodes = [];
-  this.rules[11].opcodes[0] = { type: 4, index: 38 };// RNM(token)
+  this.rules[11].opcodes[0] = { type: 2, children: [1,2] };// CAT
+  this.rules[11].opcodes[1] = { type: 4, index: 16 };// RNM(lenient-name-char)
+  this.rules[11].opcodes[2] = { type: 3, min: 0, max: Infinity };// REP
+  this.rules[11].opcodes[3] = { type: 2, children: [4,6] };// CAT
+  this.rules[11].opcodes[4] = { type: 3, min: 0, max: Infinity };// REP
+  this.rules[11].opcodes[5] = { type: 4, index: 57 };// RNM(WSP)
+  this.rules[11].opcodes[6] = { type: 4, index: 16 };// RNM(lenient-name-char)
 
-  /* cookie-value */
+  /* lenient-set-cookie-value */
   this.rules[12].opcodes = [];
-  this.rules[12].opcodes[0] = { type: 1, children: [1,6] };// ALT
-  this.rules[12].opcodes[1] = { type: 2, children: [2,3,5] };// CAT
-  this.rules[12].opcodes[2] = { type: 4, index: 47 };// RNM(DQUOTE)
+  this.rules[12].opcodes[0] = { type: 3, min: 0, max: 1 };// REP
+  this.rules[12].opcodes[1] = { type: 2, children: [2,3] };// CAT
+  this.rules[12].opcodes[2] = { type: 4, index: 17 };// RNM(lenient-value-char)
   this.rules[12].opcodes[3] = { type: 3, min: 0, max: Infinity };// REP
-  this.rules[12].opcodes[4] = { type: 4, index: 13 };// RNM(cookie-octet)
-  this.rules[12].opcodes[5] = { type: 4, index: 47 };// RNM(DQUOTE)
-  this.rules[12].opcodes[6] = { type: 3, min: 0, max: Infinity };// REP
-  this.rules[12].opcodes[7] = { type: 4, index: 13 };// RNM(cookie-octet)
+  this.rules[12].opcodes[4] = { type: 2, children: [5,7] };// CAT
+  this.rules[12].opcodes[5] = { type: 3, min: 0, max: Infinity };// REP
+  this.rules[12].opcodes[6] = { type: 4, index: 57 };// RNM(WSP)
+  this.rules[12].opcodes[7] = { type: 4, index: 17 };// RNM(lenient-value-char)
 
-  /* cookie-octet */
+  /* lenient-cookie-av */
   this.rules[13].opcodes = [];
-  this.rules[13].opcodes[0] = { type: 1, children: [1,2,3,4,5] };// ALT
-  this.rules[13].opcodes[1] = { type: 6, string: [33] };// TBS
-  this.rules[13].opcodes[2] = { type: 5, min: 35, max: 43 };// TRG
-  this.rules[13].opcodes[3] = { type: 5, min: 45, max: 58 };// TRG
-  this.rules[13].opcodes[4] = { type: 5, min: 60, max: 91 };// TRG
-  this.rules[13].opcodes[5] = { type: 5, min: 93, max: 126 };// TRG
+  this.rules[13].opcodes[0] = { type: 2, children: [1,3,4,6] };// CAT
+  this.rules[13].opcodes[1] = { type: 3, min: 0, max: Infinity };// REP
+  this.rules[13].opcodes[2] = { type: 4, index: 57 };// RNM(WSP)
+  this.rules[13].opcodes[3] = { type: 4, index: 14 };// RNM(lenient-cookie-av-name)
+  this.rules[13].opcodes[4] = { type: 3, min: 0, max: Infinity };// REP
+  this.rules[13].opcodes[5] = { type: 4, index: 57 };// RNM(WSP)
+  this.rules[13].opcodes[6] = { type: 3, min: 0, max: 1 };// REP
+  this.rules[13].opcodes[7] = { type: 2, children: [8,9,11,12] };// CAT
+  this.rules[13].opcodes[8] = { type: 7, string: [61] };// TLS
+  this.rules[13].opcodes[9] = { type: 3, min: 0, max: Infinity };// REP
+  this.rules[13].opcodes[10] = { type: 4, index: 57 };// RNM(WSP)
+  this.rules[13].opcodes[11] = { type: 4, index: 15 };// RNM(lenient-cookie-av-value)
+  this.rules[13].opcodes[12] = { type: 3, min: 0, max: Infinity };// REP
+  this.rules[13].opcodes[13] = { type: 4, index: 57 };// RNM(WSP)
 
-  /* set-cookie-string */
+  /* lenient-cookie-av-name */
   this.rules[14].opcodes = [];
-  this.rules[14].opcodes[0] = { type: 2, children: [1,2] };// CAT
-  this.rules[14].opcodes[1] = { type: 4, index: 10 };// RNM(cookie-pair)
-  this.rules[14].opcodes[2] = { type: 3, min: 0, max: Infinity };// REP
-  this.rules[14].opcodes[3] = { type: 2, children: [4,5,6] };// CAT
-  this.rules[14].opcodes[4] = { type: 7, string: [59] };// TLS
-  this.rules[14].opcodes[5] = { type: 4, index: 43 };// RNM(SP)
-  this.rules[14].opcodes[6] = { type: 4, index: 15 };// RNM(cookie-av)
+  this.rules[14].opcodes[0] = { type: 3, min: 0, max: 1 };// REP
+  this.rules[14].opcodes[1] = { type: 2, children: [2,3] };// CAT
+  this.rules[14].opcodes[2] = { type: 4, index: 16 };// RNM(lenient-name-char)
+  this.rules[14].opcodes[3] = { type: 3, min: 0, max: Infinity };// REP
+  this.rules[14].opcodes[4] = { type: 2, children: [5,7] };// CAT
+  this.rules[14].opcodes[5] = { type: 3, min: 0, max: Infinity };// REP
+  this.rules[14].opcodes[6] = { type: 4, index: 57 };// RNM(WSP)
+  this.rules[14].opcodes[7] = { type: 4, index: 16 };// RNM(lenient-name-char)
 
-  /* cookie-av */
+  /* lenient-cookie-av-value */
   this.rules[15].opcodes = [];
-  this.rules[15].opcodes[0] = { type: 1, children: [1,2,3,4,5,6,7] };// ALT
-  this.rules[15].opcodes[1] = { type: 4, index: 16 };// RNM(expires-av)
-  this.rules[15].opcodes[2] = { type: 4, index: 18 };// RNM(max-age-av)
-  this.rules[15].opcodes[3] = { type: 4, index: 21 };// RNM(domain-av)
-  this.rules[15].opcodes[4] = { type: 4, index: 23 };// RNM(path-av)
-  this.rules[15].opcodes[5] = { type: 4, index: 25 };// RNM(secure-av)
-  this.rules[15].opcodes[6] = { type: 4, index: 26 };// RNM(httponly-av)
-  this.rules[15].opcodes[7] = { type: 4, index: 27 };// RNM(extension-av)
+  this.rules[15].opcodes[0] = { type: 3, min: 0, max: 1 };// REP
+  this.rules[15].opcodes[1] = { type: 2, children: [2,3] };// CAT
+  this.rules[15].opcodes[2] = { type: 4, index: 17 };// RNM(lenient-value-char)
+  this.rules[15].opcodes[3] = { type: 3, min: 0, max: Infinity };// REP
+  this.rules[15].opcodes[4] = { type: 2, children: [5,7] };// CAT
+  this.rules[15].opcodes[5] = { type: 3, min: 0, max: Infinity };// REP
+  this.rules[15].opcodes[6] = { type: 4, index: 57 };// RNM(WSP)
+  this.rules[15].opcodes[7] = { type: 4, index: 17 };// RNM(lenient-value-char)
 
-  /* expires-av */
+  /* lenient-name-char */
   this.rules[16].opcodes = [];
-  this.rules[16].opcodes[0] = { type: 2, children: [1,2] };// CAT
-  this.rules[16].opcodes[1] = { type: 7, string: [101,120,112,105,114,101,115,61] };// TLS
-  this.rules[16].opcodes[2] = { type: 4, index: 17 };// RNM(sane-cookie-date)
+  this.rules[16].opcodes[0] = { type: 1, children: [1,2,3,4] };// ALT
+  this.rules[16].opcodes[1] = { type: 5, min: 33, max: 58 };// TRG
+  this.rules[16].opcodes[2] = { type: 6, string: [60] };// TBS
+  this.rules[16].opcodes[3] = { type: 5, min: 62, max: 126 };// TRG
+  this.rules[16].opcodes[4] = { type: 5, min: 128, max: 1114111 };// TRG
 
-  /* sane-cookie-date */
+  /* lenient-value-char */
   this.rules[17].opcodes = [];
-  this.rules[17].opcodes[0] = { type: 4, index: 32 };// RNM(rfc1123-date)
+  this.rules[17].opcodes[0] = { type: 1, children: [1,2,3] };// ALT
+  this.rules[17].opcodes[1] = { type: 5, min: 33, max: 58 };// TRG
+  this.rules[17].opcodes[2] = { type: 5, min: 60, max: 126 };// TRG
+  this.rules[17].opcodes[3] = { type: 5, min: 128, max: 1114111 };// TRG
 
-  /* max-age-av */
+  /* cookie-string */
   this.rules[18].opcodes = [];
   this.rules[18].opcodes[0] = { type: 2, children: [1,2] };// CAT
-  this.rules[18].opcodes[1] = { type: 7, string: [109,97,120,45,97,103,101,61] };// TLS
-  this.rules[18].opcodes[2] = { type: 4, index: 19 };// RNM(max-age-value)
+  this.rules[18].opcodes[1] = { type: 4, index: 19 };// RNM(cookie-pair)
+  this.rules[18].opcodes[2] = { type: 3, min: 0, max: Infinity };// REP
+  this.rules[18].opcodes[3] = { type: 2, children: [4,5,6] };// CAT
+  this.rules[18].opcodes[4] = { type: 7, string: [59] };// TLS
+  this.rules[18].opcodes[5] = { type: 4, index: 52 };// RNM(SP)
+  this.rules[18].opcodes[6] = { type: 4, index: 19 };// RNM(cookie-pair)
 
-  /* max-age-value */
+  /* cookie-pair */
   this.rules[19].opcodes = [];
-  this.rules[19].opcodes[0] = { type: 2, children: [1,2] };// CAT
-  this.rules[19].opcodes[1] = { type: 4, index: 20 };// RNM(non-zero-digit)
-  this.rules[19].opcodes[2] = { type: 3, min: 0, max: Infinity };// REP
-  this.rules[19].opcodes[3] = { type: 4, index: 46 };// RNM(DIGIT)
+  this.rules[19].opcodes[0] = { type: 2, children: [1,2,3] };// CAT
+  this.rules[19].opcodes[1] = { type: 4, index: 20 };// RNM(cookie-name)
+  this.rules[19].opcodes[2] = { type: 7, string: [61] };// TLS
+  this.rules[19].opcodes[3] = { type: 4, index: 21 };// RNM(cookie-value)
 
-  /* non-zero-digit */
+  /* cookie-name */
   this.rules[20].opcodes = [];
-  this.rules[20].opcodes[0] = { type: 5, min: 49, max: 57 };// TRG
+  this.rules[20].opcodes[0] = { type: 4, index: 47 };// RNM(token)
 
-  /* domain-av */
+  /* cookie-value */
   this.rules[21].opcodes = [];
-  this.rules[21].opcodes[0] = { type: 2, children: [1,2] };// CAT
-  this.rules[21].opcodes[1] = { type: 7, string: [100,111,109,97,105,110,61] };// TLS
-  this.rules[21].opcodes[2] = { type: 4, index: 22 };// RNM(domain-value)
+  this.rules[21].opcodes[0] = { type: 1, children: [1,6] };// ALT
+  this.rules[21].opcodes[1] = { type: 2, children: [2,3,5] };// CAT
+  this.rules[21].opcodes[2] = { type: 4, index: 56 };// RNM(DQUOTE)
+  this.rules[21].opcodes[3] = { type: 3, min: 0, max: Infinity };// REP
+  this.rules[21].opcodes[4] = { type: 4, index: 22 };// RNM(cookie-octet)
+  this.rules[21].opcodes[5] = { type: 4, index: 56 };// RNM(DQUOTE)
+  this.rules[21].opcodes[6] = { type: 3, min: 0, max: Infinity };// REP
+  this.rules[21].opcodes[7] = { type: 4, index: 22 };// RNM(cookie-octet)
 
-  /* domain-value */
+  /* cookie-octet */
   this.rules[22].opcodes = [];
-  this.rules[22].opcodes[0] = { type: 4, index: 29 };// RNM(subdomain)
+  this.rules[22].opcodes[0] = { type: 1, children: [1,2,3,4,5] };// ALT
+  this.rules[22].opcodes[1] = { type: 6, string: [33] };// TBS
+  this.rules[22].opcodes[2] = { type: 5, min: 35, max: 43 };// TRG
+  this.rules[22].opcodes[3] = { type: 5, min: 45, max: 58 };// TRG
+  this.rules[22].opcodes[4] = { type: 5, min: 60, max: 91 };// TRG
+  this.rules[22].opcodes[5] = { type: 5, min: 93, max: 126 };// TRG
 
-  /* path-av */
+  /* set-cookie-string */
   this.rules[23].opcodes = [];
   this.rules[23].opcodes[0] = { type: 2, children: [1,2] };// CAT
-  this.rules[23].opcodes[1] = { type: 7, string: [112,97,116,104,61] };// TLS
-  this.rules[23].opcodes[2] = { type: 4, index: 24 };// RNM(path-value)
+  this.rules[23].opcodes[1] = { type: 4, index: 19 };// RNM(cookie-pair)
+  this.rules[23].opcodes[2] = { type: 3, min: 0, max: Infinity };// REP
+  this.rules[23].opcodes[3] = { type: 2, children: [4,5,6] };// CAT
+  this.rules[23].opcodes[4] = { type: 7, string: [59] };// TLS
+  this.rules[23].opcodes[5] = { type: 4, index: 52 };// RNM(SP)
+  this.rules[23].opcodes[6] = { type: 4, index: 24 };// RNM(cookie-av)
 
-  /* path-value */
+  /* cookie-av */
   this.rules[24].opcodes = [];
-  this.rules[24].opcodes[0] = { type: 3, min: 0, max: Infinity };// REP
-  this.rules[24].opcodes[1] = { type: 4, index: 28 };// RNM(av-octet)
+  this.rules[24].opcodes[0] = { type: 1, children: [1,2,3,4,5,6,7] };// ALT
+  this.rules[24].opcodes[1] = { type: 4, index: 25 };// RNM(expires-av)
+  this.rules[24].opcodes[2] = { type: 4, index: 27 };// RNM(max-age-av)
+  this.rules[24].opcodes[3] = { type: 4, index: 30 };// RNM(domain-av)
+  this.rules[24].opcodes[4] = { type: 4, index: 32 };// RNM(path-av)
+  this.rules[24].opcodes[5] = { type: 4, index: 34 };// RNM(secure-av)
+  this.rules[24].opcodes[6] = { type: 4, index: 35 };// RNM(httponly-av)
+  this.rules[24].opcodes[7] = { type: 4, index: 36 };// RNM(extension-av)
 
-  /* secure-av */
+  /* expires-av */
   this.rules[25].opcodes = [];
-  this.rules[25].opcodes[0] = { type: 7, string: [115,101,99,117,114,101] };// TLS
+  this.rules[25].opcodes[0] = { type: 2, children: [1,2] };// CAT
+  this.rules[25].opcodes[1] = { type: 7, string: [101,120,112,105,114,101,115,61] };// TLS
+  this.rules[25].opcodes[2] = { type: 4, index: 26 };// RNM(sane-cookie-date)
 
-  /* httponly-av */
+  /* sane-cookie-date */
   this.rules[26].opcodes = [];
-  this.rules[26].opcodes[0] = { type: 7, string: [104,116,116,112,111,110,108,121] };// TLS
+  this.rules[26].opcodes[0] = { type: 4, index: 41 };// RNM(rfc1123-date)
 
-  /* extension-av */
+  /* max-age-av */
   this.rules[27].opcodes = [];
-  this.rules[27].opcodes[0] = { type: 3, min: 0, max: Infinity };// REP
-  this.rules[27].opcodes[1] = { type: 4, index: 28 };// RNM(av-octet)
+  this.rules[27].opcodes[0] = { type: 2, children: [1,2] };// CAT
+  this.rules[27].opcodes[1] = { type: 7, string: [109,97,120,45,97,103,101,61] };// TLS
+  this.rules[27].opcodes[2] = { type: 4, index: 28 };// RNM(max-age-value)
 
-  /* av-octet */
+  /* max-age-value */
   this.rules[28].opcodes = [];
-  this.rules[28].opcodes[0] = { type: 1, children: [1,2] };// ALT
-  this.rules[28].opcodes[1] = { type: 5, min: 32, max: 58 };// TRG
-  this.rules[28].opcodes[2] = { type: 5, min: 60, max: 126 };// TRG
+  this.rules[28].opcodes[0] = { type: 2, children: [1,2] };// CAT
+  this.rules[28].opcodes[1] = { type: 4, index: 29 };// RNM(non-zero-digit)
+  this.rules[28].opcodes[2] = { type: 3, min: 0, max: Infinity };// REP
+  this.rules[28].opcodes[3] = { type: 4, index: 55 };// RNM(DIGIT)
 
-  /* subdomain */
+  /* non-zero-digit */
   this.rules[29].opcodes = [];
-  this.rules[29].opcodes[0] = { type: 2, children: [1,2] };// CAT
-  this.rules[29].opcodes[1] = { type: 4, index: 30 };// RNM(label)
-  this.rules[29].opcodes[2] = { type: 3, min: 0, max: Infinity };// REP
-  this.rules[29].opcodes[3] = { type: 2, children: [4,5] };// CAT
-  this.rules[29].opcodes[4] = { type: 7, string: [46] };// TLS
-  this.rules[29].opcodes[5] = { type: 4, index: 30 };// RNM(label)
+  this.rules[29].opcodes[0] = { type: 5, min: 49, max: 57 };// TRG
 
-  /* label */
+  /* domain-av */
   this.rules[30].opcodes = [];
   this.rules[30].opcodes[0] = { type: 2, children: [1,2] };// CAT
-  this.rules[30].opcodes[1] = { type: 4, index: 31 };// RNM(let-dig)
-  this.rules[30].opcodes[2] = { type: 3, min: 0, max: Infinity };// REP
-  this.rules[30].opcodes[3] = { type: 2, children: [4,6] };// CAT
-  this.rules[30].opcodes[4] = { type: 3, min: 0, max: Infinity };// REP
-  this.rules[30].opcodes[5] = { type: 7, string: [45] };// TLS
-  this.rules[30].opcodes[6] = { type: 4, index: 31 };// RNM(let-dig)
+  this.rules[30].opcodes[1] = { type: 7, string: [100,111,109,97,105,110,61] };// TLS
+  this.rules[30].opcodes[2] = { type: 4, index: 31 };// RNM(domain-value)
+
+  /* domain-value */
+  this.rules[31].opcodes = [];
+  this.rules[31].opcodes[0] = { type: 4, index: 38 };// RNM(subdomain)
+
+  /* path-av */
+  this.rules[32].opcodes = [];
+  this.rules[32].opcodes[0] = { type: 2, children: [1,2] };// CAT
+  this.rules[32].opcodes[1] = { type: 7, string: [112,97,116,104,61] };// TLS
+  this.rules[32].opcodes[2] = { type: 4, index: 33 };// RNM(path-value)
+
+  /* path-value */
+  this.rules[33].opcodes = [];
+  this.rules[33].opcodes[0] = { type: 3, min: 0, max: Infinity };// REP
+  this.rules[33].opcodes[1] = { type: 4, index: 37 };// RNM(av-octet)
+
+  /* secure-av */
+  this.rules[34].opcodes = [];
+  this.rules[34].opcodes[0] = { type: 7, string: [115,101,99,117,114,101] };// TLS
+
+  /* httponly-av */
+  this.rules[35].opcodes = [];
+  this.rules[35].opcodes[0] = { type: 7, string: [104,116,116,112,111,110,108,121] };// TLS
+
+  /* extension-av */
+  this.rules[36].opcodes = [];
+  this.rules[36].opcodes[0] = { type: 3, min: 0, max: Infinity };// REP
+  this.rules[36].opcodes[1] = { type: 4, index: 37 };// RNM(av-octet)
+
+  /* av-octet */
+  this.rules[37].opcodes = [];
+  this.rules[37].opcodes[0] = { type: 1, children: [1,2] };// ALT
+  this.rules[37].opcodes[1] = { type: 5, min: 32, max: 58 };// TRG
+  this.rules[37].opcodes[2] = { type: 5, min: 60, max: 126 };// TRG
+
+  /* subdomain */
+  this.rules[38].opcodes = [];
+  this.rules[38].opcodes[0] = { type: 2, children: [1,2] };// CAT
+  this.rules[38].opcodes[1] = { type: 4, index: 39 };// RNM(label)
+  this.rules[38].opcodes[2] = { type: 3, min: 0, max: Infinity };// REP
+  this.rules[38].opcodes[3] = { type: 2, children: [4,5] };// CAT
+  this.rules[38].opcodes[4] = { type: 7, string: [46] };// TLS
+  this.rules[38].opcodes[5] = { type: 4, index: 39 };// RNM(label)
+
+  /* label */
+  this.rules[39].opcodes = [];
+  this.rules[39].opcodes[0] = { type: 2, children: [1,2] };// CAT
+  this.rules[39].opcodes[1] = { type: 4, index: 40 };// RNM(let-dig)
+  this.rules[39].opcodes[2] = { type: 3, min: 0, max: Infinity };// REP
+  this.rules[39].opcodes[3] = { type: 2, children: [4,6] };// CAT
+  this.rules[39].opcodes[4] = { type: 3, min: 0, max: Infinity };// REP
+  this.rules[39].opcodes[5] = { type: 7, string: [45] };// TLS
+  this.rules[39].opcodes[6] = { type: 4, index: 40 };// RNM(let-dig)
 
   /* let-dig */
-  this.rules[31].opcodes = [];
-  this.rules[31].opcodes[0] = { type: 1, children: [1,2] };// ALT
-  this.rules[31].opcodes[1] = { type: 4, index: 45 };// RNM(ALPHA)
-  this.rules[31].opcodes[2] = { type: 4, index: 46 };// RNM(DIGIT)
+  this.rules[40].opcodes = [];
+  this.rules[40].opcodes[0] = { type: 1, children: [1,2] };// ALT
+  this.rules[40].opcodes[1] = { type: 4, index: 54 };// RNM(ALPHA)
+  this.rules[40].opcodes[2] = { type: 4, index: 55 };// RNM(DIGIT)
 
   /* rfc1123-date */
-  this.rules[32].opcodes = [];
-  this.rules[32].opcodes[0] = { type: 2, children: [1,2,3,4,5,6,7,8] };// CAT
-  this.rules[32].opcodes[1] = { type: 4, index: 35 };// RNM(wkday)
-  this.rules[32].opcodes[2] = { type: 7, string: [44] };// TLS
-  this.rules[32].opcodes[3] = { type: 4, index: 43 };// RNM(SP)
-  this.rules[32].opcodes[4] = { type: 4, index: 33 };// RNM(date1)
-  this.rules[32].opcodes[5] = { type: 4, index: 43 };// RNM(SP)
-  this.rules[32].opcodes[6] = { type: 4, index: 34 };// RNM(time)
-  this.rules[32].opcodes[7] = { type: 4, index: 43 };// RNM(SP)
-  this.rules[32].opcodes[8] = { type: 6, string: [71,77,84] };// TBS
+  this.rules[41].opcodes = [];
+  this.rules[41].opcodes[0] = { type: 2, children: [1,2,3,4,5,6,7,8] };// CAT
+  this.rules[41].opcodes[1] = { type: 4, index: 44 };// RNM(wkday)
+  this.rules[41].opcodes[2] = { type: 7, string: [44] };// TLS
+  this.rules[41].opcodes[3] = { type: 4, index: 52 };// RNM(SP)
+  this.rules[41].opcodes[4] = { type: 4, index: 42 };// RNM(date1)
+  this.rules[41].opcodes[5] = { type: 4, index: 52 };// RNM(SP)
+  this.rules[41].opcodes[6] = { type: 4, index: 43 };// RNM(time)
+  this.rules[41].opcodes[7] = { type: 4, index: 52 };// RNM(SP)
+  this.rules[41].opcodes[8] = { type: 6, string: [71,77,84] };// TBS
 
   /* date1 */
-  this.rules[33].opcodes = [];
-  this.rules[33].opcodes[0] = { type: 2, children: [1,3,4,5,6] };// CAT
-  this.rules[33].opcodes[1] = { type: 3, min: 2, max: 2 };// REP
-  this.rules[33].opcodes[2] = { type: 4, index: 46 };// RNM(DIGIT)
-  this.rules[33].opcodes[3] = { type: 4, index: 43 };// RNM(SP)
-  this.rules[33].opcodes[4] = { type: 4, index: 36 };// RNM(month)
-  this.rules[33].opcodes[5] = { type: 4, index: 43 };// RNM(SP)
-  this.rules[33].opcodes[6] = { type: 3, min: 4, max: 4 };// REP
-  this.rules[33].opcodes[7] = { type: 4, index: 46 };// RNM(DIGIT)
+  this.rules[42].opcodes = [];
+  this.rules[42].opcodes[0] = { type: 2, children: [1,3,4,5,6] };// CAT
+  this.rules[42].opcodes[1] = { type: 3, min: 2, max: 2 };// REP
+  this.rules[42].opcodes[2] = { type: 4, index: 55 };// RNM(DIGIT)
+  this.rules[42].opcodes[3] = { type: 4, index: 52 };// RNM(SP)
+  this.rules[42].opcodes[4] = { type: 4, index: 45 };// RNM(month)
+  this.rules[42].opcodes[5] = { type: 4, index: 52 };// RNM(SP)
+  this.rules[42].opcodes[6] = { type: 3, min: 4, max: 4 };// REP
+  this.rules[42].opcodes[7] = { type: 4, index: 55 };// RNM(DIGIT)
 
   /* time */
-  this.rules[34].opcodes = [];
-  this.rules[34].opcodes[0] = { type: 2, children: [1,3,4,6,7] };// CAT
-  this.rules[34].opcodes[1] = { type: 3, min: 2, max: 2 };// REP
-  this.rules[34].opcodes[2] = { type: 4, index: 46 };// RNM(DIGIT)
-  this.rules[34].opcodes[3] = { type: 7, string: [58] };// TLS
-  this.rules[34].opcodes[4] = { type: 3, min: 2, max: 2 };// REP
-  this.rules[34].opcodes[5] = { type: 4, index: 46 };// RNM(DIGIT)
-  this.rules[34].opcodes[6] = { type: 7, string: [58] };// TLS
-  this.rules[34].opcodes[7] = { type: 3, min: 2, max: 2 };// REP
-  this.rules[34].opcodes[8] = { type: 4, index: 46 };// RNM(DIGIT)
+  this.rules[43].opcodes = [];
+  this.rules[43].opcodes[0] = { type: 2, children: [1,3,4,6,7] };// CAT
+  this.rules[43].opcodes[1] = { type: 3, min: 2, max: 2 };// REP
+  this.rules[43].opcodes[2] = { type: 4, index: 55 };// RNM(DIGIT)
+  this.rules[43].opcodes[3] = { type: 7, string: [58] };// TLS
+  this.rules[43].opcodes[4] = { type: 3, min: 2, max: 2 };// REP
+  this.rules[43].opcodes[5] = { type: 4, index: 55 };// RNM(DIGIT)
+  this.rules[43].opcodes[6] = { type: 7, string: [58] };// TLS
+  this.rules[43].opcodes[7] = { type: 3, min: 2, max: 2 };// REP
+  this.rules[43].opcodes[8] = { type: 4, index: 55 };// RNM(DIGIT)
 
   /* wkday */
-  this.rules[35].opcodes = [];
-  this.rules[35].opcodes[0] = { type: 1, children: [1,2,3,4,5,6,7] };// ALT
-  this.rules[35].opcodes[1] = { type: 6, string: [77,111,110] };// TBS
-  this.rules[35].opcodes[2] = { type: 6, string: [84,117,101] };// TBS
-  this.rules[35].opcodes[3] = { type: 6, string: [87,101,100] };// TBS
-  this.rules[35].opcodes[4] = { type: 6, string: [84,104,117] };// TBS
-  this.rules[35].opcodes[5] = { type: 6, string: [70,114,105] };// TBS
-  this.rules[35].opcodes[6] = { type: 6, string: [83,97,116] };// TBS
-  this.rules[35].opcodes[7] = { type: 6, string: [83,117,110] };// TBS
+  this.rules[44].opcodes = [];
+  this.rules[44].opcodes[0] = { type: 1, children: [1,2,3,4,5,6,7] };// ALT
+  this.rules[44].opcodes[1] = { type: 6, string: [77,111,110] };// TBS
+  this.rules[44].opcodes[2] = { type: 6, string: [84,117,101] };// TBS
+  this.rules[44].opcodes[3] = { type: 6, string: [87,101,100] };// TBS
+  this.rules[44].opcodes[4] = { type: 6, string: [84,104,117] };// TBS
+  this.rules[44].opcodes[5] = { type: 6, string: [70,114,105] };// TBS
+  this.rules[44].opcodes[6] = { type: 6, string: [83,97,116] };// TBS
+  this.rules[44].opcodes[7] = { type: 6, string: [83,117,110] };// TBS
 
   /* month */
-  this.rules[36].opcodes = [];
-  this.rules[36].opcodes[0] = { type: 1, children: [1,2,3,4,5,6,7,8,9,10,11,12] };// ALT
-  this.rules[36].opcodes[1] = { type: 6, string: [74,97,110] };// TBS
-  this.rules[36].opcodes[2] = { type: 6, string: [70,101,98] };// TBS
-  this.rules[36].opcodes[3] = { type: 6, string: [77,97,114] };// TBS
-  this.rules[36].opcodes[4] = { type: 6, string: [65,112,114] };// TBS
-  this.rules[36].opcodes[5] = { type: 6, string: [77,97,121] };// TBS
-  this.rules[36].opcodes[6] = { type: 6, string: [74,117,110] };// TBS
-  this.rules[36].opcodes[7] = { type: 6, string: [74,117,108] };// TBS
-  this.rules[36].opcodes[8] = { type: 6, string: [65,117,103] };// TBS
-  this.rules[36].opcodes[9] = { type: 6, string: [83,101,112] };// TBS
-  this.rules[36].opcodes[10] = { type: 6, string: [79,99,116] };// TBS
-  this.rules[36].opcodes[11] = { type: 6, string: [78,111,118] };// TBS
-  this.rules[36].opcodes[12] = { type: 6, string: [68,101,99] };// TBS
+  this.rules[45].opcodes = [];
+  this.rules[45].opcodes[0] = { type: 1, children: [1,2,3,4,5,6,7,8,9,10,11,12] };// ALT
+  this.rules[45].opcodes[1] = { type: 6, string: [74,97,110] };// TBS
+  this.rules[45].opcodes[2] = { type: 6, string: [70,101,98] };// TBS
+  this.rules[45].opcodes[3] = { type: 6, string: [77,97,114] };// TBS
+  this.rules[45].opcodes[4] = { type: 6, string: [65,112,114] };// TBS
+  this.rules[45].opcodes[5] = { type: 6, string: [77,97,121] };// TBS
+  this.rules[45].opcodes[6] = { type: 6, string: [74,117,110] };// TBS
+  this.rules[45].opcodes[7] = { type: 6, string: [74,117,108] };// TBS
+  this.rules[45].opcodes[8] = { type: 6, string: [65,117,103] };// TBS
+  this.rules[45].opcodes[9] = { type: 6, string: [83,101,112] };// TBS
+  this.rules[45].opcodes[10] = { type: 6, string: [79,99,116] };// TBS
+  this.rules[45].opcodes[11] = { type: 6, string: [78,111,118] };// TBS
+  this.rules[45].opcodes[12] = { type: 6, string: [68,101,99] };// TBS
 
   /* OWS */
-  this.rules[37].opcodes = [];
-  this.rules[37].opcodes[0] = { type: 3, min: 0, max: Infinity };// REP
-  this.rules[37].opcodes[1] = { type: 2, children: [2,4] };// CAT
-  this.rules[37].opcodes[2] = { type: 3, min: 0, max: 1 };// REP
-  this.rules[37].opcodes[3] = { type: 4, index: 50 };// RNM(CRLF)
-  this.rules[37].opcodes[4] = { type: 4, index: 48 };// RNM(WSP)
+  this.rules[46].opcodes = [];
+  this.rules[46].opcodes[0] = { type: 3, min: 0, max: Infinity };// REP
+  this.rules[46].opcodes[1] = { type: 2, children: [2,4] };// CAT
+  this.rules[46].opcodes[2] = { type: 3, min: 0, max: 1 };// REP
+  this.rules[46].opcodes[3] = { type: 4, index: 59 };// RNM(CRLF)
+  this.rules[46].opcodes[4] = { type: 4, index: 57 };// RNM(WSP)
 
   /* token */
-  this.rules[38].opcodes = [];
-  this.rules[38].opcodes[0] = { type: 3, min: 1, max: Infinity };// REP
-  this.rules[38].opcodes[1] = { type: 4, index: 39 };// RNM(tchar)
+  this.rules[47].opcodes = [];
+  this.rules[47].opcodes[0] = { type: 3, min: 1, max: Infinity };// REP
+  this.rules[47].opcodes[1] = { type: 4, index: 48 };// RNM(tchar)
 
   /* tchar */
-  this.rules[39].opcodes = [];
-  this.rules[39].opcodes[0] = { type: 1, children: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17] };// ALT
-  this.rules[39].opcodes[1] = { type: 7, string: [33] };// TLS
-  this.rules[39].opcodes[2] = { type: 7, string: [35] };// TLS
-  this.rules[39].opcodes[3] = { type: 7, string: [36] };// TLS
-  this.rules[39].opcodes[4] = { type: 7, string: [37] };// TLS
-  this.rules[39].opcodes[5] = { type: 7, string: [38] };// TLS
-  this.rules[39].opcodes[6] = { type: 7, string: [39] };// TLS
-  this.rules[39].opcodes[7] = { type: 7, string: [42] };// TLS
-  this.rules[39].opcodes[8] = { type: 7, string: [43] };// TLS
-  this.rules[39].opcodes[9] = { type: 7, string: [45] };// TLS
-  this.rules[39].opcodes[10] = { type: 7, string: [46] };// TLS
-  this.rules[39].opcodes[11] = { type: 7, string: [94] };// TLS
-  this.rules[39].opcodes[12] = { type: 7, string: [95] };// TLS
-  this.rules[39].opcodes[13] = { type: 7, string: [96] };// TLS
-  this.rules[39].opcodes[14] = { type: 7, string: [124] };// TLS
-  this.rules[39].opcodes[15] = { type: 7, string: [126] };// TLS
-  this.rules[39].opcodes[16] = { type: 4, index: 46 };// RNM(DIGIT)
-  this.rules[39].opcodes[17] = { type: 4, index: 45 };// RNM(ALPHA)
+  this.rules[48].opcodes = [];
+  this.rules[48].opcodes[0] = { type: 1, children: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17] };// ALT
+  this.rules[48].opcodes[1] = { type: 7, string: [33] };// TLS
+  this.rules[48].opcodes[2] = { type: 7, string: [35] };// TLS
+  this.rules[48].opcodes[3] = { type: 7, string: [36] };// TLS
+  this.rules[48].opcodes[4] = { type: 7, string: [37] };// TLS
+  this.rules[48].opcodes[5] = { type: 7, string: [38] };// TLS
+  this.rules[48].opcodes[6] = { type: 7, string: [39] };// TLS
+  this.rules[48].opcodes[7] = { type: 7, string: [42] };// TLS
+  this.rules[48].opcodes[8] = { type: 7, string: [43] };// TLS
+  this.rules[48].opcodes[9] = { type: 7, string: [45] };// TLS
+  this.rules[48].opcodes[10] = { type: 7, string: [46] };// TLS
+  this.rules[48].opcodes[11] = { type: 7, string: [94] };// TLS
+  this.rules[48].opcodes[12] = { type: 7, string: [95] };// TLS
+  this.rules[48].opcodes[13] = { type: 7, string: [96] };// TLS
+  this.rules[48].opcodes[14] = { type: 7, string: [124] };// TLS
+  this.rules[48].opcodes[15] = { type: 7, string: [126] };// TLS
+  this.rules[48].opcodes[16] = { type: 4, index: 55 };// RNM(DIGIT)
+  this.rules[48].opcodes[17] = { type: 4, index: 54 };// RNM(ALPHA)
 
   /* CHAR */
-  this.rules[40].opcodes = [];
-  this.rules[40].opcodes[0] = { type: 5, min: 1, max: 127 };// TRG
+  this.rules[49].opcodes = [];
+  this.rules[49].opcodes[0] = { type: 5, min: 1, max: 127 };// TRG
 
   /* CTL */
-  this.rules[41].opcodes = [];
-  this.rules[41].opcodes[0] = { type: 1, children: [1,2] };// ALT
-  this.rules[41].opcodes[1] = { type: 5, min: 0, max: 31 };// TRG
-  this.rules[41].opcodes[2] = { type: 6, string: [127] };// TBS
+  this.rules[50].opcodes = [];
+  this.rules[50].opcodes[0] = { type: 1, children: [1,2] };// ALT
+  this.rules[50].opcodes[1] = { type: 5, min: 0, max: 31 };// TRG
+  this.rules[50].opcodes[2] = { type: 6, string: [127] };// TBS
 
   /* separators */
-  this.rules[42].opcodes = [];
-  this.rules[42].opcodes[0] = { type: 1, children: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19] };// ALT
-  this.rules[42].opcodes[1] = { type: 7, string: [40] };// TLS
-  this.rules[42].opcodes[2] = { type: 7, string: [41] };// TLS
-  this.rules[42].opcodes[3] = { type: 7, string: [60] };// TLS
-  this.rules[42].opcodes[4] = { type: 7, string: [62] };// TLS
-  this.rules[42].opcodes[5] = { type: 7, string: [64] };// TLS
-  this.rules[42].opcodes[6] = { type: 7, string: [44] };// TLS
-  this.rules[42].opcodes[7] = { type: 7, string: [59] };// TLS
-  this.rules[42].opcodes[8] = { type: 7, string: [58] };// TLS
-  this.rules[42].opcodes[9] = { type: 7, string: [92] };// TLS
-  this.rules[42].opcodes[10] = { type: 6, string: [34] };// TBS
-  this.rules[42].opcodes[11] = { type: 7, string: [47] };// TLS
-  this.rules[42].opcodes[12] = { type: 7, string: [91] };// TLS
-  this.rules[42].opcodes[13] = { type: 7, string: [93] };// TLS
-  this.rules[42].opcodes[14] = { type: 7, string: [63] };// TLS
-  this.rules[42].opcodes[15] = { type: 7, string: [61] };// TLS
-  this.rules[42].opcodes[16] = { type: 7, string: [123] };// TLS
-  this.rules[42].opcodes[17] = { type: 7, string: [125] };// TLS
-  this.rules[42].opcodes[18] = { type: 4, index: 43 };// RNM(SP)
-  this.rules[42].opcodes[19] = { type: 4, index: 44 };// RNM(HT)
+  this.rules[51].opcodes = [];
+  this.rules[51].opcodes[0] = { type: 1, children: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19] };// ALT
+  this.rules[51].opcodes[1] = { type: 7, string: [40] };// TLS
+  this.rules[51].opcodes[2] = { type: 7, string: [41] };// TLS
+  this.rules[51].opcodes[3] = { type: 7, string: [60] };// TLS
+  this.rules[51].opcodes[4] = { type: 7, string: [62] };// TLS
+  this.rules[51].opcodes[5] = { type: 7, string: [64] };// TLS
+  this.rules[51].opcodes[6] = { type: 7, string: [44] };// TLS
+  this.rules[51].opcodes[7] = { type: 7, string: [59] };// TLS
+  this.rules[51].opcodes[8] = { type: 7, string: [58] };// TLS
+  this.rules[51].opcodes[9] = { type: 7, string: [92] };// TLS
+  this.rules[51].opcodes[10] = { type: 6, string: [34] };// TBS
+  this.rules[51].opcodes[11] = { type: 7, string: [47] };// TLS
+  this.rules[51].opcodes[12] = { type: 7, string: [91] };// TLS
+  this.rules[51].opcodes[13] = { type: 7, string: [93] };// TLS
+  this.rules[51].opcodes[14] = { type: 7, string: [63] };// TLS
+  this.rules[51].opcodes[15] = { type: 7, string: [61] };// TLS
+  this.rules[51].opcodes[16] = { type: 7, string: [123] };// TLS
+  this.rules[51].opcodes[17] = { type: 7, string: [125] };// TLS
+  this.rules[51].opcodes[18] = { type: 4, index: 52 };// RNM(SP)
+  this.rules[51].opcodes[19] = { type: 4, index: 53 };// RNM(HT)
 
   /* SP */
-  this.rules[43].opcodes = [];
-  this.rules[43].opcodes[0] = { type: 6, string: [32] };// TBS
+  this.rules[52].opcodes = [];
+  this.rules[52].opcodes[0] = { type: 6, string: [32] };// TBS
 
   /* HT */
-  this.rules[44].opcodes = [];
-  this.rules[44].opcodes[0] = { type: 6, string: [9] };// TBS
+  this.rules[53].opcodes = [];
+  this.rules[53].opcodes[0] = { type: 6, string: [9] };// TBS
 
   /* ALPHA */
-  this.rules[45].opcodes = [];
-  this.rules[45].opcodes[0] = { type: 1, children: [1,2] };// ALT
-  this.rules[45].opcodes[1] = { type: 5, min: 65, max: 90 };// TRG
-  this.rules[45].opcodes[2] = { type: 5, min: 97, max: 122 };// TRG
+  this.rules[54].opcodes = [];
+  this.rules[54].opcodes[0] = { type: 1, children: [1,2] };// ALT
+  this.rules[54].opcodes[1] = { type: 5, min: 65, max: 90 };// TRG
+  this.rules[54].opcodes[2] = { type: 5, min: 97, max: 122 };// TRG
 
   /* DIGIT */
-  this.rules[46].opcodes = [];
-  this.rules[46].opcodes[0] = { type: 5, min: 48, max: 57 };// TRG
+  this.rules[55].opcodes = [];
+  this.rules[55].opcodes[0] = { type: 5, min: 48, max: 57 };// TRG
 
   /* DQUOTE */
-  this.rules[47].opcodes = [];
-  this.rules[47].opcodes[0] = { type: 6, string: [34] };// TBS
+  this.rules[56].opcodes = [];
+  this.rules[56].opcodes[0] = { type: 6, string: [34] };// TBS
 
   /* WSP */
-  this.rules[48].opcodes = [];
-  this.rules[48].opcodes[0] = { type: 1, children: [1,2] };// ALT
-  this.rules[48].opcodes[1] = { type: 4, index: 43 };// RNM(SP)
-  this.rules[48].opcodes[2] = { type: 4, index: 49 };// RNM(HTAB)
+  this.rules[57].opcodes = [];
+  this.rules[57].opcodes[0] = { type: 1, children: [1,2] };// ALT
+  this.rules[57].opcodes[1] = { type: 4, index: 52 };// RNM(SP)
+  this.rules[57].opcodes[2] = { type: 4, index: 58 };// RNM(HTAB)
 
   /* HTAB */
-  this.rules[49].opcodes = [];
-  this.rules[49].opcodes[0] = { type: 6, string: [9] };// TBS
+  this.rules[58].opcodes = [];
+  this.rules[58].opcodes[0] = { type: 6, string: [9] };// TBS
 
   /* CRLF */
-  this.rules[50].opcodes = [];
-  this.rules[50].opcodes[0] = { type: 2, children: [1,2] };// CAT
-  this.rules[50].opcodes[1] = { type: 4, index: 51 };// RNM(CR)
-  this.rules[50].opcodes[2] = { type: 4, index: 52 };// RNM(LF)
+  this.rules[59].opcodes = [];
+  this.rules[59].opcodes[0] = { type: 2, children: [1,2] };// CAT
+  this.rules[59].opcodes[1] = { type: 4, index: 60 };// RNM(CR)
+  this.rules[59].opcodes[2] = { type: 4, index: 61 };// RNM(LF)
 
   /* CR */
-  this.rules[51].opcodes = [];
-  this.rules[51].opcodes[0] = { type: 6, string: [13] };// TBS
+  this.rules[60].opcodes = [];
+  this.rules[60].opcodes[0] = { type: 6, string: [13] };// TBS
 
   /* LF */
-  this.rules[52].opcodes = [];
-  this.rules[52].opcodes[0] = { type: 6, string: [10] };// TBS
+  this.rules[61].opcodes = [];
+  this.rules[61].opcodes[0] = { type: 6, string: [10] };// TBS
 
   // The `toString()` function will display the original grammar file(s) that produced these opcodes.
   this.toString = function toString(){
@@ -503,6 +611,18 @@ export default function grammar(){
     str += "lenient-quoted-char          = %x20-21 / %x23-7E ; Allow all printable US-ASCII except DQUOTE\n";
     str += "lenient-cookie-octet         = %x21-2B / %x2D-3A / %x3C-7E\n";
     str += "                             ; Allow all printable characters except CTLs, semicolon and SP\n";
+    str += "\n";
+    str += "; Lenient version of https://datatracker.ietf.org/doc/html/rfc6265#section-4.1.1\n";
+    str += "; following parsing algorithm of https://datatracker.ietf.org/doc/html/rfc6265#section-5.2\n";
+    str += "lenient-set-cookie-string    = lenient-set-cookie-pair *( \";\" lenient-cookie-av )\n";
+    str += "lenient-set-cookie-pair      = *WSP lenient-set-cookie-name *WSP \"=\" *WSP lenient-set-cookie-value *WSP\n";
+    str += "lenient-set-cookie-name      = lenient-name-char *( *WSP lenient-name-char ) ; leading and trailing WSP is not part of the name\n";
+    str += "lenient-set-cookie-value     = [ lenient-value-char *( *WSP lenient-value-char ) ] ; leading and trailing WSP is not part of the value\n";
+    str += "lenient-cookie-av            = *WSP lenient-cookie-av-name *WSP [ \"=\" *WSP lenient-cookie-av-value *WSP ]\n";
+    str += "lenient-cookie-av-name       = [ lenient-name-char *( *WSP lenient-name-char ) ]\n";
+    str += "lenient-cookie-av-value      = [ lenient-value-char *( *WSP lenient-value-char ) ]\n";
+    str += "lenient-name-char            = %x21-3A / %x3C / %x3E-7E / %x80-10FFFF ; any CHAR except CTLs, WSP, \";\" and \"=\"\n";
+    str += "lenient-value-char           = %x21-3A / %x3C-7E / %x80-10FFFF ; any CHAR except CTLs, WSP and \";\"\n";
     str += "\n";
     str += "; https://datatracker.ietf.org/doc/html/rfc6265#section-4.2.1\n";
     str += "cookie-string     = cookie-pair *( \";\" SP cookie-pair )\n";
