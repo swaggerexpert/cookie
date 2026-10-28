@@ -79,3 +79,9 @@ const validSetCookie: boolean = testSetCookie('id=a; Secure');
 if (parsedSetCookie) {
   serializeSetCookie(parsedSetCookie.name, parsedSetCookie.value, parsedSetCookie.attributes);
 }
+
+const setCookieTranslator = new ASTTranslator<SetCookieASTNode>();
+const setCookieTree: SetCookieASTNode | undefined = parseSetCookie('id=a', {
+  translator: setCookieTranslator,
+}).tree;
+const cookieTree: ASTNode = new ASTTranslator().getTree();

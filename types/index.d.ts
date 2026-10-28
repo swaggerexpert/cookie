@@ -71,9 +71,13 @@ export declare class ListTranslator extends AST<ListTree> {
 export declare class CSTTranslator extends AST<CSTNode> {
   getTree(): CSTNode;
 }
-export declare class ASTTranslator extends AST<ASTNode> {
+/**
+ * Produces CookieStringNode (ASTNode) when used with parseCookie
+ * and SetCookieASTNode when used with parseSetCookie, e.g. `new ASTTranslator<SetCookieASTNode>()`.
+ */
+export declare class ASTTranslator<TTree extends ASTNode | SetCookieASTNode = ASTNode> extends AST<TTree> {
   constructor(options?: ASTTranslatorOptions);
-  getTree(): ASTNode;
+  getTree(): TTree;
 }
 
 export interface ASTTranslatorOptions {
@@ -219,7 +223,7 @@ export type SetCookieString = string;
 
 export function parseSetCookie(
   setCookieString: SetCookieString,
-  options?: ParseOptions & { readonly translator?: ASTTranslator },
+  options?: ParseOptions & { readonly translator?: ASTTranslator<ASTNode | SetCookieASTNode> },
 ): SetCookieParseResult<SetCookieASTNode>;
 export function parseSetCookie(
   setCookieString: SetCookieString,

@@ -19,22 +19,25 @@ const processors = {
     return date === undefined ? undefined : ['expires', date];
   },
   // https://datatracker.ietf.org/doc/html/rfc6265#section-5.2.2
+  // values beyond safe integer range are clamped, -0 is normalized to 0
   'max-age': (value) => {
     if (!/^-?\d+$/.test(value)) return undefined;
-    return ['maxAge', Number(value)];
+    const maxAge = Math.min(
+      Math.max(Number(value), Number.MIN_SAFE_INTEGER),
+      Number.MAX_SAFE_INTEGER,
+    );
+    return ['maxAge', maxAge === 0 ? 0 : maxAge];
   },
   // https://datatracker.ietf.org/doc/html/rfc6265#section-5.2.3
+  // empty domain (e.g. "Domain=.") means host-only cookie (https://datatracker.ietf.org/doc/html/rfc6265#section-5.3)
   domain: (value) => {
     if (value === '') return undefined;
     const domain = value.startsWith('.') ? value.slice(1) : value;
-    return ['domain', domain.toLowerCase()];
+    return ['domain', domain === '' ? undefined : domain.toLowerCase()];
   },
   // https://datatracker.ietf.org/doc/html/rfc6265#section-5.2.4
   // empty path or path not starting with "/" means default-path, which depends on request-uri
-  path: (value) => {
-    if (!value.startsWith('/')) return undefined;
-    return ['path', value];
-  },
+  path: (value) => ['path', value.startsWith('/') ? value : undefined],
   // https://datatracker.ietf.org/doc/html/rfc6265#section-5.2.5
   secure: () => ['secure', true],
   // https://datatracker.ietf.org/doc/html/rfc6265#section-5.2.6
@@ -84,7 +87,12 @@ const interpretAttributes = (cookieAvs) => {
     const processed = processor(value);
     if (processed !== undefined) {
       const [attributeName, attributeValue] = processed;
-      attributes[attributeName] = attributeValue;
+      // undefined value resets attribute to its default, as the last attribute wins
+      if (attributeValue === undefined) {
+        delete attributes[attributeName];
+      } else {
+        attributes[attributeName] = attributeValue;
+      }
     }
   }
 

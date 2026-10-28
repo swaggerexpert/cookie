@@ -121,6 +121,7 @@ describe('serializeSetCookie', function () {
         assert.throws(() => serializeSetCookie('a', 'b', { maxAge: '60' }), TypeError);
         assert.throws(() => serializeSetCookie('a', 'b', { maxAge: Infinity }), TypeError);
         assert.throws(() => serializeSetCookie('a', 'b', { maxAge: NaN }), TypeError);
+        assert.throws(() => serializeSetCookie('a', 'b', { maxAge: 1e23 }), TypeError);
       });
     });
 
