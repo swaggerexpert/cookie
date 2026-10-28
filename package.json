@@ -32,6 +32,7 @@
     "test": "{src,test}/*.js"
   },
   "scripts": {
+    "prepare": "husky",
     "prepublishOnly": "npm run build",
     "grammar:compile": "node ./scripts/apg-js.js --lite --in=./src/grammar.bnf --out=./src/grammar.js && cd ./src",
     "build": "npm run grammar:compile && npm run build:es && npm run build:cjs && npm run build:cjs:apg-lite",
