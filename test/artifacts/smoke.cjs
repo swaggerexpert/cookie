@@ -42,8 +42,12 @@ const check = (label, Cookie) => {
   assert.strictEqual(Cookie.parseCookie('foo = bar', { strict: false }).result.success, true);
   assert.strictEqual(Cookie.testCookie('foo=bar'), true);
   assert.strictEqual(Cookie.testCookie('foo'), false);
+  assert.strictEqual(Cookie.testCookieName('session_id'), true);
+  assert.strictEqual(Cookie.testCookieName('session id'), false);
+  assert.strictEqual(Cookie.testCookieValue('"bar"', { quoted: false }), false);
 
   assert.strictEqual(Cookie.serializeCookie({ foo: 'bar', baz: 'raz' }), 'foo=bar; baz=raz');
+  assert.strictEqual(Cookie.serializeSetCookie('foo', ';'), 'foo=Ow');
   // exercises environment specific (node/browser) base64 encoder
   assert.strictEqual(
     Cookie.serializeCookie(
