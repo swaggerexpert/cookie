@@ -2,7 +2,11 @@
 import {
   parseCookie,
   testCookie,
+  testCookieName,
+  testCookieValue,
   serializeCookie,
+  serializeSetCookie,
+  type SetCookieString,
   Grammar,
   CSTTranslator,
   ListTranslator,
@@ -27,6 +31,9 @@ const translated: CookiePair[] = parseCookie('foo=bar').ast.translate(parts);
 const xml: string = parseCookie('foo=bar').ast.toXml();
 
 const valid: boolean = testCookie('foo=bar', { strict: false });
+const validName: boolean = testCookieName('session_id', { strict: false });
+const validValue: boolean = testCookieValue('"bar"', { quoted: null });
+const setCookie: SetCookieString = serializeSetCookie('foo', 'bar');
 const serialized: string = serializeCookie(
   { foo: 'bar' },
   { encoders: { value: cookieValueStrictBase64Encoder } },
