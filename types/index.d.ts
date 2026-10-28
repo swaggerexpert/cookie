@@ -18,10 +18,15 @@ export function parseCookie(
   cookieString: CookieString,
   options: ParseOptions & { readonly translator: null },
 ): ParseResult<undefined>;
+/**
+ * Catch-all overload for options typed as ParseOptions (e.g. union-typed translators).
+ * Tree type can't be determined statically; `any` keeps code written against v2.0.2 typings,
+ * e.g. `const parseResult: ParseResult = parseCookie(cookieString, options)`, type-checking.
+ */
 export function parseCookie(
   cookieString: CookieString,
   options?: ParseOptions,
-): ParseResult<unknown>;
+): ParseResult<any>;
 
 export interface ParseOptions {
   readonly strict?: boolean;
