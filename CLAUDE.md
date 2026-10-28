@@ -39,6 +39,8 @@ This library parses, validates and serializes [RFC 6265](https://datatracker.iet
 
 - **`src/cookie/serialize/`** and **`src/set-cookie/serialize/`** - Serialization with pluggable encoders and validators.
 
+- **`src/set-cookie/parse/decoders/`** - Decoders, counterpart of encoders, applied by `ASTTranslator` (`decoders` option of `parseCookie`). Default is identity (no decoding). Decoders throw `TypeError` on improperly encoded input; `cookieValueRotatingDecoder` tries several decoders (best-effort, never throws).
+
 - **`*.node.js` / `*.browser.js`** - Environment specific base64 encoders/decoders. Source code imports `*.node.js` variants; the `browser` field in package.json swaps them for es/ and cjs/ builds, and webpack's `NormalModuleReplacementPlugin` swaps them for UMD bundles.
 
 - **`src/errors/`** - `CookieError` (base) and `CookieParseError`.

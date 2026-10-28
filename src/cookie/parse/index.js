@@ -10,7 +10,13 @@ const grammar = new Grammar();
 
 const parse = (
   cookieString,
-  { strict = true, translator = new ASTTranslator(), stats = false, trace = false } = {},
+  {
+    strict = true,
+    decoders = {},
+    translator = new ASTTranslator({ decoders }),
+    stats = false,
+    trace = false,
+  } = {},
 ) => {
   if (typeof cookieString !== 'string') {
     throw new TypeError('Cookie string must be a string');

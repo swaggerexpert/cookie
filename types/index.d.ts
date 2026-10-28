@@ -21,6 +21,11 @@ export function parseCookie(
 
 export interface ParseOptions {
   readonly strict?: boolean;
+  /**
+   * Decoders applied to cookie names and values of the AST produced by the default translator.
+   * Ignored when `translator` option is provided; use `new ASTTranslator({ decoders })` instead.
+   */
+  readonly decoders?: ParseDecoders;
   readonly translator?: Translator | null;
   readonly stats?: boolean;
   readonly trace?: boolean;
@@ -67,7 +72,17 @@ export declare class CSTTranslator extends AST<CSTNode> {
   getTree(): CSTNode;
 }
 export declare class ASTTranslator extends AST<ASTNode> {
+  constructor(options?: ASTTranslatorOptions);
   getTree(): ASTNode;
+}
+
+export interface ASTTranslatorOptions {
+  readonly decoders?: ParseDecoders;
+}
+
+export interface ParseDecoders {
+  readonly name?: CookieNameDecoder;
+  readonly value?: CookieValueDecoder;
 }
 export declare class XMLTranslator extends AST<XMLTree> {
   getTree(): XMLTree;
@@ -223,6 +238,27 @@ export interface CookieNameEncoder extends Encoder {
   (value: CookieName): string
 }
 export interface CookieValueEncoder extends Encoder {
+  (value: CookieValue): string
+}
+
+/**
+ * Decoders
+ */
+export declare const base64Decoder: Decoder;
+export declare const base64urlDecoder: Decoder;
+export declare const cookieNamePercentDecoder: CookieNameDecoder;
+export declare const cookieValuePercentDecoder: CookieValueDecoder;
+export declare const cookieValueBase64Decoder: CookieValueDecoder;
+export declare const cookieValueBase64urlDecoder: CookieValueDecoder;
+export declare const cookieValueRotatingDecoder: CookieValueDecoder;
+export function createCookieValueRotatingDecoder(decoders: CookieValueDecoder[]): CookieValueDecoder;
+export interface Decoder {
+  (value: string): string
+}
+export interface CookieNameDecoder extends Decoder {
+  (value: CookieName): string
+}
+export interface CookieValueDecoder extends Decoder {
   (value: CookieValue): string
 }
 

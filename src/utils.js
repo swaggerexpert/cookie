@@ -39,3 +39,13 @@ export const quote = (value) => {
 export const identity = (a) => a;
 
 export const noop = () => {};
+
+export const isBase64 = (value) =>
+  value.length % 4 === 0 && /^[A-Za-z0-9+/]*={0,2}$/.test(value) && !/=[^=]/.test(value);
+
+export const isBase64url = (value) => value.length % 4 !== 1 && /^[A-Za-z0-9_-]*$/.test(value);
+
+/**
+ * Decodes bytes as UTF-8, throws TypeError on invalid UTF-8 sequences.
+ */
+export const decodeUTF8 = (bytes) => new TextDecoder('utf-8', { fatal: true }).decode(bytes);
