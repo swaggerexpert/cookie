@@ -25,6 +25,38 @@ cookie-octet      = %x21 / %x23-2B / %x2D-3A / %x3C-5B / %x5D-7E
                        ; and backslash
 
 ; https://datatracker.ietf.org/doc/html/rfc6265#section-2.2
+; https://datatracker.ietf.org/doc/html/rfc6265#section-4.1.1
+set-cookie-string = cookie-pair *( ";" SP cookie-av )
+cookie-av         = expires-av / max-age-av / domain-av / path-av /
+                    secure-av / httponly-av / extension-av
+expires-av        = "Expires=" sane-cookie-date
+sane-cookie-date  = rfc1123-date
+max-age-av        = "Max-Age=" max-age-value
+max-age-value     = non-zero-digit *DIGIT
+non-zero-digit    = %x31-39 ; digits 1 through 9
+domain-av         = "Domain=" domain-value
+domain-value      = subdomain
+path-av           = "Path=" path-value
+path-value        = *av-octet
+secure-av         = "Secure"
+httponly-av       = "HttpOnly"
+extension-av      = *av-octet
+av-octet          = %x20-3A / %x3C-7E ; any CHAR except CTLs or ";"
+
+; https://datatracker.ietf.org/doc/html/rfc1034#section-3.5
+; https://datatracker.ietf.org/doc/html/rfc1123#section-2.1 (labels may start with a digit)
+subdomain         = label *( "." label )
+label             = let-dig *( *"-" let-dig ) ; MODIFICATION: hyphens must be followed by let-dig
+let-dig           = ALPHA / DIGIT
+
+; https://datatracker.ietf.org/doc/html/rfc2616#section-3.3.1
+rfc1123-date      = wkday "," SP date1 SP time SP %s"GMT"
+date1             = 2DIGIT SP month SP 4DIGIT ; day month year (e.g., 02 Jun 1982)
+time              = 2DIGIT ":" 2DIGIT ":" 2DIGIT ; 00:00:00 - 23:59:59
+wkday             = %s"Mon" / %s"Tue" / %s"Wed" / %s"Thu" / %s"Fri" / %s"Sat" / %s"Sun"
+month             = %s"Jan" / %s"Feb" / %s"Mar" / %s"Apr" / %s"May" / %s"Jun" /
+                    %s"Jul" / %s"Aug" / %s"Sep" / %s"Oct" / %s"Nov" / %s"Dec"
+
 OWS            = *( [ CRLF ] WSP ) ; "optional" whitespace
 
 ; https://datatracker.ietf.org/doc/html/rfc9110#section-5.6.2
