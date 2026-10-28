@@ -19,6 +19,7 @@ lenient-set-cookie-value     = [ lenient-value-char *( *WSP lenient-value-char )
 lenient-cookie-av            = *WSP lenient-cookie-av-name *WSP [ "=" *WSP lenient-cookie-av-value *WSP ]
 lenient-cookie-av-name       = [ lenient-name-char *( *WSP lenient-name-char ) ]
 lenient-cookie-av-value      = [ lenient-value-char *( *WSP lenient-value-char ) ]
+; CTLs (except HTAB) are not allowed, as they are not allowed in HTTP field values (https://www.rfc-editor.org/rfc/rfc9110#section-5.5)
 lenient-name-char            = %x21-3A / %x3C / %x3E-7E / %x80-10FFFF ; any CHAR except CTLs, WSP, ";" and "="
 lenient-value-char           = %x21-3A / %x3C-7E / %x80-10FFFF ; any CHAR except CTLs, WSP and ";"
 
@@ -36,39 +37,65 @@ cookie-octet      = %x21 / %x23-2B / %x2D-3A / %x3C-5B / %x5D-7E
                        ; whitespace, DQUOTE, comma, semicolon,
                        ; and backslash
 
-; https://datatracker.ietf.org/doc/html/rfc6265#section-2.2
 ; https://datatracker.ietf.org/doc/html/rfc6265#section-4.1.1
 set-cookie-string = cookie-pair *( ";" SP cookie-av )
-cookie-av         = expires-av / max-age-av / domain-av / path-av /
-                    secure-av / httponly-av / extension-av
+cookie-av         = extension-av
+                  ; MODIFICATION: originally
+                  ; cookie-av = expires-av / max-age-av / domain-av /
+                  ;             path-av / secure-av / httponly-av /
+                  ;             extension-av
+                  ; All the alternatives are subsets of extension-av. Parsers processing alternatives
+                  ; left-to-right without backtracking would commit to a partial match of a specific
+                  ; alternative (e.g. "Secure " or "Max-Age=60 ") and fail, instead of matching extension-av.
 expires-av        = "Expires=" sane-cookie-date
 sane-cookie-date  = rfc1123-date
-max-age-av        = "Max-Age=" max-age-value
-max-age-value     = non-zero-digit *DIGIT
-non-zero-digit    = %x31-39 ; digits 1 through 9
+                      ; defined in [RFC2616], Section 3.3.1
+max-age-av        = "Max-Age=" non-zero-digit *DIGIT
+                      ; In practice, both expires-av and max-age-av
+                      ; are limited to dates representable by the
+                      ; user agent.
+non-zero-digit    = %x31-39
+                      ; digits 1 through 9
 domain-av         = "Domain=" domain-value
 domain-value      = subdomain
+                      ; defined in [RFC1034], Section 3.5, as
+                      ; enhanced by [RFC1123], Section 2.1
 path-av           = "Path=" path-value
 path-value        = *av-octet
+                  ; https://www.rfc-editor.org/errata/eid3444
 secure-av         = "Secure"
 httponly-av       = "HttpOnly"
 extension-av      = *av-octet
-av-octet          = %x20-3A / %x3C-7E ; any CHAR except CTLs or ";"
+                  ; https://www.rfc-editor.org/errata/eid3444
+av-octet          = %x20-3A / %x3C-7E
+                      ; any CHAR except CTLs or ";"
 
 ; https://datatracker.ietf.org/doc/html/rfc1034#section-3.5
-; https://datatracker.ietf.org/doc/html/rfc1123#section-2.1 (labels may start with a digit)
+; https://datatracker.ietf.org/doc/html/rfc1123#section-2.1
 subdomain         = label *( "." label )
-label             = let-dig *( *"-" let-dig ) ; MODIFICATION: hyphens must be followed by let-dig
+label             = let-dig *( *"-" let-dig )
+                  ; MODIFICATION: originally
+                  ; <label> ::= <letter> [ [ <ldh-str> ] <let-dig> ]
+                  ; <ldh-str> ::= <let-dig-hyp> | <let-dig-hyp> <ldh-str>
+                  ; <let-dig-hyp> ::= <let-dig> | "-"
+                  ; RFC 1123 allows the first character to be either a letter or a digit.
+                  ; Rewritten as an equivalent grammar, as greedy repetition doesn't backtrack.
 let-dig           = ALPHA / DIGIT
 
 ; https://datatracker.ietf.org/doc/html/rfc2616#section-3.3.1
+; HTTP-date is case sensitive
 rfc1123-date      = wkday "," SP date1 SP time SP %s"GMT"
-date1             = 2DIGIT SP month SP 4DIGIT ; day month year (e.g., 02 Jun 1982)
-time              = 2DIGIT ":" 2DIGIT ":" 2DIGIT ; 00:00:00 - 23:59:59
-wkday             = %s"Mon" / %s"Tue" / %s"Wed" / %s"Thu" / %s"Fri" / %s"Sat" / %s"Sun"
-month             = %s"Jan" / %s"Feb" / %s"Mar" / %s"Apr" / %s"May" / %s"Jun" /
-                    %s"Jul" / %s"Aug" / %s"Sep" / %s"Oct" / %s"Nov" / %s"Dec"
+date1             = 2DIGIT SP month SP 4DIGIT
+                  ; day month year (e.g., 02 Jun 1982)
+time              = 2DIGIT ":" 2DIGIT ":" 2DIGIT
+                  ; 00:00:00 - 23:59:59
+wkday             = %s"Mon" / %s"Tue" / %s"Wed"
+                  / %s"Thu" / %s"Fri" / %s"Sat" / %s"Sun"
+month             = %s"Jan" / %s"Feb" / %s"Mar" / %s"Apr"
+                  / %s"May" / %s"Jun" / %s"Jul" / %s"Aug"
+                  / %s"Sep" / %s"Oct" / %s"Nov" / %s"Dec"
 
+; https://datatracker.ietf.org/doc/html/rfc6265#section-2.2
 OWS            = *( [ CRLF ] WSP ) ; "optional" whitespace
 
 ; https://datatracker.ietf.org/doc/html/rfc9110#section-5.6.2
