@@ -23,7 +23,7 @@ This library parses, validates and serializes [RFC 6265](https://datatracker.iet
 
 ### Core Components
 
-- **`src/grammar.bnf`** - ABNF grammar definition. Contains both strict (`cookie-string`, ...) and lenient (`lenient-cookie-string`, ...) rules. When modified, run `npm run grammar:compile` to regenerate `src/grammar.js`.
+- **`src/grammar.bnf`** - ABNF grammar definition. Contains both strict (`cookie-string`, ...) and lenient (`lenient-cookie-string`, ...) rules, and strict `set-cookie-string` rules (RFC 6265 §4.1.1, incl. subdomain and rfc1123-date). Keep the copy in README.md in sync. When modified, run `npm run grammar:compile` to regenerate `src/grammar.js`.
 
 - **`src/grammar.js`** - Auto-generated parser from the ABNF grammar. Do not edit directly.
 
@@ -37,7 +37,7 @@ This library parses, validates and serializes [RFC 6265](https://datatracker.iet
 
 - **`src/cookie/test/`** - Validation functions (`testCookie`, `testCookieName`, `testCookieValue`), also used by serialization encoders and validators.
 
-- **`src/cookie/serialize/`** and **`src/set-cookie/serialize/`** - Serialization with pluggable encoders and validators.
+- **`src/cookie/serialize/`** and **`src/set-cookie/serialize/`** - Serialization with pluggable encoders and validators. Set-Cookie attributes (`expires`, `maxAge`, `domain`, `path`, `secure`, `httpOnly`, `sameSite`, `partitioned`, `priority`) are serialized and validated against the grammar in `src/set-cookie/serialize/attributes.js`; `serializeCookie` passes only `encoders` and `validators` on, so attributes never reach the `Cookie` header.
 
 - **`src/set-cookie/parse/decoders/`** - Decoders, counterpart of encoders, applied by `ASTTranslator` (`decoders` option of `parseCookie`). Default is identity (no decoding). Decoders throw `TypeError` on improperly encoded input; `cookieValueRotatingDecoder` tries several decoders (best-effort, never throws).
 

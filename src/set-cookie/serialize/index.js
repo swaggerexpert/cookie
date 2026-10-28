@@ -1,6 +1,7 @@
 import cookieValueStrictBase64urlEncoder from './encoders/cookie-value-strict-base64url.js';
 import cookieNameStrictValidator from './validators/cookie-name-strict.js';
 import cookieValueStrictValidator from './validators/cookie-value-strict.js';
+import serializeAttributes from './attributes.js';
 import { identity } from '../../utils.js';
 
 const defaultOptions = {
@@ -28,7 +29,9 @@ const serialize = (name, value, options = {}) => {
   mergedOptions.validators.name(encodedName);
   mergedOptions.validators.value(encodedValue);
 
-  return `${encodedName}=${encodedValue}`;
+  const attributes = serializeAttributes(mergedOptions);
+
+  return [`${encodedName}=${encodedValue}`, ...attributes].join('; ');
 };
 
 export default serialize;
