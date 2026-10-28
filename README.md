@@ -271,6 +271,13 @@ The object has `null` prototype, so cookie names like `__proto__` or `constructo
 and lookups of absent cookie names (e.g. `cookies.toString`) are `undefined`. Order of the object keys follows
 JavaScript property order, i.e. integer-like cookie names come first; use entries translator when the order matters.
 
+As the object doesn't inherit from `Object.prototype`:
+
+- use `Object.hasOwn(cookies, name)` or `name in cookies` instead of `cookies.hasOwnProperty(name)`
+- converting the object to a string (`String(cookies)`, template literals) throws `TypeError`
+- use spread (`{ ...cookies }`) to get a plain object; `Object.assign({}, cookies)` would drop a cookie named `__proto__`
+- strict deep equality with plain objects (e.g. `assert.deepStrictEqual`) fails; compare `{ ...cookies }` instead
+
 `ObjectTranslator` accepts the same `decoders` option as `ASTTranslator`:
 
 ```js
@@ -295,7 +302,30 @@ const { tree: entries } = parseCookie('foo=bar; baz=raz; foo=boo', { translator:
 serializeCookie(entries); // => 'foo=bar; baz=raz; foo=boo'
 ```
 
+Cookie strings parsed in strict mode are serialized back to the same cookie string. Cookie strings parsed in [lenient](#parsing-cookie) mode
+can contain cookie names and values which the default [encoders](#encoders) and [validators](#validators) of `serializeCookie` re-encode or reject.
+Use identity value encoder and lenient validators to serialize them as they are (separators are normalized to `"; "`):
+
+```js
+import {
+  parseCookie,
+  serializeCookie,
+  EntriesTranslator,
+  identity,
+  cookieNameLenientValidator,
+  cookieValueLenientValidator,
+} from '@swaggerexpert/cookie';
+
+const { tree: entries } = parseCookie('a="b c";x(y=b\\c', { strict: false, translator: new EntriesTranslator() });
+
+serializeCookie(entries, {
+  encoders: { value: identity },
+  validators: { name: cookieNameLenientValidator, value: cookieValueLenientValidator },
+}); // => 'a="b c"; x(y=b\\c'
+```
+
 `EntriesTranslator` accepts the same `decoders` option as `ASTTranslator`.
+When cookie names or values are decoded, serialize them using the corresponding [encoders](#encoders) to get the original cookie string.
 
 **XML translator**
 

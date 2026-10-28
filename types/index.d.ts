@@ -74,8 +74,9 @@ export declare class CSTTranslator extends AST<CSTNode> {
 /**
  * Produces CookieStringNode (ASTNode) when used with parseCookie
  * and SetCookieASTNode when used with parseSetCookie, e.g. `new ASTTranslator<SetCookieASTNode>()`.
+ * TTree is not constrained, as EntriesTranslator and ObjectTranslator extend ASTTranslator.
  */
-export declare class ASTTranslator<TTree extends ASTNode | SetCookieASTNode = ASTNode> extends AST<TTree> {
+export declare class ASTTranslator<TTree = ASTNode> extends AST<TTree> {
   constructor(options?: ASTTranslatorOptions);
   getTree(): TTree;
 }
@@ -94,20 +95,24 @@ export declare class XMLTranslator extends AST<XMLTree> {
 /**
  * Translates cookie pairs into an object (with null prototype) mapping cookie names to cookie values.
  * When cookie name appears multiple times, the first cookie value wins.
+ * At runtime, ObjectTranslator extends EntriesTranslator; it can't be typed as such,
+ * as getTree() returns ObjectTree instead of EntriesTree.
  */
-export declare class ObjectTranslator extends AST<ObjectTree> {
+export declare class ObjectTranslator extends ASTTranslator<ObjectTree> {
   constructor(options?: ASTTranslatorOptions);
   getTree(): ObjectTree;
 }
 /**
- * Object with null prototype; absent cookie names are undefined.
+ * Object with null prototype. Lookups of absent cookie names are undefined at runtime;
+ * enable `noUncheckedIndexedAccess` compiler option to reflect that in types.
+ * Object.prototype members (e.g. `toString`, `hasOwnProperty`) are NOT available at runtime.
  */
-export type ObjectTree = Partial<Record<CookieName, CookieValue>>;
+export type ObjectTree = Record<CookieName, CookieValue>;
 /**
  * Translates cookie pairs into a list of [name, value] entries, in order of appearance.
  * All cookie pairs are retained, including duplicate cookie names.
  */
-export declare class EntriesTranslator extends AST<EntriesTree> {
+export declare class EntriesTranslator extends ASTTranslator<EntriesTree> {
   constructor(options?: ASTTranslatorOptions);
   getTree(): EntriesTree;
 }

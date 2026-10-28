@@ -101,3 +101,35 @@ const cookieEntries: EntriesTree | undefined = parseCookie('a=1; a=2', {
   translator: new EntriesTranslator(),
 }).tree;
 if (cookieEntries) serializeCookie(cookieEntries);
+if (cookieObject) serializeCookie(cookieObject);
+
+// class hierarchy matches runtime
+const entriesTranslator: ASTTranslator<EntriesTree> = new EntriesTranslator();
+const objectTranslator: ASTTranslator<ObjectTree> = new ObjectTranslator();
+declare const anyTranslator: unknown;
+if (anyTranslator instanceof EntriesTranslator) {
+  const narrowed: ASTTranslator<EntriesTree> = anyTranslator;
+}
+// overload resolution is unaffected by the hierarchy
+const entriesTree: EntriesTree | undefined = parseCookie('a=1', {
+  translator: entriesTranslator,
+}).tree;
+const objectTree: ObjectTree | undefined = parseSetCookie('a=1', {
+  translator: objectTranslator,
+}).tree;
+const defaultTree: ASTNode | undefined = parseCookie('a=1').tree;
+const defaultSetCookieTree: SetCookieASTNode | undefined = parseSetCookie('a=1').tree;
+// @ts-expect-error EntriesTranslator does not produce AST
+const wrongTree: ASTNode | undefined = parseCookie('a=1', {
+  translator: new EntriesTranslator(),
+}).tree;
+// @ts-expect-error ObjectTranslator does not produce AST
+const wrongObjectTree: ASTNode | undefined = parseCookie('a=1', {
+  translator: new ObjectTranslator(),
+}).tree;
+const inlineEntries: EntriesTree | undefined = parseCookie('a=1', {
+  translator: new EntriesTranslator(),
+}).tree;
+const inlineObject: ObjectTree | undefined = parseSetCookie('a=1', {
+  translator: new ObjectTranslator(),
+}).tree;
