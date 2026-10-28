@@ -273,7 +273,7 @@ JavaScript property order, i.e. integer-like cookie names come first; use entrie
 
 As the object doesn't inherit from `Object.prototype`:
 
-- use `Object.hasOwn(cookies, name)` or `name in cookies` instead of `cookies.hasOwnProperty(name)`
+- use `Object.prototype.hasOwnProperty.call(cookies, name)` or `name in cookies` instead of `cookies.hasOwnProperty(name)`
 - converting the object to a string (`String(cookies)`, template literals) throws `TypeError`
 - use spread (`{ ...cookies }`) to get a plain object; `Object.assign({}, cookies)` would drop a cookie named `__proto__`
 - strict deep equality with plain objects (e.g. `assert.deepStrictEqual`) fails; compare `{ ...cookies }` instead
@@ -304,7 +304,9 @@ serializeCookie(entries); // => 'foo=bar; baz=raz; foo=boo'
 
 Cookie strings parsed in strict mode are serialized back to the same cookie string. Cookie strings parsed in [lenient](#parsing-cookie) mode
 can contain cookie names and values which the default [encoders](#encoders) and [validators](#validators) of `serializeCookie` re-encode or reject.
-Use identity value encoder and lenient validators to serialize them as they are (separators are normalized to `"; "`):
+Use identity value encoder and lenient validators to serialize the parsed cookie names and values without modification.
+The resulting cookie string is equivalent, but not necessarily identical: whitespace around cookie names and values is not retained,
+entries without `=` are dropped, and separators are normalized to `"; "`:
 
 ```js
 import {
@@ -325,7 +327,9 @@ serializeCookie(entries, {
 ```
 
 `EntriesTranslator` accepts the same `decoders` option as `ASTTranslator`.
-When cookie names or values are decoded, serialize them using the corresponding [encoders](#encoders) to get the original cookie string.
+When cookie names or values are decoded, serializing them doesn't necessarily reproduce the original cookie string:
+[encoders](#encoders) leave values that are already valid untouched (e.g. `a=YWJj` decoded by `cookieValueBase64Decoder` to `abc`
+is serialized as `a=abc`, even with `cookieValueStrictBase64Encoder`).
 
 **XML translator**
 
