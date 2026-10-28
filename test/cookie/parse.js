@@ -314,8 +314,7 @@ describe('parseCookie', function () {
       assert.throws(() => parseCookie(null));
       assert.throws(() => parseCookie(undefined));
       assert.throws(() => parseCookie({}));
-
-      assert.isFalse(parseCookie([]).result.success); // Iterable
+      assert.throws(() => parseCookie([]));
     });
   });
 });
@@ -803,8 +802,7 @@ context('parseCookie in lenient mode', function () {
       assert.throws(() => parseCookie(null));
       assert.throws(() => parseCookie(undefined));
       assert.throws(() => parseCookie({}));
-
-      assert.isFalse(parseCookie([]).result.success); // Iterable
+      assert.throws(() => parseCookie([]));
     });
   });
 });

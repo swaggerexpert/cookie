@@ -23,6 +23,7 @@ describe('testCookie', function () {
     assert.isFalse(testCookie(null));
     assert.isFalse(testCookie(undefined));
     assert.isFalse(testCookie({}));
+    assert.isFalse(testCookie([]));
   });
 
   context('given lenient mode', function () {
