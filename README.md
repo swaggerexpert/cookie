@@ -305,8 +305,9 @@ serializeCookie(entries); // => 'foo=bar; baz=raz; foo=boo'
 Cookie strings parsed in strict mode are serialized back to the same cookie string. Cookie strings parsed in [lenient](#parsing-cookie) mode
 can contain cookie names and values which the default [encoders](#encoders) and [validators](#validators) of `serializeCookie` re-encode or reject.
 Use identity value encoder and lenient validators to serialize the parsed cookie names and values without modification.
-The resulting cookie string is equivalent, but not necessarily identical: whitespace around cookie names and values is not retained,
-entries without `=` are dropped, and separators are normalized to `"; "`:
+The resulting cookie string contains the same cookie pairs, but is not necessarily identical: whitespace around cookie names and values
+is not retained, entries without `=` are dropped (a cookie string consisting only of such entries results in an empty string),
+and separators are normalized to `"; "`:
 
 ```js
 import {

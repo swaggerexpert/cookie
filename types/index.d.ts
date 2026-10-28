@@ -20,7 +20,7 @@ export function parseCookie(
 ): ParseResult<undefined>;
 export function parseCookie(
   cookieString: CookieString,
-  options: ParseOptions & { readonly translator: Translator | null },
+  options?: ParseOptions,
 ): ParseResult<unknown>;
 
 export interface ParseOptions {
@@ -273,7 +273,7 @@ export function parseSetCookie(
 ): SetCookieParseResult<undefined>;
 export function parseSetCookie(
   setCookieString: SetCookieString,
-  options: ParseOptions & { readonly translator: Translator | null },
+  options?: ParseOptions,
 ): SetCookieParseResult<unknown>;
 
 export interface SetCookieParseResult<TTree = SetCookieASTNode> extends BaseParseResult<TTree> {}
