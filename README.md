@@ -12,7 +12,7 @@
 <table>
   <tr>
     <td align="right" valign="middle">
-        <img src="https://cdn2.hubspot.net/hubfs/4008838/website/logos/logos_for_download/Tidelift_primary-shorthand-logo.png" alt="Tidelift" width="60" />
+        <img src="https://raw.githubusercontent.com/swaggerexpert/cookie/main/assets/tidelift.webp" alt="Tidelift" width="60" />
       </td>
       <td valign="middle">
         <a href="https://tidelift.com/subscription/pkg/npm-.swaggerexpert-cookie?utm_source=npm-swaggerexpert-cookie&utm_medium=referral&utm_campaign=readme">
