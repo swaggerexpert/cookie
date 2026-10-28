@@ -7,6 +7,8 @@ export { default as ASTTranslator } from './cookie/parse/translators/ASTTranslat
 export { default as XMLTranslator } from './cookie/parse/translators/XMLTranslator.js';
 export { default as Trace } from './cookie/parse/trace/Trace.js';
 export { default as testCookie } from './cookie/test/index.js';
+export { default as testCookieName } from './cookie/test/cookie-name.js';
+export { default as testCookieValue } from './cookie/test/cookie-value.js';
 export { default as serializeCookie } from './cookie/serialize/index.js';
 export { default as serializeSetCookie } from './set-cookie/serialize/index.js';
 

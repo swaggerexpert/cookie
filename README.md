@@ -317,6 +317,25 @@ testCookie('foo=bar;baz=raz'); // => false (missing SP after semicolon)
 testCookie('foo=bar;baz=raz', { strict: false }); // => true
 ```
 
+Individual cookie names and values can be validated as well, using **testCookieName** and **testCookieValue** functions.
+This is useful, for example, for validating `name` of [OpenAPI Parameter Objects](https://spec.openapis.org/oas/latest.html#parameter-object)
+located in a cookie (`in: cookie`), which must be a valid cookie name in order to be sent in the `Cookie` header.
+
+```js
+import { testCookieName, testCookieValue } from '@swaggerexpert/cookie';
+
+testCookieName('session_id'); // => true
+testCookieName('session id'); // => false (SP is not allowed)
+testCookieName('a:b'); // => false
+testCookieName('a:b', { strict: false }); // => true
+
+testCookieValue('bar'); // => true
+testCookieValue('"bar"'); // => true
+testCookieValue('"bar"', { quoted: false }); // => false (must not be enclosed in DQUOTEs)
+testCookieValue('bar', { quoted: true }); // => false (must be enclosed in DQUOTEs)
+testCookieValue('b r'); // => false (SP is not allowed)
+```
+
 ##### Serializing Cookie
 
 Serializing a cookie is as simple as importing the **serializeCookie** function and calling it.

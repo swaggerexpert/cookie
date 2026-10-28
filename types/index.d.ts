@@ -166,6 +166,17 @@ export interface TestOptions {
   readonly strict?: boolean;
 }
 
+export function testCookieName(cookieName: CookieName, options?: TestOptions): boolean;
+export function testCookieValue(cookieValue: CookieValue, options?: TestCookieValueOptions): boolean;
+
+export interface TestCookieValueOptions extends TestOptions {
+  /**
+   * When `true`, value must be enclosed in DQUOTEs; when `false`, value must not be enclosed in DQUOTEs.
+   * When `null` (default), both forms are allowed.
+   */
+  readonly quoted?: boolean | null;
+}
+
 /**
  * Cookie - serialize
  */
