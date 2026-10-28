@@ -216,7 +216,40 @@ export type SetCookieString = string;
 
 export function serializeSetCookie(name: CookieName, value: CookieValue, options?: SetCookieSerializeOptions): SetCookieString;
 
-export interface SetCookieSerializeOptions extends CookieSerializeOptions {}
+export interface SetCookieSerializeOptions extends CookieSerializeOptions, SetCookieAttributes {}
+
+export interface SetCookieAttributes {
+  /**
+   * Expires attribute, serialized as rfc1123-date.
+   */
+  expires?: Date;
+  /**
+   * Max-Age attribute in seconds. Must be an integer; zero or negative values mean immediate expiration.
+   */
+  maxAge?: number;
+  /**
+   * Domain attribute. Must be a valid subdomain (RFC 1034, RFC 1123); leading "." is tolerated.
+   */
+  domain?: string;
+  /**
+   * Path attribute. Any CHAR except CTLs or ";".
+   */
+  path?: string;
+  secure?: boolean;
+  httpOnly?: boolean;
+  /**
+   * SameSite attribute (not part of RFC 6265). Case-insensitive.
+   */
+  sameSite?: 'strict' | 'lax' | 'none' | 'Strict' | 'Lax' | 'None';
+  /**
+   * Partitioned attribute (not part of RFC 6265).
+   */
+  partitioned?: boolean;
+  /**
+   * Priority attribute (not part of RFC 6265). Case-insensitive.
+   */
+  priority?: 'low' | 'medium' | 'high' | 'Low' | 'Medium' | 'High';
+}
 
 /**
  * Encoders

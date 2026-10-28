@@ -48,6 +48,16 @@ const check = (label, Cookie) => {
 
   assert.strictEqual(Cookie.serializeCookie({ foo: 'bar', baz: 'raz' }), 'foo=bar; baz=raz');
   assert.strictEqual(Cookie.serializeSetCookie('foo', ';'), 'foo=Ow');
+  assert.strictEqual(
+    Cookie.serializeSetCookie('foo', 'bar', {
+      expires: new Date(0),
+      maxAge: 0,
+      path: '/',
+      secure: true,
+      sameSite: 'lax',
+    }),
+    'foo=bar; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age=0; Path=/; Secure; SameSite=Lax',
+  );
   // exercises environment specific (node/browser) base64 decoder
   assertJSONEqual(
     Cookie.parseCookie('foo=aMOpbGxv; bar=en', {

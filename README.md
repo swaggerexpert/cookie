@@ -459,6 +459,48 @@ serializeSetCookie('foo', 'b r', {
 }); // => 'foo=b%20r'
 ```
 
+**Attributes**
+
+[Set-Cookie attributes](https://datatracker.ietf.org/doc/html/rfc6265#section-4.1.2) are provided as options:
+
+```js
+import { serializeSetCookie } from '@swaggerexpert/cookie';
+
+serializeSetCookie('id', 'a3fWa', {
+  expires: new Date(Date.UTC(2027, 9, 21, 7, 28)),
+  maxAge: 3600,
+  domain: 'example.com',
+  path: '/docs',
+  secure: true,
+  httpOnly: true,
+  sameSite: 'lax',
+  partitioned: true,
+  priority: 'high',
+});
+// => 'id=a3fWa; Expires=Thu, 21 Oct 2027 07:28:00 GMT; Max-Age=3600; Domain=example.com; Path=/docs; Secure; HttpOnly; SameSite=Lax; Partitioned; Priority=High'
+```
+
+| Option | Type | Attribute |
+|---|---|---|
+| `expires` | `Date` | [`Expires`](https://datatracker.ietf.org/doc/html/rfc6265#section-4.1.2.1), serialized as `rfc1123-date` |
+| `maxAge` | integer (seconds) | [`Max-Age`](https://datatracker.ietf.org/doc/html/rfc6265#section-4.1.2.2) |
+| `domain` | `string` | [`Domain`](https://datatracker.ietf.org/doc/html/rfc6265#section-4.1.2.3), must be a valid subdomain ([RFC 1034](https://datatracker.ietf.org/doc/html/rfc1034#section-3.5), [RFC 1123](https://datatracker.ietf.org/doc/html/rfc1123#section-2.1)) |
+| `path` | `string` | [`Path`](https://datatracker.ietf.org/doc/html/rfc6265#section-4.1.2.4), any CHAR except CTLs or `;` |
+| `secure` | `boolean` | [`Secure`](https://datatracker.ietf.org/doc/html/rfc6265#section-4.1.2.5) |
+| `httpOnly` | `boolean` | [`HttpOnly`](https://datatracker.ietf.org/doc/html/rfc6265#section-4.1.2.6) |
+| `sameSite` | `'strict'` \| `'lax'` \| `'none'` | [`SameSite`](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis#section-4.1.2.7) |
+| `partitioned` | `boolean` | [`Partitioned`](https://datatracker.ietf.org/doc/html/draft-cutler-httpbis-partitioned-cookies) |
+| `priority` | `'low'` \| `'medium'` \| `'high'` | [`Priority`](https://datatracker.ietf.org/doc/html/draft-west-cookie-priority-00#section-4.1) |
+
+Attribute values are validated and `TypeError` is thrown when invalid. `SameSite`, `Partitioned` and `Priority` are not part of RFC 6265
+and are serialized as `extension-av`. Option values of `sameSite` and `priority` are case-insensitive.
+
+> NOTE: RFC 6265 grammar requires `Max-Age` to be a non-zero positive integer, but [user agent processing](https://datatracker.ietf.org/doc/html/rfc6265#section-5.2.2)
+> defines zero and negative values as immediate expiration, which is the common way of deleting a cookie. Therefore, any integer is allowed.
+> Similarly, leading `.` in `domain` is tolerated, as it is [ignored by user agents](https://datatracker.ietf.org/doc/html/rfc6265#section-5.2.3).
+
+Attributes are never part of the `Cookie` header; `serializeCookie` ignores them.
+
 #### Encoders
 
 The `@swaggerexpert/cookie` library provides a suite of encoders designed to handle cookie names and values during **serialization**.
@@ -812,6 +854,38 @@ cookie-octet      = %x21 / %x23-2B / %x2D-3A / %x3C-5B / %x5D-7E
                        ; and backslash
 
 ; https://datatracker.ietf.org/doc/html/rfc6265#section-2.2
+; https://datatracker.ietf.org/doc/html/rfc6265#section-4.1.1
+set-cookie-string = cookie-pair *( ";" SP cookie-av )
+cookie-av         = expires-av / max-age-av / domain-av / path-av /
+                    secure-av / httponly-av / extension-av
+expires-av        = "Expires=" sane-cookie-date
+sane-cookie-date  = rfc1123-date
+max-age-av        = "Max-Age=" max-age-value
+max-age-value     = non-zero-digit *DIGIT
+non-zero-digit    = %x31-39 ; digits 1 through 9
+domain-av         = "Domain=" domain-value
+domain-value      = subdomain
+path-av           = "Path=" path-value
+path-value        = *av-octet
+secure-av         = "Secure"
+httponly-av       = "HttpOnly"
+extension-av      = *av-octet
+av-octet          = %x20-3A / %x3C-7E ; any CHAR except CTLs or ";"
+
+; https://datatracker.ietf.org/doc/html/rfc1034#section-3.5
+; https://datatracker.ietf.org/doc/html/rfc1123#section-2.1 (labels may start with a digit)
+subdomain         = label *( "." label )
+label             = let-dig *( *"-" let-dig ) ; MODIFICATION: hyphens must be followed by let-dig
+let-dig           = ALPHA / DIGIT
+
+; https://datatracker.ietf.org/doc/html/rfc2616#section-3.3.1
+rfc1123-date      = wkday "," SP date1 SP time SP %s"GMT"
+date1             = 2DIGIT SP month SP 4DIGIT ; day month year (e.g., 02 Jun 1982)
+time              = 2DIGIT ":" 2DIGIT ":" 2DIGIT ; 00:00:00 - 23:59:59
+wkday             = %s"Mon" / %s"Tue" / %s"Wed" / %s"Thu" / %s"Fri" / %s"Sat" / %s"Sun"
+month             = %s"Jan" / %s"Feb" / %s"Mar" / %s"Apr" / %s"May" / %s"Jun" /
+                    %s"Jul" / %s"Aug" / %s"Sep" / %s"Oct" / %s"Nov" / %s"Dec"
+
 OWS            = *( [ CRLF ] WSP ) ; "optional" whitespace
 
 ; https://datatracker.ietf.org/doc/html/rfc9110#section-5.6.2

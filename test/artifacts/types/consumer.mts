@@ -53,3 +53,17 @@ const decoded: ASTNode | undefined = parseCookie('foo=Ow', {
 }).tree;
 const decoder = createCookieValueRotatingDecoder([cookieValueBase64urlDecoder]);
 const translator = new ASTTranslator({ decoders: { value: decoder } });
+
+const setCookieWithAttributes: SetCookieString = serializeSetCookie('foo', 'bar', {
+  expires: new Date(0),
+  maxAge: 0,
+  domain: 'example.com',
+  path: '/',
+  secure: true,
+  httpOnly: true,
+  sameSite: 'lax',
+  partitioned: true,
+  priority: 'high',
+});
+// @ts-expect-error unknown SameSite value
+serializeSetCookie('foo', 'bar', { sameSite: 'bogus' });
