@@ -7,10 +7,12 @@ const serialize = (cookiePairs, { encoders, validators } = {}) => {
       ? Object.entries(cookiePairs)
       : [];
 
-  return cookiePairEntries
-    // Cookie header consists of cookie pairs only, Set-Cookie specific options must not be passed
-    .map(([name, value]) => serializeSetCookie(name, value, { encoders, validators }))
-    .join('; ');
+  return (
+    cookiePairEntries
+      // Cookie header consists of cookie pairs only, Set-Cookie specific options must not be passed
+      .map(([name, value]) => serializeSetCookie(name, value, { encoders, validators }))
+      .join('; ')
+  );
 };
 
 export default serialize;
