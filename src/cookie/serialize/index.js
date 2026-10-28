@@ -1,6 +1,6 @@
 import serializeSetCookie from '../../set-cookie/serialize/index.js';
 
-const serialize = (cookiePairs, options = {}) => {
+const serialize = (cookiePairs, { encoders, validators } = {}) => {
   const cookiePairEntries = Array.isArray(cookiePairs)
     ? cookiePairs
     : typeof cookiePairs === 'object' && cookiePairs !== null
@@ -8,7 +8,8 @@ const serialize = (cookiePairs, options = {}) => {
       : [];
 
   return cookiePairEntries
-    .map(([name, value]) => serializeSetCookie(name, value, options))
+    // Cookie header consists of cookie pairs only, Set-Cookie specific options must not be passed
+    .map(([name, value]) => serializeSetCookie(name, value, { encoders, validators }))
     .join('; ');
 };
 
