@@ -5,6 +5,7 @@
 [![Test workflow](https://github.com/swaggerexpert/cookie/actions/workflows/test.yml/badge.svg)](https://github.com/swaggerexpert/cookie/actions)
 [![Dependabot enabled](https://img.shields.io/badge/Dependabot-enabled-blue.svg)](https://dependabot.com/)
 [![try on RunKit](https://img.shields.io/badge/try%20on-RunKit-brightgreen.svg?style=flat)](https://npm.runkit.com/@swaggerexpert/cookie)
+[![](https://data.jsdelivr.com/v1/package/npm/@swaggerexpert/cookie/badge)](https://www.jsdelivr.com/package/npm/@swaggerexpert/cookie)
 [![Tidelift](https://tidelift.com/badges/package/npm/@swaggerexpert%2Fcookie)](https://tidelift.com/subscription/pkg/npm-.swaggerexpert-cookie?utm_source=npm-swaggerexpert-cookie&utm_medium=referral&utm_campaign=readme)
 
 `@swaggerexpert/cookie` is [RFC 6265](https://datatracker.ietf.org/doc/html/rfc6265) compliant cookie `parser`, `validator` and `serializer`.
@@ -54,6 +55,43 @@ You can install `@swaggerexpert/cookie` using `npm`:
 ```sh
  $ npm install @swaggerexpert/cookie
 ```
+
+---
+
+**[unpkg.com](https://unpkg.com/)**
+
+Include following script tag into your HTML file:
+
+```html
+<script src="https://unpkg.com/@swaggerexpert/cookie@latest/dist/cookie.browser.min.js"></script>
+```
+
+Global variable `SwaggerExpertCookie` will be available in the browser matching interface of `@swaggerexpert/cookie` npm package.
+`cookie.browser.min.js` is [UMD](https://github.com/umdjs/umd?tab=readme-ov-file#umd-universal-module-definition) minified build artifact.
+There is also unminified `cookie.browser.js` artifact, suitable for debugging.
+
+---
+
+**[jsDelivr](https://www.jsdelivr.com/)**
+
+Include following script tag into your HTML file (ESM mode):
+
+```html
+<script type="module">
+  import * as SwaggerExpertCookie from 'https://cdn.jsdelivr.net/npm/@swaggerexpert/cookie@latest/+esm'
+</script>
+```
+Local variable `SwaggerExpertCookie` will be available in scope of the `<script>` tag matching interface of `@swaggerexpert/cookie` package.
+
+Or include following script tag into your HTML file (UMD mode):
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/@swaggerexpert/cookie@latest/dist/cookie.browser.min.js"></script>
+```
+
+Global variable `SwaggerExpertCookie` will be available in the browser matching interface of `@swaggerexpert/cookie` npm package.
+`cookie.browser.min.js` is [UMD](https://github.com/umdjs/umd?tab=readme-ov-file#umd-universal-module-definition) minified build artifact.
+There is also unminified `cookie.browser.js` artifact, suitable for debugging.
 
 ### Usage
 
