@@ -8,6 +8,7 @@ export { default as XMLTranslator } from './cookie/parse/translators/XMLTranslat
 export { default as Trace } from './cookie/parse/trace/Trace.js';
 export { default as testCookie } from './cookie/test/index.js';
 export { default as serializeCookie } from './cookie/serialize/index.js';
+export { default as serializeSetCookie } from './set-cookie/serialize/index.js';
 
 /**
  * Encoders
