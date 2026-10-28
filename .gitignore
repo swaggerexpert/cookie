@@ -7,3 +7,4 @@ node_modules/
 /swaggerexpert-cookie-*.tgz
 /dist
 /.mcp.json
+/types/index.d.cts
