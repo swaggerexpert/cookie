@@ -10,6 +10,18 @@ lenient-quoted-char          = %x20-21 / %x23-7E ; Allow all printable US-ASCII 
 lenient-cookie-octet         = %x21-2B / %x2D-3A / %x3C-7E
                              ; Allow all printable characters except CTLs, semicolon and SP
 
+; Lenient version of https://datatracker.ietf.org/doc/html/rfc6265#section-4.1.1
+; following parsing algorithm of https://datatracker.ietf.org/doc/html/rfc6265#section-5.2
+lenient-set-cookie-string    = lenient-set-cookie-pair *( ";" lenient-cookie-av )
+lenient-set-cookie-pair      = *WSP lenient-set-cookie-name *WSP "=" *WSP lenient-set-cookie-value *WSP
+lenient-set-cookie-name      = lenient-name-char *( *WSP lenient-name-char ) ; leading and trailing WSP is not part of the name
+lenient-set-cookie-value     = [ lenient-value-char *( *WSP lenient-value-char ) ] ; leading and trailing WSP is not part of the value
+lenient-cookie-av            = *WSP lenient-cookie-av-name *WSP [ "=" *WSP lenient-cookie-av-value *WSP ]
+lenient-cookie-av-name       = [ lenient-name-char *( *WSP lenient-name-char ) ]
+lenient-cookie-av-value      = [ lenient-value-char *( *WSP lenient-value-char ) ]
+lenient-name-char            = %x21-3A / %x3C / %x3E-7E / %x80-10FFFF ; any CHAR except CTLs, WSP, ";" and "="
+lenient-value-char           = %x21-3A / %x3C-7E / %x80-10FFFF ; any CHAR except CTLs, WSP and ";"
+
 ; https://datatracker.ietf.org/doc/html/rfc6265#section-4.2.1
 cookie-string     = cookie-pair *( ";" SP cookie-pair )
 
