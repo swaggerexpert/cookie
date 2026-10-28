@@ -1,0 +1,98 @@
+/**
+ * Smoke test of the built artifacts, as consumers load them: CommonJS, ES module, UMD (require and browser global).
+ * Resolves the package by its name, so it runs both inside this repository (self-reference)
+ * and in a project the packed tarball is installed into.
+ * Written in syntax supported by the oldest supported Node.js version (see engines in package.json).
+ */
+const assert = require('assert');
+const fs = require('fs');
+const path = require('path');
+const vm = require('vm');
+
+const name = '@swaggerexpert/cookie';
+const root = path.dirname(require.resolve(`${name}/package.json`));
+
+// values created in a different realm (vm context) have different prototypes, so compare their JSON
+const assertJSONEqual = (actual, expected) =>
+  assert.strictEqual(JSON.stringify(actual), JSON.stringify(expected));
+
+const check = (label, Cookie) => {
+  const parseResult = Cookie.parseCookie('foo=bar; baz="raz"');
+  assertJSONEqual(parseResult.tree, {
+    type: 'CookieString',
+    pairs: [
+      { type: 'CookiePair', name: 'foo', value: 'bar' },
+      { type: 'CookiePair', name: 'baz', value: '"raz"' },
+    ],
+  });
+
+  // deprecated ast retained for backward compatibility
+  const parts = [];
+  parseResult.ast.translate(parts);
+  assertJSONEqual(parts, [
+    ['cookie-string', 'foo=bar; baz="raz"'],
+    ['cookie-pair', 'foo=bar'],
+    ['cookie-name', 'foo'],
+    ['cookie-value', 'bar'],
+    ['cookie-pair', 'baz="raz"'],
+    ['cookie-name', 'baz'],
+    ['cookie-value', '"raz"'],
+  ]);
+
+  assert.strictEqual(Cookie.parseCookie('foo = bar', { strict: false }).result.success, true);
+  assert.strictEqual(Cookie.testCookie('foo=bar'), true);
+  assert.strictEqual(Cookie.testCookie('foo'), false);
+
+  assert.strictEqual(Cookie.serializeCookie({ foo: 'bar', baz: 'raz' }), 'foo=bar; baz=raz');
+  // exercises environment specific (node/browser) base64 encoder
+  assert.strictEqual(
+    Cookie.serializeCookie(
+      { foo: 'héllo' },
+      { encoders: { value: Cookie.cookieValueStrictBase64Encoder } },
+    ),
+    'foo=aMOpbGxv',
+  );
+
+  const { trace } = Cookie.parseCookie('foo', { trace: true });
+  assert.ok(Array.from(trace.inferExpectations()).indexOf('=') !== -1);
+
+  const error = new Cookie.CookieParseError('message');
+  assert.strictEqual(error.name, 'CookieParseError');
+  assert.ok(error instanceof Cookie.CookieError);
+  assert.strictEqual(new Cookie.CookieError('message').name, 'CookieError');
+
+  assert.strictEqual(typeof new Cookie.Grammar().toString(), 'string');
+
+  console.log(`ok ${label}`);
+};
+
+const main = async () => {
+  check('CommonJS', require(name));
+  check('ES module', await import(name));
+
+  // UMD bundles target browsers (browser-production in .browserslistrc) and use browser APIs (btoa, atob),
+  // Node.js >= 16 provides them as globals and can require the bundles
+  if (Number(process.versions.node.split('.')[0]) < 16) {
+    console.log('skip UMD bundles on Node.js < 16');
+  } else {
+    ['cookie.browser.js', 'cookie.browser.min.js'].forEach((file) => {
+      const bundlePath = path.join(root, 'dist', file);
+
+      check(`UMD require ${file}`, require(bundlePath));
+
+      const context = { btoa, atob, TextEncoder, TextDecoder };
+      context.self = context;
+      vm.createContext(context);
+      vm.runInContext(fs.readFileSync(bundlePath, 'utf8'), context);
+      check(`UMD browser global ${file}`, context.SwaggerExpertCookie);
+    });
+  }
+
+  assert.ok(fs.readFileSync(require.resolve(`${name}/grammar.bnf`), 'utf8').length > 0);
+  console.log('ok grammar.bnf');
+};
+
+main().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});
