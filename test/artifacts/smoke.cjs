@@ -58,6 +58,18 @@ const check = (label, Cookie) => {
     }),
     'foo=bar; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age=0; Path=/; Secure; SameSite=Lax',
   );
+  const setCookie = Cookie.parseSetCookie(
+    'id=a3fWa; Expires=Thu, 21 Oct 2027 07:28:00 GMT; Max-Age=0; Path=/; HttpOnly; Foo=bar',
+  ).tree;
+  assert.strictEqual(setCookie.name, 'id');
+  assert.strictEqual(setCookie.attributes.expires.toISOString(), '2027-10-21T07:28:00.000Z');
+  assertJSONEqual(setCookie.extensions, [{ type: 'CookieAttribute', name: 'Foo', value: 'bar' }]);
+  assert.strictEqual(
+    Cookie.serializeSetCookie(setCookie.name, setCookie.value, setCookie.attributes),
+    'id=a3fWa; Expires=Thu, 21 Oct 2027 07:28:00 GMT; Max-Age=0; Path=/; HttpOnly',
+  );
+  assert.strictEqual(Cookie.testSetCookie('id=a;Secure'), false);
+  assert.strictEqual(Cookie.testSetCookie('id=a;Secure', { strict: false }), true);
   // exercises environment specific (node/browser) base64 decoder
   assertJSONEqual(
     Cookie.parseCookie('foo=aMOpbGxv; bar=en', {

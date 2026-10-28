@@ -6,6 +6,9 @@ import {
   testCookieValue,
   serializeCookie,
   serializeSetCookie,
+  parseSetCookie,
+  testSetCookie,
+  type SetCookieASTNode,
   type SetCookieString,
   Grammar,
   CSTTranslator,
@@ -67,3 +70,12 @@ const setCookieWithAttributes: SetCookieString = serializeSetCookie('foo', 'bar'
 });
 // @ts-expect-error unknown SameSite value
 serializeSetCookie('foo', 'bar', { sameSite: 'bogus' });
+
+const parsedSetCookie: SetCookieASTNode | undefined = parseSetCookie('id=a; Max-Age=0', {
+  strict: false,
+}).tree;
+const maxAge: number | undefined = parsedSetCookie?.attributes.maxAge;
+const validSetCookie: boolean = testSetCookie('id=a; Secure');
+if (parsedSetCookie) {
+  serializeSetCookie(parsedSetCookie.name, parsedSetCookie.value, parsedSetCookie.attributes);
+}

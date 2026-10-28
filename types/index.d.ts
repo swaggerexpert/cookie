@@ -116,7 +116,14 @@ export type ASTNode = CookieStringNode;
 
 export type XMLTree = string;
 
-export interface ParseResult<TTree = ASTNode> {
+export interface ParseResult<TTree = ASTNode> extends BaseParseResult<TTree> {
+  /**
+   * @deprecated retained for backward compatibility, use `tree` instead
+   */
+  readonly ast: LegacyAST & ListTranslator;
+}
+
+export interface BaseParseResult<TTree> {
   readonly result: {
     readonly success: boolean;
     readonly state: number;
@@ -130,10 +137,6 @@ export interface ParseResult<TTree = ASTNode> {
   readonly tree?: TTree;
   readonly stats?: Stats;
   readonly trace?: Trace;
-  /**
-   * @deprecated retained for backward compatibility, use `tree` instead
-   */
-  readonly ast: LegacyAST & ListTranslator;
 }
 
 /**
@@ -210,9 +213,100 @@ export interface CookieSerializeOptions {
 }
 
 /**
- * Set-Cookie - serialize
+ * Set-Cookie - parse
  */
 export type SetCookieString = string;
+
+export function parseSetCookie(
+  setCookieString: SetCookieString,
+  options?: ParseOptions & { readonly translator?: ASTTranslator },
+): SetCookieParseResult<SetCookieASTNode>;
+export function parseSetCookie(
+  setCookieString: SetCookieString,
+  options: ParseOptions & { readonly translator: CSTTranslator },
+): SetCookieParseResult<SetCookieCSTNode>;
+export function parseSetCookie(
+  setCookieString: SetCookieString,
+  options: ParseOptions & { readonly translator: ListTranslator },
+): SetCookieParseResult<SetCookieListTree>;
+export function parseSetCookie<TTree>(
+  setCookieString: SetCookieString,
+  options: ParseOptions & { readonly translator: Translator<TTree> },
+): SetCookieParseResult<TTree>;
+export function parseSetCookie(
+  setCookieString: SetCookieString,
+  options: ParseOptions & { readonly translator: null },
+): SetCookieParseResult<undefined>;
+
+export interface SetCookieParseResult<TTree = SetCookieASTNode> extends BaseParseResult<TTree> {}
+
+export type SetCookieListEntryType =
+  | 'set-cookie-string'
+  | 'cookie-pair'
+  | 'cookie-name'
+  | 'cookie-value'
+  | 'cookie-av';
+export type SetCookieListEntry = [SetCookieListEntryType, string];
+export type SetCookieListTree = SetCookieListEntry[];
+
+export interface SetCookieCSTNode {
+  readonly type: SetCookieListEntryType;
+  readonly text: string;
+  readonly start: number;
+  readonly length: number;
+  readonly children: SetCookieCSTNode[];
+}
+
+export interface SetCookieASTNode {
+  readonly type: 'SetCookie';
+  readonly name: CookieName;
+  /**
+   * Raw cookie value as it appears in the Set-Cookie string (unless decoded by decoders option).
+   */
+  readonly value: CookieValue;
+  /**
+   * Recognized attributes, interpreted following RFC 6265, Section 5.2.
+   * Attributes with values that cannot be processed are omitted. When attribute appears multiple times, the last one wins.
+   */
+  readonly attributes: SetCookieAttributesNode;
+  /**
+   * Attributes that are not recognized, in order of appearance.
+   */
+  readonly extensions: CookieAttributeNode[];
+}
+
+export interface SetCookieAttributesNode {
+  readonly expires?: Date;
+  readonly maxAge?: number;
+  /**
+   * Lower-cased, without leading ".".
+   */
+  readonly domain?: string;
+  readonly path?: string;
+  readonly secure?: true;
+  readonly httpOnly?: true;
+  readonly sameSite?: 'strict' | 'lax' | 'none';
+  readonly partitioned?: true;
+  readonly priority?: 'low' | 'medium' | 'high';
+}
+
+export interface CookieAttributeNode {
+  readonly type: 'CookieAttribute';
+  readonly name: string;
+  /**
+   * Missing when attribute has no "=".
+   */
+  readonly value?: string;
+}
+
+/**
+ * Set-Cookie - test
+ */
+export function testSetCookie(setCookieString: SetCookieString, options?: TestOptions): boolean;
+
+/**
+ * Set-Cookie - serialize
+ */
 
 export function serializeSetCookie(name: CookieName, value: CookieValue, options?: SetCookieSerializeOptions): SetCookieString;
 

@@ -10,6 +10,8 @@ export { default as testCookie } from './cookie/test/index.js';
 export { default as testCookieName } from './cookie/test/cookie-name.js';
 export { default as testCookieValue } from './cookie/test/cookie-value.js';
 export { default as serializeCookie } from './cookie/serialize/index.js';
+export { default as parseSetCookie } from './set-cookie/parse/index.js';
+export { default as testSetCookie } from './set-cookie/test/index.js';
 export { default as serializeSetCookie } from './set-cookie/serialize/index.js';
 
 /**

@@ -35,9 +35,13 @@ This library parses, validates and serializes [RFC 6265](https://datatracker.iet
   - `ListTranslator` - Produces list of `[type, text]` tuples
   - `XMLTranslator` - Produces XML string representation (extends CSTTranslator)
 
-- **`src/cookie/test/`** - Validation functions (`testCookie`, `testCookieName`, `testCookieValue`), also used by serialization encoders and validators.
+- **`src/cookie/test/`** and **`src/set-cookie/test/`** - Validation functions (`testCookie`, `testCookieName`, `testCookieValue`, `testSetCookie`), also used by serialization encoders and validators.
 
 - **`src/cookie/serialize/`** and **`src/set-cookie/serialize/`** - Serialization with pluggable encoders and validators. Set-Cookie attributes (`expires`, `maxAge`, `domain`, `path`, `secure`, `httpOnly`, `sameSite`, `partitioned`, `priority`) are serialized and validated against the grammar in `src/set-cookie/serialize/attributes.js`; `serializeCookie` passes only `encoders` and `validators` on, so attributes never reach the `Cookie` header.
+
+- **`src/set-cookie/parse/index.js`** - `parseSetCookie`. Strict mode uses `set-cookie-string` (RFC 6265 §4.1.1), lenient mode `lenient-set-cookie-string` (RFC 6265 §5.2 algorithm). Uses the same translators as `parseCookie`; `ASTTranslator` produces `SetCookie` node when CST root is `set-cookie-string`. No deprecated `ast` field.
+
+- **`src/set-cookie/parse/attributes.js`** and **`cookie-date.js`** - Interpretation of cookie-av following RFC 6265 §5.2 (case-insensitive names, invalid values ignored, last wins) and the §5.1.1 cookie-date algorithm. Shape of `attributes` matches `serializeSetCookie` options.
 
 - **`src/set-cookie/parse/decoders/`** - Decoders, counterpart of encoders, applied by `ASTTranslator` (`decoders` option of `parseCookie`). Default is identity (no decoding). Decoders throw `TypeError` on improperly encoded input; `cookieValueRotatingDecoder` tries several decoders (best-effort, never throws).
 
