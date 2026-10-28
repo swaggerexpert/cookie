@@ -1,7 +1,9 @@
 {
   "name": "@swaggerexpert/cookie",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org",
+    "provenance": true
   },
   "version": "2.0.2",
   "description": "RFC 6265 compliant cookie parser, validator and serializer.",
@@ -81,6 +83,11 @@
     "@babel/preset-env": "=7.29.0",
     "@commitlint/cli": "=20.5.0",
     "@commitlint/config-conventional": "=20.5.0",
+    "@semantic-release/commit-analyzer": "^13.0.1",
+    "@semantic-release/git": "^11.0.1",
+    "@semantic-release/github": "^12.0.10",
+    "@semantic-release/npm": "^13.2.0",
+    "@semantic-release/release-notes-generator": "^14.1.1",
     "apg-js": "^4.4.0",
     "babel-plugin-module-resolver": "^5.0.3",
     "chai": "=6.2.2",
@@ -88,6 +95,7 @@
     "husky": "=9.1.7",
     "mocha": "=12.0.3",
     "npm-watch": "^0.13.0",
-    "prettier": "^3.1.1"
+    "prettier": "^3.1.1",
+    "semantic-release": "^25.0.9"
   }
 }
