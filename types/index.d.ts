@@ -19,9 +19,11 @@ export function parseCookie(
   options: ParseOptions & { readonly translator: null },
 ): ParseResult<undefined>;
 /**
- * Catch-all overload for options typed as ParseOptions (e.g. union-typed translators).
- * Tree type can't be determined statically; `any` keeps code written against v2.0.2 typings,
- * e.g. `const parseResult: ParseResult = parseCookie(cookieString, options)`, type-checking.
+ * Catch-all overload, used when the translator can't be determined statically: options typed as ParseOptions
+ * (including `translator?: Translator | null`) or union-typed translators. The tree is typed `any`,
+ * which keeps code written against v2.0.2 typings, e.g. `const parseResult: ParseResult = parseCookie(cookieString, options)`,
+ * type-checking. A translator typed as `Translator<TTree>` (non-nullable) resolves to the generic overload instead,
+ * with the tree typed `TTree` (`unknown` for plain `Translator`).
  */
 export function parseCookie(
   cookieString: CookieString,

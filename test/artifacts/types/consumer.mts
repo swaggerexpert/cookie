@@ -28,6 +28,7 @@ import {
   type ListTree,
   type CookiePair,
   type ParseOptions,
+  type Translator,
 } from '@swaggerexpert/cookie';
 
 const ast: ASTNode | undefined = parseCookie('foo=bar').tree;
@@ -113,8 +114,27 @@ new ASTTranslator<string>();
 new ASTTranslator<EntriesTree>();
 // union-typed translators resolve to catch-all overload
 declare const unionTranslator: EntriesTranslator | ObjectTranslator;
-const unionTree: unknown = parseCookie('a=1', { translator: unionTranslator }).tree;
-const unionSetCookieTree: unknown = parseSetCookie('a=1', { translator: unionTranslator }).tree;
+// exact tree types (an `unknown` annotation would also accept `any`)
+type IsAny<T> = 0 extends 1 & T ? true : false;
+type IsUnknown<T> = unknown extends T ? (IsAny<T> extends true ? false : true) : false;
+const assertTrue = <T extends true>(): void => {};
+declare const parseOptions: ParseOptions;
+declare const plainTranslator: Translator;
+declare const nullableTranslator: Translator | null;
+assertTrue<IsAny<typeof unionTree>>();
+assertTrue<IsAny<NonNullable<ReturnType<typeof wrapParseOptions>>>>();
+assertTrue<IsAny<NonNullable<ReturnType<typeof wrapNullableTranslator>>>>();
+assertTrue<IsUnknown<typeof plainTree>>();
+assertTrue<IsUnknown<typeof unionSetCookieTree>>();
+const unionTree = parseCookie('a=1', { translator: unionTranslator }).tree;
+const unionSetCookieTree = parseSetCookie('a=1', { translator: unionTranslator }).tree;
+const plainTree = parseCookie('a=1', { translator: plainTranslator }).tree;
+function wrapParseOptions() {
+  return parseCookie('a=1', parseOptions).tree;
+}
+function wrapNullableTranslator() {
+  return parseCookie('a=1', { translator: nullableTranslator }).tree;
+}
 // overload resolution
 const entriesTree: EntriesTree | undefined = parseCookie('a=1', {
   translator: entriesTranslator,
