@@ -157,6 +157,50 @@ parseCookie('name=name=3', { strict: false });
 parseCookie('name:name=3', { strict: false });
 ```
 
+The **recovering** mode reads a cookie string segment by segment. Servers receive cookies they didn't set,
+e.g. cookies other applications set for a parent domain, and one malformed cookie makes the whole cookie string
+fail to parse in both strict and lenient mode. With `recover: true`, the cookie string is cut into segments
+at every `;`, segments that aren't a valid cookie pair are skipped whole and reported, and the remaining pairs are kept,
+duplicates included, in order of appearance.
+
+```js
+import { parseCookie, EntriesTranslator } from '@swaggerexpert/cookie';
+
+const cookieString = 'a=1; bad=x y; sid=AAA; flag';
+const { result, tree, skipped } = parseCookie(cookieString, {
+  recover: true,
+  strict: false,
+  translator: new EntriesTranslator(),
+});
+
+result.success; // => true
+tree; // => [['a', '1'], ['sid', 'AAA']]
+skipped; // => [{ offset: 5, length: 7, name: 'bad' }, { offset: 23, length: 4 }]
+cookieString.slice(skipped[0].offset, skipped[0].offset + skipped[0].length); // => 'bad=x y'
+```
+
+- `strict` keeps its meaning per cookie pair: strict mode keeps RFC 6265 `cookie-pair` segments only,
+  lenient mode `lenient-cookie-pair` segments. `strict: false` is recommended for reading `Cookie` headers.
+- Separators and whitespace are tolerated in both modes: missing or doubled space after `;`, leading and trailing whitespace,
+  empty segments and trailing `;` are ignored. An empty cookie string parses successfully with no pairs.
+- `result.success` is `true` for any cookie string; `skipped.length` tells whether segments were skipped.
+- `skipped` lists `{ offset, length, name }` of every skipped segment, in order of appearance; offsets are UTF-16 code units
+  of the cookie string, unlike `start` and `length` of CST nodes, which are code points. `name` is the text before the first `=`
+  and is absent when the segment contains no `=`. Skipped segments may hold values of other applications, so don't log
+  their text. `name` is untrusted input as well: it is neither decoded nor validated and may contain control characters,
+  escape it before logging.
+- A skipped segment never changes what its neighbours parse to. Unlike lenient mode, a quoted value can't contain `;`:
+  `x="a;b"` is read as pair `x` with value `"a` and a skipped segment `b"`, as browsers send it.
+- In lenient mode values follow the `lenient-cookie-value` rule: whitespace and `,` are allowed inside quotes only,
+  non-ASCII characters not at all. Cookies like `last=Mon, 20 Nov 2026 10:00:00 GMT` or `a=é` are skipped in both modes.
+- Cookie pairs whose name or value fails to [decode](#decoders) are skipped as well, instead of failing the whole parse.
+- Parsing time is linear in the length of the cookie string; limiting the size of request headers is up to the HTTP server.
+- Translators receive `recovering-lenient-cookie-pair` and `recovering-lenient-cookie-value` grammar rules for lenient pairs,
+  normalized to `cookie-pair` and `cookie-value` nodes; custom translators registering callbacks for grammar rules need to
+  register them as well. XML representation shows the grammar rule names. Subclasses of `ASTTranslator` overriding
+  `getTree` or `transformCookiePair` need to forward their arguments to `super`, which reports cookie pairs that fail to decode.
+- `recover` is `false` by default; without it parsing behaves as before.
+
 **parseResult** variable has the following shape:
 
 ```
@@ -165,6 +209,7 @@ parseCookie('name:name=3', { strict: false });
   tree: <ParseResult['tree']>,
   stats: <ParseResult['stats']>,
   trace: <ParseResult['trace']>,
+  skipped: <ParseResult['skipped']>, // only with recover option
 }
 ```
 
@@ -404,6 +449,22 @@ testCookie('foo=bar; baz=raz'); // => true
 testCookie('foo=bar;baz=raz'); // => false (missing SP after semicolon)
 testCookie('foo=bar;baz=raz', { strict: false }); // => true
 ```
+
+`testCookie` validates the cookie string as a whole. To find out which segments of a cookie string are invalid,
+parse it in [recovering](#parsing-cookie) mode and inspect `skipped`; `translator: null` skips building the tree.
+
+```js
+import { parseCookie } from '@swaggerexpert/cookie';
+
+parseCookie('foo=bar;baz=r z', { recover: true, translator: null }).skipped; // => [{ offset: 8, length: 7, name: 'baz' }]
+
+// every segment is a valid cookie pair
+parseCookie('foo=bar;baz=raz', { recover: true, translator: null }).skipped.length === 0; // => true
+```
+
+This check differs from `testCookie`: separators and whitespace around segments are tolerated
+(`testCookie('foo=bar;baz=raz')` is `false`), and with `translator: null` no decoders run, so cookie pairs that would
+fail to decode are not counted. Pass `decoders` and omit `translator` to count them as well.
 
 Individual cookie names and values can be validated as well, using **testCookieName** and **testCookieValue** functions.
 This is useful, for example, for validating `name` of [OpenAPI Parameter Objects](https://spec.openapis.org/oas/latest.html#parameter-object)
@@ -1007,6 +1068,23 @@ lenient-quoted-value         = DQUOTE *( lenient-quoted-char ) DQUOTE
 lenient-quoted-char          = %x20-21 / %x23-7E ; Allow all printable US-ASCII except DQUOTE
 lenient-cookie-octet         = %x21-2B / %x2D-3A / %x3C-7E
                              ; Allow all printable characters except CTLs, semicolon and SP
+
+; Recovering versions of https://datatracker.ietf.org/doc/html/rfc6265#section-4.2.1
+; The cookie string is cut into segments at every ";". Each segment is either a cookie pair followed by
+; the end of the segment, or skipped whole. Empty segments are allowed, so any input matches.
+recovering-cookie-string          = recovering-cookie-segment *( ";" recovering-cookie-segment )
+recovering-cookie-segment         = OWS [ recovering-cookie-pair / recovering-cookie-skipped ] OWS
+recovering-cookie-pair            = cookie-pair &recovering-cookie-pair-end
+recovering-lenient-cookie-string  = recovering-lenient-cookie-segment *( ";" recovering-lenient-cookie-segment )
+recovering-lenient-cookie-segment = OWS [ recovering-lenient-cookie-pair / recovering-cookie-skipped ] OWS
+recovering-lenient-cookie-pair    = lenient-cookie-name OWS "=" OWS recovering-lenient-cookie-value &recovering-cookie-pair-end
+recovering-lenient-cookie-value   = recovering-lenient-quoted-value [ *lenient-cookie-octet ] / *lenient-cookie-octet
+recovering-lenient-quoted-value   = DQUOTE *( recovering-lenient-quoted-char ) DQUOTE
+recovering-lenient-quoted-char    = %x20-21 / %x23-3A / %x3C-7E ; lenient-quoted-char except ";"
+recovering-cookie-pair-end        = OWS ( ";" / !%x00-10FFFF ) ; followed by ";" or by the end of the cookie string
+recovering-cookie-skipped         = recovering-cookie-skipped-char *( OWS recovering-cookie-skipped-char )
+                                  ; leading and trailing whitespace is not part of the skipped segment
+recovering-cookie-skipped-char    = %x00-08 / %x0A-1F / %x21-3A / %x3C-10FFFF ; any character except SP, HTAB and ";"
 
 ; Lenient version of https://datatracker.ietf.org/doc/html/rfc6265#section-4.1.1
 ; following parsing algorithm of https://datatracker.ietf.org/doc/html/rfc6265#section-5.2

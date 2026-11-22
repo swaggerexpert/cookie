@@ -10,6 +10,23 @@ lenient-quoted-char          = %x20-21 / %x23-7E ; Allow all printable US-ASCII 
 lenient-cookie-octet         = %x21-2B / %x2D-3A / %x3C-7E
                              ; Allow all printable characters except CTLs, semicolon and SP
 
+; Recovering versions of https://datatracker.ietf.org/doc/html/rfc6265#section-4.2.1
+; The cookie string is cut into segments at every ";". Each segment is either a cookie pair followed by
+; the end of the segment, or skipped whole. Empty segments are allowed, so any input matches.
+recovering-cookie-string          = recovering-cookie-segment *( ";" recovering-cookie-segment )
+recovering-cookie-segment         = OWS [ recovering-cookie-pair / recovering-cookie-skipped ] OWS
+recovering-cookie-pair            = cookie-pair &recovering-cookie-pair-end
+recovering-lenient-cookie-string  = recovering-lenient-cookie-segment *( ";" recovering-lenient-cookie-segment )
+recovering-lenient-cookie-segment = OWS [ recovering-lenient-cookie-pair / recovering-cookie-skipped ] OWS
+recovering-lenient-cookie-pair    = lenient-cookie-name OWS "=" OWS recovering-lenient-cookie-value &recovering-cookie-pair-end
+recovering-lenient-cookie-value   = recovering-lenient-quoted-value [ *lenient-cookie-octet ] / *lenient-cookie-octet
+recovering-lenient-quoted-value   = DQUOTE *( recovering-lenient-quoted-char ) DQUOTE
+recovering-lenient-quoted-char    = %x20-21 / %x23-3A / %x3C-7E ; lenient-quoted-char except ";"
+recovering-cookie-pair-end        = OWS ( ";" / !%x00-10FFFF ) ; followed by ";" or by the end of the cookie string
+recovering-cookie-skipped         = recovering-cookie-skipped-char *( OWS recovering-cookie-skipped-char )
+                                  ; leading and trailing whitespace is not part of the skipped segment
+recovering-cookie-skipped-char    = %x00-08 / %x0A-1F / %x21-3A / %x3C-10FFFF ; any character except SP, HTAB and ";"
+
 ; Lenient version of https://datatracker.ietf.org/doc/html/rfc6265#section-4.1.1
 ; following parsing algorithm of https://datatracker.ietf.org/doc/html/rfc6265#section-5.2
 lenient-set-cookie-string    = lenient-set-cookie-pair *( ";" lenient-cookie-av )

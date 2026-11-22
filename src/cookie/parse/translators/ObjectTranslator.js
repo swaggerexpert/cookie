@@ -11,8 +11,8 @@ import EntriesTranslator from './EntriesTranslator.js';
  * and lookups of absent cookie names never return inherited Object.prototype members.
  */
 class ObjectTranslator extends EntriesTranslator {
-  getTree() {
-    const entries = super.getTree();
+  getTree(options) {
+    const entries = super.getTree(options);
     const cookies = Object.create(null);
 
     for (const [name, value] of entries) {

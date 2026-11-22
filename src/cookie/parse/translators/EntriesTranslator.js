@@ -5,8 +5,8 @@ import ASTTranslator from './ASTTranslator.js';
  * Unlike ObjectTranslator, all cookie pairs are retained, including duplicate cookie names.
  */
 class EntriesTranslator extends ASTTranslator {
-  getTree() {
-    const ast = super.getTree();
+  getTree(options) {
+    const ast = super.getTree(options);
     const pairs = ast.type === 'SetCookie' ? [ast] : ast.pairs;
 
     return pairs.map(({ name, value }) => [name, value]);
