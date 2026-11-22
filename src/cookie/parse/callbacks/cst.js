@@ -1,11 +1,13 @@
-import { utilities, identifiers } from 'apg-lite';
+import { identifiers } from 'apg-lite';
+
+import { charsToString } from '../../../utils.js';
 
 const cst = (nodeType) => {
   return (state, chars, phraseIndex, phraseLength, data) => {
     if (state === identifiers.SEM_PRE) {
       const node = {
         type: nodeType,
-        text: utilities.charsToString(chars, phraseIndex, phraseLength),
+        text: charsToString(chars, phraseIndex, phraseLength),
         start: phraseIndex,
         length: phraseLength,
         children: [],

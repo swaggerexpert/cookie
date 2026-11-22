@@ -49,3 +49,18 @@ export const isBase64url = (value) => value.length % 4 !== 1 && /^[A-Za-z0-9_-]*
  * Decodes bytes as UTF-8, throws TypeError on invalid UTF-8 sequences.
  */
 export const decodeUTF8 = (bytes) => new TextDecoder('utf-8', { fatal: true }).decode(bytes);
+
+const CHARS_CHUNK_SIZE = 8192;
+
+/**
+ * Converts code points to a string, like apg-lite `utilities.charsToString`, in chunks:
+ * spreading all code points into `String.fromCodePoint` exceeds the call stack for long phrases.
+ */
+export const charsToString = (chars, start, length) => {
+  const end = start + length;
+  let string = '';
+  for (let index = start; index < end; index += CHARS_CHUNK_SIZE) {
+    string += String.fromCodePoint(...chars.slice(index, Math.min(index + CHARS_CHUNK_SIZE, end)));
+  }
+  return string;
+};
