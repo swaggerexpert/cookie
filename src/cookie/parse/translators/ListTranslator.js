@@ -18,6 +18,12 @@ class ListTranslator extends AST {
     this.callbacks['lenient-cookie-name'] = listCallback('cookie-name');
     this.callbacks['lenient-cookie-value'] = listCallback('cookie-value');
 
+    // recovering rules (strict pairs reuse cookie-pair, lenient pairs reuse lenient-cookie-name)
+    this.callbacks['recovering-cookie-string'] = listCallback('cookie-string');
+    this.callbacks['recovering-lenient-cookie-string'] = listCallback('cookie-string');
+    this.callbacks['recovering-lenient-cookie-pair'] = listCallback('cookie-pair');
+    this.callbacks['recovering-lenient-cookie-value'] = listCallback('cookie-value');
+
     // Set-Cookie strict rules (cookie-pair, cookie-name and cookie-value are shared with Cookie)
     this.callbacks['set-cookie-string'] = listCallback('set-cookie-string');
     this.callbacks['cookie-av'] = listCallback('cookie-av');

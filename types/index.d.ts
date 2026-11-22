@@ -8,15 +8,15 @@ export type CookiePair = [CookieName, CookieValue];
  */
 export function parseCookie(
   cookieString: CookieString,
-  options?: ParseOptions & { readonly translator?: ASTTranslator },
+  options?: CookieParseOptions & { readonly translator?: ASTTranslator },
 ): ParseResult<ASTNode>;
 export function parseCookie<TTree>(
   cookieString: CookieString,
-  options: ParseOptions & { readonly translator: Translator<TTree> },
+  options: CookieParseOptions & { readonly translator: Translator<TTree> },
 ): ParseResult<TTree>;
 export function parseCookie(
   cookieString: CookieString,
-  options: ParseOptions & { readonly translator: null },
+  options: CookieParseOptions & { readonly translator: null },
 ): ParseResult<undefined>;
 /**
  * Catch-all overload, used when the translator can't be determined statically: options typed as ParseOptions
@@ -27,7 +27,7 @@ export function parseCookie(
  */
 export function parseCookie(
   cookieString: CookieString,
-  options?: ParseOptions,
+  options?: CookieParseOptions,
 ): ParseResult<any>;
 
 export interface ParseOptions {
@@ -40,6 +40,16 @@ export interface ParseOptions {
   readonly translator?: Translator | null;
   readonly stats?: boolean;
   readonly trace?: boolean;
+}
+
+export interface CookieParseOptions extends ParseOptions {
+  /**
+   * Parses the cookie string segment by segment: segments that are not a valid cookie pair
+   * (under the `strict` option) are skipped whole and reported in `skipped`, the remaining pairs are kept.
+   * Cookie pairs whose name or value fails to decode are skipped as well.
+   * Separators and whitespace around segments are tolerated in both strict and lenient mode.
+   */
+  readonly recover?: boolean;
 }
 
 /**
@@ -159,6 +169,10 @@ export type XMLTree = string;
 
 export interface ParseResult<TTree = ASTNode> extends BaseParseResult<TTree> {
   /**
+   * Segments skipped in recovering mode, in order of appearance. Present only when `recover` option is set.
+   */
+  readonly skipped?: SkippedSegment[];
+  /**
    * @deprecated retained for backward compatibility, use `tree` instead
    */
   readonly ast: LegacyAST & ListTranslator;
@@ -178,6 +192,20 @@ export interface BaseParseResult<TTree> {
   readonly tree?: TTree;
   readonly stats?: Stats;
   readonly trace?: Trace;
+}
+
+export interface SkippedSegment {
+  /**
+   * Offset and length in UTF-16 code units: `cookieString.slice(offset, offset + length)` returns the segment
+   * without surrounding whitespace. CST node `start` and `length` are code points instead.
+   */
+  readonly offset: number;
+  readonly length: number;
+  /**
+   * Text before the first "=", without trailing whitespace. Absent when the segment contains no "=".
+   * Untrusted input: neither decoded nor validated, may contain control characters.
+   */
+  readonly name?: string;
 }
 
 /**

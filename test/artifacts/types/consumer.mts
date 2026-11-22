@@ -28,6 +28,8 @@ import {
   type ListTree,
   type CookiePair,
   type ParseOptions,
+  type CookieParseOptions,
+  type SkippedSegment,
   type Translator,
 } from '@swaggerexpert/cookie';
 
@@ -170,3 +172,18 @@ function wrapParseSetCookie(setCookieString: string, options?: ParseOptions) {
 }
 const strictOptions: ParseOptions = { strict: true };
 const optionsResult: boolean = parseCookie('a=b', strictOptions).result.success;
+
+// recovering mode
+const recovered = parseCookie('a=1; b=x y', {
+  recover: true,
+  strict: false,
+  translator: new EntriesTranslator(),
+});
+const recoveredTree: EntriesTree | undefined = recovered.tree;
+const skipped: SkippedSegment[] | undefined = recovered.skipped;
+const skippedName: string | undefined = skipped?.[0]?.name;
+const cookieParseOptions: CookieParseOptions = { recover: true };
+const fromParseOptions: CookieParseOptions = parseOptions;
+parseCookie('a=1', cookieParseOptions);
+// @ts-expect-error recover is not an option of parseSetCookie
+parseSetCookie('a=1', { recover: true });

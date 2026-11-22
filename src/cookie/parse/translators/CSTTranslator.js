@@ -18,6 +18,12 @@ class CSTTranslator extends AST {
     this.callbacks['lenient-cookie-name'] = cstCallback('cookie-name');
     this.callbacks['lenient-cookie-value'] = cstCallback('cookie-value');
 
+    // recovering rules (strict pairs reuse cookie-pair, lenient pairs reuse lenient-cookie-name)
+    this.callbacks['recovering-cookie-string'] = cstCallback('cookie-string');
+    this.callbacks['recovering-lenient-cookie-string'] = cstCallback('cookie-string');
+    this.callbacks['recovering-lenient-cookie-pair'] = cstCallback('cookie-pair');
+    this.callbacks['recovering-lenient-cookie-value'] = cstCallback('cookie-value');
+
     // Set-Cookie strict rules (cookie-pair, cookie-name and cookie-value are shared with Cookie)
     this.callbacks['set-cookie-string'] = cstCallback('set-cookie-string');
     this.callbacks['cookie-av'] = cstCallback('cookie-av');
